@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class ProfilePage extends StatelessWidget{  
+class PresetsPage extends StatelessWidget{  
 
   @override
   Widget build(BuildContext context) {
