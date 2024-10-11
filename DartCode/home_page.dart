@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'profile_page.dart';
+import 'presets_page.dart';
 import 'button_page.dart';
 import 'settings_page.dart';
-import 'display_page.dart';
+import 'status_page.dart';
 import 'custom_button.dart';
 
 class HomePage extends StatelessWidget {
@@ -45,13 +45,13 @@ class HomePage extends StatelessWidget {
 
               SizedBox(height: screenHeight * 0.08), // Space between logo and buttons
 
-              // Profile Button
+              // Presets Button
               CustomButton(
-                label: "PROFILE",
+                label: "PRESETS",
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => ProfilePage()),
+                    MaterialPageRoute(builder: (context) => PresetsPage()),
                   );
                 },
                 screenWidth: screenWidth,
@@ -90,13 +90,13 @@ class HomePage extends StatelessWidget {
 
               SizedBox(height: buttonSpacing), // Space between buttons
 
-              // Display Button
+              // Status Button
               CustomButton(
-                label: "DISPLAY",
+                label: "STATUS",
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => DisplayPage()),
+                    MaterialPageRoute(builder: (context) => StatusPage()),
                   );
                 },
                 screenWidth: screenWidth,
