@@ -11,11 +11,11 @@ class StatusPage extends StatefulWidget {
 class _StatusPageState extends State<StatusPage> {
   // Variables to hold the status information
   String battery = '90%';
-  String light = 'ON';
-  String lightIntensity = 'LOW';
-  String notifications = 'OFF';
+  bool isLightOn = true; // ON/OFF
+  String lightIntensity = 'LOW'; 
+  bool notifications = false; // ON/OFF
   String hapticIntensity = '25%';
-  String buzzerIntensity = '100%';
+  String buzzerIntensity = '75%';
 
   @override
   Widget build(BuildContext context) {
@@ -67,16 +67,16 @@ class _StatusPageState extends State<StatusPage> {
                   _buildStatusRow('BATTERY', battery, maxWidth, screenWidth),
                   SizedBox(height: buttonSpacing), // Spacing between rows
 
-                  // Light
-                  _buildStatusRow('LIGHT', light, maxWidth, screenWidth),
+                  // Light with Toggle Switch
+                  _buildLightToggleRow('LIGHT', isLightOn, maxWidth, screenWidth),
                   SizedBox(height: buttonSpacing), // Spacing between rows
 
-                  // Light Intensity
-                  _buildStatusRow('LIGHT INTENSITY', lightIntensity, maxWidth, screenWidth),
+                  // Notifications with Toggle Switch
+                  _buildNotificationsToggleRow('NOTIFICATIONS', notifications, maxWidth, screenWidth),
                   SizedBox(height: buttonSpacing), // Spacing between rows
 
-                  // Notifications
-                  _buildStatusRow('NOTIFICATIONS', notifications, maxWidth, screenWidth),
+                  // Light Intensity with Clickable Block
+                  _buildLightIntensityRow('LIGHT INTENSITY', lightIntensity, maxWidth, screenWidth),
                   SizedBox(height: buttonSpacing), // Spacing between rows
 
                   // Haptic Intensity
@@ -105,7 +105,7 @@ class _StatusPageState extends State<StatusPage> {
     );
   }
 
-  // Method to build each status row
+  // Method to build each status row 
   Widget _buildStatusRow(String label, String value, double maxWidth, double screenWidth) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -136,6 +136,129 @@ class _StatusPageState extends State<StatusPage> {
                 color: Colors.purple,
                 fontSize: screenWidth * 0.05, // Dynamic font size for values
                 fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  // light toggle row
+  Widget _buildLightToggleRow(String label, bool value, double maxWidth, double screenWidth) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        // Label part of the row
+        Expanded(
+          child: Text(
+            label,
+            style: TextStyle(
+              color: Colors.purple,
+              fontSize: screenWidth * 0.05, // Dynamic font size for labels
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+
+        // Switch for light toggle
+        Container(
+          width: maxWidth / 3, // Ensures each grey box has the same width
+          child: Switch(
+            value: value,
+            onChanged: (bool newValue) {
+              setState(() {
+                isLightOn = newValue; // Toggle the light status
+              });
+            },
+            activeColor: Colors.purple,
+            inactiveThumbColor: Colors.grey,
+          ),
+        ),
+      ],
+    );
+  }
+
+  // notifications toggle row 
+  Widget _buildNotificationsToggleRow(String label, bool value, double maxWidth, double screenWidth) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        // Label part of the row
+        Expanded(
+          child: Text(
+            label,
+            style: TextStyle(
+              color: Colors.purple,
+              fontSize: screenWidth * 0.05, // Dynamic font size for labels
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+
+        // Switch for notifications toggle
+        Container(
+          width: maxWidth / 3, // Ensures each grey box has the same width
+          child: Switch(
+            value: value,
+            onChanged: (bool newValue) {
+              setState(() {
+                notifications = newValue; // Toggle the notifications status
+              });
+            },
+            activeColor: Colors.purple,
+            inactiveThumbColor: Colors.grey,
+          ),
+        ),
+      ],
+    );
+  }
+
+  //  light intensity row with GestureDetector
+  Widget _buildLightIntensityRow(String label, String value, double maxWidth, double screenWidth) {
+    List<String> intensities = ['LOW', 'MID', 'HIGH']; // Define possible intensity levels
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        // Label part of the row
+        Expanded(
+          child: Text(
+            label,
+            style: TextStyle(
+              color: Colors.purple,
+              fontSize: screenWidth * 0.05, // Dynamic font size for labels
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+
+        
+        GestureDetector(
+          onTap: () {
+            setState(() {
+              // current index of the intensity level
+              int currentIndex = intensities.indexOf(value);
+
+              // next intensity level
+              lightIntensity = intensities[(currentIndex + 1) % intensities.length];
+            });
+          },
+          child: Container(
+            width: maxWidth / 3, // Ensures each grey box has the same width
+            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            decoration: BoxDecoration(
+              color: Colors.grey[400],
+              borderRadius: BorderRadius.circular(5),
+            ),
+            child: Center(
+              child: Text(
+                value, // Display current light intensity
+                style: TextStyle(
+                  color: Colors.purple,
+                  fontSize: screenWidth * 0.05, // Dynamic font size for values
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
           ),
