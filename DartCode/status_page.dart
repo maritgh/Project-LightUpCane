@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart'; // Import provider
 import 'custom_button.dart'; // Import the CustomButton used in the rest of the app
+import 'theme_provider.dart'; // Import your ThemeProvider
 
 class StatusPage extends StatefulWidget {
   const StatusPage({Key? key}) : super(key: key);
@@ -12,13 +14,16 @@ class _StatusPageState extends State<StatusPage> {
   // Variables to hold the status information
   String battery = '90%';
   bool isLightOn = true; // ON/OFF
-  String lightIntensity = 'LOW'; 
+  String lightIntensity = 'LOW';
   bool notifications = false; // ON/OFF
   String hapticIntensity = '25%';
   String buzzerIntensity = '75%';
 
   @override
   Widget build(BuildContext context) {
+    // Access ThemeProvider
+    final themeProvider = Provider.of<ThemeProvider>(context);
+
     // Get screen dimensions for dynamic scaling
     var screenWidth = MediaQuery.of(context).size.width;
     var screenHeight = MediaQuery.of(context).size.height;
@@ -28,7 +33,9 @@ class _StatusPageState extends State<StatusPage> {
     double buttonSpacing = screenHeight * 0.05; // Spacing between buttons
 
     return Scaffold(
-      backgroundColor: Colors.grey[300],
+      backgroundColor: themeProvider.themeMode == ThemeMode.dark
+          ? Colors.black87 // Dark background for dark theme
+          : Colors.grey[300], // Light background for light theme
       body: SafeArea(
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
@@ -46,7 +53,7 @@ class _StatusPageState extends State<StatusPage> {
                       width: screenWidth * 0.8,
                       padding: EdgeInsets.symmetric(vertical: screenHeight * 0.005),
                       decoration: BoxDecoration(
-                        color: Colors.black,
+                        color: themeProvider.accentColor, // Use accent color from ThemeProvider
                         borderRadius: BorderRadius.circular(20), // Rounded corners for the status header
                       ),
                       child: Center(
@@ -64,27 +71,27 @@ class _StatusPageState extends State<StatusPage> {
                   SizedBox(height: buttonSpacing), // Space between header and rows
 
                   // Battery
-                  _buildStatusRow('BATTERY', battery, maxWidth, screenWidth),
+                  _buildStatusRow('BATTERY', battery, maxWidth, screenWidth, themeProvider),
                   SizedBox(height: buttonSpacing), // Spacing between rows
 
                   // Light with Toggle Switch
-                  _buildLightToggleRow('LIGHT', isLightOn, maxWidth, screenWidth),
+                  _buildLightToggleRow('LIGHT', isLightOn, maxWidth, screenWidth, themeProvider),
                   SizedBox(height: buttonSpacing), // Spacing between rows
 
                   // Notifications with Toggle Switch
-                  _buildNotificationsToggleRow('NOTIFICATIONS', notifications, maxWidth, screenWidth),
+                  _buildNotificationsToggleRow('NOTIFICATIONS', notifications, maxWidth, screenWidth, themeProvider),
                   SizedBox(height: buttonSpacing), // Spacing between rows
 
                   // Light Intensity with Clickable Block
-                  _buildLightIntensityRow('LIGHT INTENSITY', lightIntensity, maxWidth, screenWidth),
+                  _buildLightIntensityRow('LIGHT INTENSITY', lightIntensity, maxWidth, screenWidth, themeProvider),
                   SizedBox(height: buttonSpacing), // Spacing between rows
 
                   // Haptic Intensity
-                  _buildStatusRow('HAPTIC INTENSITY', hapticIntensity, maxWidth, screenWidth),
+                  _buildStatusRow('HAPTIC INTENSITY', hapticIntensity, maxWidth, screenWidth, themeProvider),
                   SizedBox(height: buttonSpacing), // Spacing between rows
 
                   // Buzzer Intensity
-                  _buildStatusRow('BUZZER INTENSITY', buzzerIntensity, maxWidth, screenWidth),
+                  _buildStatusRow('BUZZER INTENSITY', buzzerIntensity, maxWidth, screenWidth, themeProvider),
                   SizedBox(height: buttonSpacing), // Larger space before the return button
 
                   // Return Button
@@ -95,6 +102,7 @@ class _StatusPageState extends State<StatusPage> {
                     },
                     screenWidth: screenWidth, // Pass screen dimensions for dynamic sizing
                     screenHeight: screenHeight,
+                    color: themeProvider.accentColor, // Use accent color from ThemeProvider
                   ),
                 ],
               );
@@ -105,8 +113,8 @@ class _StatusPageState extends State<StatusPage> {
     );
   }
 
-  // Method to build each status row 
-  Widget _buildStatusRow(String label, String value, double maxWidth, double screenWidth) {
+  // Method to build each status row
+  Widget _buildStatusRow(String label, String value, double maxWidth, double screenWidth, ThemeProvider themeProvider) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -115,7 +123,7 @@ class _StatusPageState extends State<StatusPage> {
           child: Text(
             label,
             style: TextStyle(
-              color: Colors.purple,
+              color: themeProvider.accentColor, // Use accent color for labels
               fontSize: screenWidth * 0.05, // Dynamic font size for labels
               fontWeight: FontWeight.bold,
             ),
@@ -133,7 +141,7 @@ class _StatusPageState extends State<StatusPage> {
             child: Text(
               value,
               style: TextStyle(
-                color: Colors.purple,
+                color: themeProvider.accentColor, // Use accent color for values
                 fontSize: screenWidth * 0.05, // Dynamic font size for values
                 fontWeight: FontWeight.bold,
               ),
@@ -144,8 +152,8 @@ class _StatusPageState extends State<StatusPage> {
     );
   }
 
-  // light toggle row
-  Widget _buildLightToggleRow(String label, bool value, double maxWidth, double screenWidth) {
+  // Light toggle row
+  Widget _buildLightToggleRow(String label, bool value, double maxWidth, double screenWidth, ThemeProvider themeProvider) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -154,7 +162,7 @@ class _StatusPageState extends State<StatusPage> {
           child: Text(
             label,
             style: TextStyle(
-              color: Colors.purple,
+              color: themeProvider.accentColor, // Use accent color for labels
               fontSize: screenWidth * 0.05, // Dynamic font size for labels
               fontWeight: FontWeight.bold,
             ),
@@ -171,16 +179,16 @@ class _StatusPageState extends State<StatusPage> {
                 isLightOn = newValue; // Toggle the light status
               });
             },
-            activeColor: Colors.purple,
-            inactiveThumbColor: Colors.grey,
+            activeColor: themeProvider.accentColor, // Use accent color for active switch
+            inactiveThumbColor: Colors.grey, // Color for inactive thumb
           ),
         ),
       ],
     );
   }
 
-  // notifications toggle row 
-  Widget _buildNotificationsToggleRow(String label, bool value, double maxWidth, double screenWidth) {
+  // Notifications toggle row
+  Widget _buildNotificationsToggleRow(String label, bool value, double maxWidth, double screenWidth, ThemeProvider themeProvider) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -189,7 +197,7 @@ class _StatusPageState extends State<StatusPage> {
           child: Text(
             label,
             style: TextStyle(
-              color: Colors.purple,
+              color: themeProvider.accentColor, // Use accent color for labels
               fontSize: screenWidth * 0.05, // Dynamic font size for labels
               fontWeight: FontWeight.bold,
             ),
@@ -206,16 +214,16 @@ class _StatusPageState extends State<StatusPage> {
                 notifications = newValue; // Toggle the notifications status
               });
             },
-            activeColor: Colors.purple,
-            inactiveThumbColor: Colors.grey,
+            activeColor: themeProvider.accentColor, // Use accent color for active switch
+            inactiveThumbColor: Colors.grey, // Color for inactive thumb
           ),
         ),
       ],
     );
   }
 
-  //  light intensity row with GestureDetector
-  Widget _buildLightIntensityRow(String label, String value, double maxWidth, double screenWidth) {
+  // Light intensity row with GestureDetector
+  Widget _buildLightIntensityRow(String label, String value, double maxWidth, double screenWidth, ThemeProvider themeProvider) {
     List<String> intensities = ['LOW', 'MID', 'HIGH']; // Define possible intensity levels
 
     return Row(
@@ -226,21 +234,20 @@ class _StatusPageState extends State<StatusPage> {
           child: Text(
             label,
             style: TextStyle(
-              color: Colors.purple,
+              color: themeProvider.accentColor, // Use accent color for labels
               fontSize: screenWidth * 0.05, // Dynamic font size for labels
               fontWeight: FontWeight.bold,
             ),
           ),
         ),
 
-        
         GestureDetector(
           onTap: () {
             setState(() {
-              // current index of the intensity level
+              // Current index of the intensity level
               int currentIndex = intensities.indexOf(value);
 
-              // next intensity level
+              // Next intensity level
               lightIntensity = intensities[(currentIndex + 1) % intensities.length];
             });
           },
@@ -255,7 +262,7 @@ class _StatusPageState extends State<StatusPage> {
               child: Text(
                 value, // Display current light intensity
                 style: TextStyle(
-                  color: Colors.purple,
+                  color: themeProvider.accentColor, // Use accent color for values
                   fontSize: screenWidth * 0.05, // Dynamic font size for values
                   fontWeight: FontWeight.bold,
                 ),
