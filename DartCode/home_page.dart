@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart'; // Import provider
-import 'package:luc1/theme_page.dart';
+import 'package:luc1/theme_page.dart'; // (luc1 needs to be changed, was required for Rae's project)
 import 'presets_page.dart';
 import 'button_page.dart';
 import 'settings_page.dart';
