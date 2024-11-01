@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart'; // Import provider
 import 'custom_button.dart';
 import 'audio_page.dart';
+import 'theme_provider.dart'; // Import your ThemeProvider
 
 class SettingsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    // Access ThemeProvider
+    final themeProvider = Provider.of<ThemeProvider>(context);
+
     // Get screen dimensions for dynamic scaling
     var screenWidth = MediaQuery.of(context).size.width;
     var screenHeight = MediaQuery.of(context).size.height;
@@ -14,13 +19,14 @@ class SettingsPage extends StatelessWidget {
     double buttonSpacing = screenHeight * 0.05; // Spacing between buttons
 
     return Scaffold(
-      backgroundColor: Colors.grey[300],
+      backgroundColor: themeProvider.themeMode == ThemeMode.dark
+          ? Colors.black87 // Dark background for dark theme
+          : Colors.grey[300], // Light background for light theme
       body: SafeArea(
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
           child: LayoutBuilder(
             builder: (context, constraints) {
-
               return Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -31,7 +37,7 @@ class SettingsPage extends StatelessWidget {
                       width: screenWidth * 0.8,
                       padding: EdgeInsets.symmetric(vertical: screenHeight * 0.005),
                       decoration: BoxDecoration(
-                        color: Colors.black,
+                        color: themeProvider.accentColor, // Use accent color from ThemeProvider
                         borderRadius: BorderRadius.circular(20), // Rounded corners for the header
                       ),
                       child: Center(
@@ -55,10 +61,11 @@ class SettingsPage extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) => AudioPage()),
-                  );
+                      );
                     },
                     screenWidth: screenWidth, // Pass screen dimensions for dynamic sizing
                     screenHeight: screenHeight,
+                    color: themeProvider.accentColor, // Use accent color from ThemeProvider
                   ),
                   SizedBox(height: buttonSpacing), // Spacing between buttons
 
@@ -70,6 +77,7 @@ class SettingsPage extends StatelessWidget {
                     },
                     screenWidth: screenWidth, // Pass screen dimensions for dynamic sizing
                     screenHeight: screenHeight,
+                    color: themeProvider.accentColor, // Use accent color from ThemeProvider
                   ),
                   SizedBox(height: buttonSpacing), // Spacing between buttons
 
@@ -83,6 +91,7 @@ class SettingsPage extends StatelessWidget {
                     },
                     screenWidth: screenWidth, // Pass screen dimensions for dynamic sizing
                     screenHeight: screenHeight,
+                    color: themeProvider.accentColor, // Use accent color from ThemeProvider
                   ),
                   SizedBox(height: buttonSpacing), // Same bottom spacing as in StatusPage
                 ],
