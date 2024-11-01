@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart'; // Import provider
+import 'package:luc1/theme_page.dart';
 import 'presets_page.dart';
 import 'button_page.dart';
 import 'settings_page.dart';
 import 'status_page.dart';
 import 'custom_button.dart';
+import 'theme_provider.dart'; // Import your ThemeProvider
 
 class HomePage extends StatelessWidget {
   @override
@@ -16,8 +19,13 @@ class HomePage extends StatelessWidget {
     double horizontalPadding = screenWidth * 0.1; // 10% of screen width
     double buttonSpacing = screenHeight * 0.05; // 5% of screen height
 
+    // Access ThemeProvider
+    final themeProvider = Provider.of<ThemeProvider>(context);
+
     return Scaffold(
-      backgroundColor: Colors.grey[300],
+      backgroundColor: themeProvider.themeMode == ThemeMode.light
+          ? Colors.grey[300]
+          : Colors.black87, // Change based on theme mode
       body: SafeArea(
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
@@ -29,7 +37,7 @@ class HomePage extends StatelessWidget {
                 width: screenWidth * 0.2, // 20% of screen width
                 height: screenWidth * 0.2, // Maintain square aspect ratio
                 decoration: BoxDecoration(
-                  color: Colors.black,
+                  color: themeProvider.accentColor, // Use accent color from provider
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Center(
@@ -51,11 +59,12 @@ class HomePage extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => PresetsPage()),
+                    MaterialPageRoute(builder: (context) => ThemePage()), //Temporary themepage FIX THIS TO CORRECT PAGE LATER)
                   );
                 },
                 screenWidth: screenWidth,
                 screenHeight: screenHeight,
+                color: themeProvider.accentColor, // Use accent color
               ),
 
               SizedBox(height: buttonSpacing), // Space between buttons
@@ -71,6 +80,7 @@ class HomePage extends StatelessWidget {
                 },
                 screenWidth: screenWidth,
                 screenHeight: screenHeight,
+                color: themeProvider.accentColor, // Use accent color
               ),
 
               SizedBox(height: buttonSpacing), // Space between buttons
@@ -86,6 +96,7 @@ class HomePage extends StatelessWidget {
                 },
                 screenWidth: screenWidth,
                 screenHeight: screenHeight,
+                color: themeProvider.accentColor, // Use accent color
               ),
 
               SizedBox(height: buttonSpacing), // Space between buttons
@@ -101,6 +112,7 @@ class HomePage extends StatelessWidget {
                 },
                 screenWidth: screenWidth,
                 screenHeight: screenHeight,
+                color: themeProvider.accentColor, // Use accent color
               ),
             ],
           ),
