@@ -4,22 +4,17 @@ void init_hardware(){
   pinMode(SW_ON_BOOT, INPUT_PULLUP); 
   pinMode(LED_LIGHTS, OUTPUT);          
   // init HAPTIC
-  ledcSetup(0, 100000, 8);
-  ledcAttachPin(HAPTIC, 0);
+  ledcAttachChannel(HAPTIC, 100000, 8, 0);
   // init BUZZER
-  ledcSetup(1, profiles.frequency, 8);
-  ledcAttachPin(BUZZER, 1);
-  adcAttachPin(BATT_SENS);
+  ledcAttachChannel(BUZZER ,profiles.frequency, 8 ,1);
 }
 
 void init_imu(){
   Wire.begin(SDA_PIN, SCL_PIN); // Gebruik GPIO8 als SDA en GPIO6 als SCL
   mpu.initialize();
-  // init IMU timer
-  imu_timer = timerBegin(0, 80, true); // (timer ch, divider, countup)
-  timerAttachInterrupt(imu_timer, &onTimer, true);
-  timerAlarmWrite(imu_timer, 100000, true);
-  timerAlarmEnable(imu_timer);
+  imu_timer = timerBegin(1000000); // (timer ch, divider, countup)
+  timerAttachInterrupt(imu_timer, &onTimer);
+  timerAlarm(imu_timer, 100000, true, 1);
 }
 
 int calc_intensity(float intensity){

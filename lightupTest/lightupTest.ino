@@ -71,34 +71,34 @@ void trig_feedback(int feedback){
         // Serial << "POWER\n";
         
         if (buzzer_on > 0){
-          ledcWrite(1, profiles.intensity_buzzer);
+          ledcWrite(BUZZER, profiles.intensity_buzzer);
           buzzer_on--;
         }
         if (haptic_on > 0){
-          ledcWrite(0, profiles.intensity_haptic);
+          ledcWrite(HAPTIC, profiles.intensity_haptic);
           haptic_on--;
         }
         
         delay(100);
-        ledcWrite(0, 0);  // turn off haptic feedback
-        ledcWrite(1, 0);  // turn off buzzer
+        ledcWrite(HAPTIC, 0);  // turn off haptic feedback
+        ledcWrite(BUZZER, 0);  // turn off buzzer
         delay(100);
       }
     } else if (!power){
       while(buzzer_off > 0 || haptic_off > 0){
            
         if (buzzer_off > 0){
-          ledcWrite(1, profiles.intensity_buzzer);
+          ledcWrite(BUZZER, profiles.intensity_buzzer);
           buzzer_off--;
         }
         if (haptic_off > 0){
-          ledcWrite(0, profiles.intensity_haptic);
+          ledcWrite(HAPTIC, profiles.intensity_haptic);
           haptic_off--;
         }
         
         delay(100);
-        ledcWrite(0, 0);  // turn off haptic feedback
-        ledcWrite(1, 0);  // turn off buzzer
+        ledcWrite(HAPTIC, 0);  // turn off haptic feedback
+        ledcWrite(BUZZER, 0);  // turn off buzzer
         delay(100);
       }
     }
@@ -110,17 +110,17 @@ void trig_feedback(int feedback){
       while(buzzer_profiles > 0 || haptic_profiles > 0){
                
         if (buzzer_profiles > 0){
-          ledcWrite(1, profiles.intensity_buzzer);
+          ledcWrite(BUZZER, profiles.intensity_buzzer);
           buzzer_profiles--;
         }
         if (haptic_profiles > 0){
-          ledcWrite(0, profiles.intensity_haptic);
+          ledcWrite(HAPTIC, profiles.intensity_haptic);
           haptic_profiles--;
         }
         
         delay(100);
-        ledcWrite(0, 0);  // turn off haptic feedback
-        ledcWrite(1, 0);  // turn off buzzer
+        ledcWrite(HAPTIC, 0);  // turn off haptic feedback
+        ledcWrite(BUZZER, 0);  // turn off buzzer
         delay(100);
       }
     }
@@ -141,16 +141,16 @@ if (bat_voltage < 3.3){ // 0%-25%
       while ((haptic_battery > 0) || (buzzer_battery > 0)){
         // Serial << "BATTERY\n";
         if (buzzer_battery > 0){
-          ledcWrite(1, profiles.intensity_buzzer);
+          ledcWrite(BUZZER, profiles.intensity_buzzer);
           buzzer_battery--;
         }
         if (haptic_battery > 0){
-          ledcWrite(0, profiles.intensity_haptic);
+          ledcWrite(HAPTIC, profiles.intensity_haptic);
           haptic_battery--;
         }
         delay(100);
-        ledcWrite(0, 0);  // turn off haptic feedback
-        ledcWrite(1, 0);  // turn off buzzer
+        ledcWrite(HAPTIC, 0);  // turn off haptic feedback
+        ledcWrite(BUZZER, 0);  // turn off buzzer
         delay(100);
       }
     }
