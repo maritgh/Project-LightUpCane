@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart'; // Import provider
-import 'package:luc1/theme_provider.dart'; // Import ThemeProvider (luc1 needs to be changed, was required for Rae's project)
+import 'package:luc1/theme_provider.dart'; // Import ThemeProvider
 import 'custom_button.dart'; // Import CustomButton
 
 class ThemePage extends StatelessWidget {
@@ -28,7 +28,7 @@ class ThemePage extends StatelessWidget {
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
-                color: Colors.purple,
+                color: themeProvider.accentColor, // Use accent color for values
               ),
             ),
           ),
@@ -56,17 +56,17 @@ class ThemePage extends StatelessWidget {
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
-                color: Colors.purple,
+                color: themeProvider.accentColor, // Use accent color for values,
               ),
             ),
           ),
           // Accent color buttons
-          accentButton('Red', Colors.redAccent, themeProvider),
-          accentButton('Orange', Colors.orangeAccent, themeProvider),
-          accentButton('Yellow', Colors.yellowAccent, themeProvider),
-          accentButton('Green', Colors.greenAccent, themeProvider),
-          accentButton('Blue', Colors.blueAccent, themeProvider),
-          accentButton('Purple', Colors.purpleAccent, themeProvider),
+          accentButton('Red', Colors.red[400]!, themeProvider),
+          accentButton('Orange', Colors.orange[400]!, themeProvider),
+          accentButton('Yellow', Colors.yellow[600]!, themeProvider),
+          accentButton('Green', Colors.green[400]!, themeProvider),
+          accentButton('Blue', Colors.blue[400]!, themeProvider),
+          accentButton('Purple', Colors.purple[400]!, themeProvider),
         ],
       ),
     );
