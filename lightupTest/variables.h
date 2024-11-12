@@ -1,8 +1,8 @@
 /* DEFINES */
 #define SCL_PIN 1
 #define SDA_PIN 0
-#define BUZZER 10
-#define HAPTIC 8
+#define BUZZER 8
+#define HAPTIC 10
 #define LED_LIGHTS 2
 #define SW_ON_BOOT 9
 #define BATT_SENS 3
@@ -48,6 +48,8 @@ hw_timer_t *imu_timer = NULL;
 hw_timer_t *imu_blink_timer = NULL;
 
 MPU6050 mpu;
+
+
 
 
 

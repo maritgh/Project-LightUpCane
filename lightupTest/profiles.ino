@@ -21,7 +21,7 @@ void toggle_profiles() {
         profiles.angle = 2000;            //Angle threshold of the IMU
         profiles.time_change_profile = 1500; // LONG press threshold
         profiles.time_battery_status = 500;  // MEDIUM press threshold
-        profiles.intensity_haptic = 80.0; //Intenisty of vibrations (0% to 100%)
+        profiles.intensity_haptic = 100.0; //Intenisty of vibrations (0% to 100%)
         profiles.intensity_buzzer = 80.0; //Intensity of buzzer (0% to 100%)
         profiles.intensity_led    = 50.0; //Intensity of lights (0% to 100%)
         break;
@@ -34,46 +34,6 @@ void toggle_profiles() {
  
         profiles.intensity_haptic = 80.0; //Intenisty of vibrations (0% to 100%)
         profiles.intensity_buzzer = 80.0; //Intensity of buzzer (0% to 100%)
-
-        break;
-      case 3:
-        
-        //your changes..
- 
-        break;
-      case 4:
-        
-        //your changes..
-
-        break;
-      case 5:
-        
-        //your changes..
-
-        break;
-      case 6:
-        
-        //your changes..
-
-        break;
-      case 7:
-        
-        //your changes..
-
-        break;
-      case 8:
-        
-        //your changes..
-
-        break;
-      case 9:
-        
-        //your changes..
- 
-        break;
-      case 10:
-        
-        //your changes..
 
         break;
 

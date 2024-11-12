@@ -1,8 +1,10 @@
 #include <WiFi.h>
 #include <WebServer.h>
 
-const char *ssid = "tesla iot";
-const char *password = "fsL6HgjN";
+// const char *ssid = "tesla iot";
+// const char *password = "fsL6HgjN";
+const char *ssid = "yourAP";
+const char *password = "yourPassword";
 
 WebServer server(80);
 
@@ -19,43 +21,33 @@ void setup() {
   pinMode(LED_PIN_RED, OUTPUT);
   delay(10);
 
-  // We start by connecting to a WiFi network
+  // Start WiFi as an access point
+  Serial.println("Configuring access point...");
+  WiFi.softAP(ssid, password);
 
-  Serial.println();
-  Serial.println();
-  Serial.print("Connecting to ");
-  Serial.println(ssid);
+  IPAddress myIP = WiFi.softAPIP();
+  Serial.print("AP IP address: ");
+  Serial.println(myIP);
 
-  WiFi.begin(ssid, password);
-
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    Serial.print(".");
-  }
-  currentColor = "Off";
-  Serial.println("");
-  Serial.println("WiFi connected.");
-  Serial.println("IP address: ");
-  Serial.println(WiFi.localIP());
-
+  // Define server routes for controlling LEDs
   server.on("/B", HTTP_POST, []() {
     digitalWrite(LED_PIN_BLUE, HIGH);
     digitalWrite(LED_PIN_YELLOW, LOW);
     digitalWrite(LED_PIN_RED, LOW);
-
     currentColor = "Blue";
     server.send(200, "text/plain", "LED Blue");
   });
 
   server.on("/Y", HTTP_POST, []() {
-        digitalWrite(LED_PIN_BLUE, LOW);
+    digitalWrite(LED_PIN_BLUE, LOW);
     digitalWrite(LED_PIN_YELLOW, HIGH);
     digitalWrite(LED_PIN_RED, LOW);
     currentColor = "Yellow";
     server.send(200, "text/plain", "LED Yellow");
   });
+
   server.on("/R", HTTP_POST, []() {
-        digitalWrite(LED_PIN_BLUE, LOW);
+    digitalWrite(LED_PIN_BLUE, LOW);
     digitalWrite(LED_PIN_YELLOW, LOW);
     digitalWrite(LED_PIN_RED, HIGH);
     currentColor = "Red";
@@ -69,7 +61,6 @@ void setup() {
   server.begin();
   Serial.println("HTTP server started");
 }
-
 
 void loop() {
   server.handleClient();
