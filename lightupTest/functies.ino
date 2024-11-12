@@ -19,13 +19,15 @@ void init_imu(){
 }
 
 int calc_intensity(float intensity){
-  intensity = (intensity / 100.0)*256.0;   
+  intensity = ((intensity / 100.0)*256.0)+0.5;   
   return intensity;
 }
+
 int revers_calc_intensity(float intens){
-  intens = (intens/256)*100;
+  intens = ((intens/256)*100)+ 0.5;
   return intens; 
 }
+
 void toggle_power() {
   power = !power;
   if(power == 1){
