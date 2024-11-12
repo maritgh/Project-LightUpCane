@@ -47,7 +47,7 @@ void setup() {
   server.on("/set", HTTP_POST, []() {
     if (server.hasArg("data")) {
       String data = server.arg("data");
-      // splitStringBySpace(data);
+      splitStringBySpace(data);
       server.send(200, "text/plain", "Setting updated");
     } else {
       server.send(400, "text/plain", "Invalid data");
@@ -56,35 +56,38 @@ void setup() {
 
   server.on("/get", HTTP_GET, []() {
     float bat = bat_status();
-    String data = String(bat_status()) + " " + String(revers_calc_intensity(profiles.intensity_led)) + " " + String(revers_calc_intensity(profiles.intensity_buzzer)) + " " + String(revers_calc_intensity(profiles.intensity_haptic)) + " " + String(revers_calc_intensity(profiles.intensity_led)) + " " + String(power);
+    String data = String(bat_status()) + " " + String(revers_calc_intensity(profiles.intensity_led)) + " " + String(revers_calc_intensity(profiles.intensity_buzzer)) + " " + String(profiles.frequency) + " " + String(revers_calc_intensity(profiles.intensity_haptic)) + " " + String(power);
     server.send(200, "text/plain", data);
   });
 
   server.begin();
   Serial.println("HTTP server started");
 }
-// void splitStringBySpace(String data) {
-//   int firstSpaceIndex = data.indexOf('$');
-//   int secondSpaceIndex = data.indexOf('$', firstSpaceIndex + 1);
 
-//   if (firstSpaceIndex != -1 && secondSpaceIndex != -1) {
-//     String part1 = data.substring(0, firstSpaceIndex);
-//     String part2 = data.substring(firstSpaceIndex + 1, secondSpaceIndex);
-//     String part3 = data.substring(secondSpaceIndex + 1);
+void splitStringBySpace(String data) {
+  int firstSpaceIndex = data.indexOf('$');
+  int secondSpaceIndex = data.indexOf('$', firstSpaceIndex + 1);
 
-//     if (strcmp(part1.c_str(), "Battery") == 0) {
-//       changeBattery(part2, part3);
-//     } else if (strcmp(part1.c_str(), "Button") == 0) {
-//       changeButton(part2, part3);
-//     } else if (strcmp(part1.c_str(), "Light") == 0) {
-//       changeLight(part2, part3);
-//     } else if (strcmp(part1.c_str(), "Properties") == 0) {
-//       changeProperties(part2, part3);
-//     } else {
-//       Serial.println("Unknown setting type. Please use Battery, Button, Light, or Properties.");
-//     }
-//   }
-// }
+  if (firstSpaceIndex != -1 && secondSpaceIndex != -1) {
+    String part1 = data.substring(0, firstSpaceIndex);
+    String part2 = data.substring(firstSpaceIndex + 1, secondSpaceIndex);
+    String part3 = data.substring(secondSpaceIndex + 1);
+
+    if (strcmp(part1.c_str(), "Battery") == 0) {
+     // profiles.time_battery_status = int(part2);
+      //Serial.println("time battery status changed to:");
+     // Serial.println(profiles.time_battery_status);
+    } else if (strcmp(part1.c_str(), "Button") == 0) {
+      //changeButton(part2, part3);
+    } else if (strcmp(part1.c_str(), "Light") == 0) {
+      //changeLight(part2, part3);
+    } else if (strcmp(part1.c_str(), "Properties") == 0) {
+     // changeProperties(part2, part3);
+    } else {
+      Serial.println("Unknown setting type. Please use Battery, Button, Light, or Properties.");
+    }
+  }
+}
 
 void loop() {
   server.handleClient();
