@@ -2,7 +2,7 @@ void init_hardware(){
   Serial.begin(9600);
   // init LEDS
   pinMode(SW_ON_BOOT, INPUT_PULLUP); 
-  pinMode(LED_LIGHTS, OUTPUT);          
+  pinMode(LED_LIGHTS, OUTPUT);        
   // init HAPTIC
   ledcAttachChannel(HAPTIC, 100000, 8, 0);
   // init BUZZER
@@ -28,8 +28,13 @@ int revers_calc_intensity(float intens){
 }
 void toggle_power() {
   power = !power;
-  led_state = power;
-  digitalWrite(LED_LIGHTS, led_state);
+  if(power == 1){
+    analogWrite(LED_LIGHTS, profiles.intensity_led);
+  }else{
+    analogWrite(LED_LIGHTS, 0);
+  }
+  //led_state = power;
+  //digitalWrite(LED_LIGHTS, led_state);
 #ifdef Debug
   Serial << "Power = " << power << "\n";
 #endif
