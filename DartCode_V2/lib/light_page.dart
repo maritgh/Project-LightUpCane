@@ -25,8 +25,8 @@ class _LightPageState extends State<LightPage> {
         List<String> values = response.body.split(" ");
         if (values.length >= 6) {
           setState(() {
-            lightIntensity = values[1] == '0' ? 'OFF' : values[1] == '30' ? 'LOW' : values[1] == '60' ? 'MID' : 'HIGH';
-            light = lightIntensity == 'OFF' ? false : true; 
+            lightIntensity = values[1] == '30' ? 'LOW' : values[1] == '60' ? 'MID' : 'HIGH';
+            light = values[5] == '0' ? false : true; 
           });
         }
       } else {
@@ -65,7 +65,7 @@ class _LightPageState extends State<LightPage> {
 
     return Scaffold(
       backgroundColor: themeProvider.themeMode == ThemeMode.dark
-          ? Colors.black87 // Dark background for dark theme
+          ? Colors.grey[800] // Dark background for dark theme
           : Colors.grey[300], // Light background for light theme
       body: SafeArea(
         child: Padding(
@@ -106,11 +106,7 @@ class _LightPageState extends State<LightPage> {
                     setState(() {
                       light = value;
                       _sendIntensityData('LightSwitch', light ? 1 : 0);
-                      if (light) {
-                        _sendIntensityData('Light', lightIntensity == 'LOW' ? 30 : lightIntensity == 'MID' ? 60 : 100);
-                      } else {
-                        _sendIntensityData('Light', 0.0);
-                      }
+                      _sendIntensityData('Light', lightIntensity == 'LOW' ? 30 : lightIntensity == 'MID' ? 60 : 100);
                     });
                   }, maxWidth, screenWidth, themeProvider),
                   SizedBox(height: buttonSpacing), // Spacing between rows
@@ -202,13 +198,9 @@ class _LightPageState extends State<LightPage> {
         GestureDetector(
           onTap: () {
             setState(() {
-              if (light) {
-                int currentIndex = intensities.indexOf(value);
-                lightIntensity = intensities[(currentIndex + 1) % intensities.length];
-                _sendIntensityData('Light', lightIntensity == 'LOW' ? 30 : lightIntensity == 'MID' ? 60 : 100);
-              } else {
-                _sendIntensityData('Light', 0.0);
-              }
+              int currentIndex = intensities.indexOf(value);
+              lightIntensity = intensities[(currentIndex + 1) % intensities.length];
+              _sendIntensityData('Light', lightIntensity == 'LOW' ? 30 : lightIntensity == 'MID' ? 60 : 100);
             });
           },
           child: Container(
