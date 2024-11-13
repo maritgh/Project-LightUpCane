@@ -76,7 +76,7 @@ class _ConnectionPageState extends State<ConnectionPage> {
 
     return Scaffold(
       backgroundColor: themeProvider.themeMode == ThemeMode.dark
-          ? Colors.black87
+          ? Colors.grey[800]
           : Colors.grey[300],
       body: SafeArea(
         child: Padding(
@@ -118,7 +118,7 @@ class _ConnectionPageState extends State<ConnectionPage> {
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           color: themeProvider.accentColor,
-                          fontSize: screenWidth * 0.05,
+                          fontSize: screenWidth * 0.045,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -129,7 +129,7 @@ class _ConnectionPageState extends State<ConnectionPage> {
                       pairedDevices,
                       style: TextStyle(
                         color: themeProvider.accentColor,
-                        fontSize: screenWidth * 0.05,
+                        fontSize: screenWidth * 0.045,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -153,7 +153,7 @@ class _ConnectionPageState extends State<ConnectionPage> {
                   SizedBox(height: buttonSpacing),
 
                   Spacer(),
-
+                  
                   SizedBox(height: buttonSpacing),
                 ],
               );
@@ -171,7 +171,9 @@ class _ConnectionPageState extends State<ConnectionPage> {
       width: maxWidth,
       padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
       decoration: BoxDecoration(
-        color: Colors.grey[400],
+        color: themeProvider.themeMode == ThemeMode.dark
+              ? Colors.grey[850]
+              : Colors.grey[400],
         borderRadius: BorderRadius.circular(5),
       ),
       child: Row(
@@ -183,7 +185,7 @@ class _ConnectionPageState extends State<ConnectionPage> {
             isBluetoothOn ? 'Bluetooth on' : 'Bluetooth off',
             style: TextStyle(
               color: themeProvider.accentColor,
-              fontSize: screenWidth * 0.05,
+              fontSize: screenWidth * 0.045,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -196,7 +198,9 @@ class _ConnectionPageState extends State<ConnectionPage> {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       decoration: BoxDecoration(
-        color: Colors.grey[400],
+        color: themeProvider.themeMode == ThemeMode.dark
+              ? Colors.grey[850]
+              : Colors.grey[400],
         borderRadius: BorderRadius.circular(5),
       ),
       child: Row(
@@ -206,7 +210,7 @@ class _ConnectionPageState extends State<ConnectionPage> {
             deviceName,
             style: TextStyle(
               color: themeProvider.accentColor,
-              fontSize: screenWidth * 0.05,
+              fontSize: screenWidth * 0.045,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -214,7 +218,7 @@ class _ConnectionPageState extends State<ConnectionPage> {
             connectionStatus,
             style: TextStyle(
               color: connectionStatus.isNotEmpty ? themeProvider.accentColor : Colors.transparent,
-              fontSize: screenWidth * 0.05,
+              fontSize: screenWidth * 0.045,
               fontWeight: FontWeight.bold,
             ),
           ),
