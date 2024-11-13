@@ -75,7 +75,7 @@ class _StatusPageState extends State<StatusPage> {
 
     return Scaffold(
       backgroundColor: themeProvider.themeMode == ThemeMode.dark
-          ? Colors.black87
+          ? Colors.grey[800]
           : Colors.grey[300],
       body: SafeArea(
         child: Column(
@@ -168,7 +168,9 @@ class _StatusPageState extends State<StatusPage> {
           width: maxWidth / 3,
           padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           decoration: BoxDecoration(
-            color: Colors.grey[400],
+            color: themeProvider.themeMode == ThemeMode.dark
+                  ? Colors.grey[850]
+                  : Colors.grey[400],
             borderRadius: BorderRadius.circular(5),
           ),
           child: Center(
