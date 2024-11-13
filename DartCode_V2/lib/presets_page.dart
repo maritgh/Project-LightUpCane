@@ -20,7 +20,7 @@ class _PresetsPageState extends State<PresetsPage> {
 
     return Scaffold(
       backgroundColor: themeProvider.themeMode == ThemeMode.dark
-          ? Colors.black87
+          ? Colors.grey[800]
           : Colors.grey[300],
       body: SafeArea(
         child: Column(
@@ -60,7 +60,7 @@ class _PresetsPageState extends State<PresetsPage> {
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-
+                        
                       ],
                     );
                   },
