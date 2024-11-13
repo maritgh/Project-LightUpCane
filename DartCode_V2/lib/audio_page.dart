@@ -1,6 +1,9 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart'; // Import provider
+import 'package:http/http.dart' as http;
 import 'theme_provider.dart'; // Import ThemeProvider
+import 'notification_provider.dart';
 import 'bottom_nav_bar.dart';
 
 class AudioPage extends StatefulWidget {
@@ -10,16 +13,54 @@ class AudioPage extends StatefulWidget {
 
 class _AudioPageState extends State<AudioPage> {
   // Variables to hold the state of the toggles and intensity buttons
-  bool notifications = false;
+  // bool notifications = false;
   bool haptic = true;
   double hapticIntensity = 25.0; // Use double for Haptic Intensity (initial value)
   bool buzzer = true;
   double buzzerIntensity = 75.0; // Use double for Buzzer Intensity (initial value)
 
+  Timer? _timer;
+
+  Future<void> fetchStatusData() async {
+    final url = Uri.parse("http://192.168.4.1/get");
+    try {
+      final response = await http.get(url);
+      if (response.statusCode == 200) {
+        List<String> values = response.body.split(" ");
+        if (values.length >= 6) {
+          setState(() {
+            hapticIntensity = values[4] == '0' ? 0 : values[4] == '70' ? 25 : values[4] == '80' ? 50 : values[4] == '90' ? 75 : 100;
+            haptic = hapticIntensity == 0 ? false : true; 
+            buzzerIntensity = values[2] == '0' ? 0 : values[2] == '1' ? 25 : values[2] == '3' ? 50 : values[2] == '5' ? 75 : 100;
+            buzzer = buzzerIntensity == 0 ? false : true; 
+          });
+        }
+      } else {
+        print("Failed to load data, status code: ${response.statusCode}");
+      }
+    } catch (e) {
+      print("Error fetching data: $e");
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    fetchStatusData();
+    _timer = Timer.periodic(Duration(seconds: 5), (timer) => fetchStatusData());
+  }
+  
+  @override
+  void dispose() {
+    _timer?.cancel(); // Annuleer de timer bij het sluiten van de widget
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     // Access ThemeProvider
     final themeProvider = Provider.of<ThemeProvider>(context);
+    final notificationProvider = Provider.of<NotificationProvider>(context);
 
     // Get screen dimensions for dynamic scaling
     var screenWidth = MediaQuery.of(context).size.width;
@@ -74,9 +115,9 @@ class _AudioPageState extends State<AudioPage> {
                     SizedBox(height: buttonSpacing), // Space between header and rows
 
                     // Notifications Toggle
-                    _buildSwitchRow('NOTIFICATIONS', notifications, (value) {
+                    _buildSwitchRow('NOTIFICATIONS', notificationProvider.notifications, (value) {
                       setState(() {
-                        notifications = value;
+                        notificationProvider.notifications = value;
                       });
                     }, maxWidth, screenWidth, themeProvider),
                     SizedBox(height: buttonSpacing), // Spacing between rows
@@ -85,6 +126,11 @@ class _AudioPageState extends State<AudioPage> {
                     _buildSwitchRow('HAPTIC', haptic, (value) {
                       setState(() {
                         haptic = value;
+                        if (haptic) {
+                          _sendIntensityData('Haptic', hapticIntensity == 25 ? 70 : hapticIntensity == 50 ? 80 : hapticIntensity == 75 ? 90 : 100);
+                        } else {
+                          _sendIntensityData('Haptic', 0.0);
+                        }
                       });
                     }, maxWidth, screenWidth, themeProvider),
                     SizedBox(height: buttonSpacing), // Spacing between rows
@@ -92,7 +138,12 @@ class _AudioPageState extends State<AudioPage> {
                     // Haptic Intensity Button
                     _buildIntensityButtonRow('HAPTIC INTENSITY', hapticIntensity, () {
                       setState(() {
-                        hapticIntensity = _cycleIntensity(hapticIntensity); // Ensure this is a double
+                        if (haptic) {
+                          hapticIntensity = _cycleIntensity(hapticIntensity); // Ensure this is a double
+                          _sendIntensityData('Haptic', hapticIntensity == 25 ? 70 : hapticIntensity == 50 ? 80 : hapticIntensity == 75 ? 90 : 100);
+                        } else {
+                          _sendIntensityData('Haptic', 0.0);
+                        }
                       });
                     }, maxWidth, screenWidth, themeProvider),
                     SizedBox(height: buttonSpacing), // Spacing between rows
@@ -101,6 +152,11 @@ class _AudioPageState extends State<AudioPage> {
                     _buildSwitchRow('BUZZER', buzzer, (value) {
                       setState(() {
                         buzzer = value;
+                        if (buzzer) {
+                          _sendIntensityData('Buzzer', buzzerIntensity == 25 ? 1 : buzzerIntensity == 50 ? 3 : buzzerIntensity == 75 ? 5 : 10);
+                        } else {
+                          _sendIntensityData('Buzzer', 0.0);
+                        }
                       });
                     }, maxWidth, screenWidth, themeProvider),
                     SizedBox(height: buttonSpacing), // Spacing between rows
@@ -108,7 +164,12 @@ class _AudioPageState extends State<AudioPage> {
                     // Buzzer Intensity Button
                     _buildIntensityButtonRow('BUZZER INTENSITY', buzzerIntensity, () {
                       setState(() {
-                        buzzerIntensity = _cycleIntensity(buzzerIntensity); // Ensure this is a double
+                        if (buzzer) {
+                          buzzerIntensity = _cycleIntensity(buzzerIntensity); // Ensure this is a double
+                          _sendIntensityData('Buzzer', buzzerIntensity == 25 ? 1 : buzzerIntensity == 50 ? 3 : buzzerIntensity == 75 ? 5 : 10);
+                        } else {
+                          _sendIntensityData('Buzzer', 0.0);
+                        }
                       });
                     }, maxWidth, screenWidth, themeProvider),
                     SizedBox(height: buttonSpacing), // Larger space before the return button
@@ -125,6 +186,25 @@ class _AudioPageState extends State<AudioPage> {
       ),
       bottomNavigationBar: BottomNavBar(currentPage: "Audio"),
     );
+  }
+
+  // Method to send the haptic and buzzer intensity values to the server
+  Future<void> _sendIntensityData(String type, double intensityValue) async {
+    final url = Uri.parse("http://192.168.4.1/set");
+    try {
+      String dataString = "$type\$$intensityValue\$";
+
+      final response = await http.post(url, body: {
+        'data' : dataString,
+      });
+      if (response.statusCode == 200) {
+        print("Data send succesfully");
+      } else {
+        print("Failed to send data: ${response.statusCode}");
+      }
+    } catch (e) {
+      print("Error sending data: $e");
+    }
   }
 
   // Method to build each row with a label and a switch
