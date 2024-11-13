@@ -20,7 +20,7 @@ class BottomNavBar extends StatelessWidget {
 
     return Container(
       color: themeProvider.themeMode == ThemeMode.dark
-          ? Colors.grey[800]
+          ? Colors.grey[600]
           : Colors.grey[400],
       padding: const EdgeInsets.symmetric(vertical: 16),
       child: Row(
