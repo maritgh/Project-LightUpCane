@@ -1,5 +1,7 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart'; // Import provider
+import 'package:http/http.dart' as http;
 import 'theme_provider.dart'; // Import ThemeProvider
 import 'bottom_nav_bar.dart';
 
@@ -12,6 +14,41 @@ class _LightPageState extends State<LightPage> {
   // Variables to hold the state of the toggles and intensity buttons
   bool light = false;
   String lightIntensity = 'LOW';
+
+  Timer? _timer;
+
+  Future<void> fetchStatusData() async {
+    final url = Uri.parse("http://192.168.4.1/get");
+    try {
+      final response = await http.get(url);
+      if (response.statusCode == 200) {
+        List<String> values = response.body.split(" ");
+        if (values.length >= 6) {
+          setState(() {
+            lightIntensity = values[1] == '0' ? 'OFF' : values[1] == '30' ? 'LOW' : values[1] == '60' ? 'MID' : 'HIGH';
+            light = lightIntensity == 'OFF' ? false : true; 
+          });
+        }
+      } else {
+        print("Failed to load data, status code: ${response.statusCode}");
+      }
+    } catch (e) {
+      print("Error fetching data: $e");
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    fetchStatusData();
+    _timer = Timer.periodic(Duration(seconds: 5), (timer) => fetchStatusData());
+  }
+  
+  @override
+  void dispose() {
+    _timer?.cancel(); // Annuleer de timer bij het sluiten van de widget
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -65,9 +102,15 @@ class _LightPageState extends State<LightPage> {
                   SizedBox(height: buttonSpacing), // Space between header and rows
 
                   // Light Toggle
-                  _buildSwitchRow('NOTIFICATIONS', light, (value) {
+                  _buildSwitchRow('LIGHT', light, (value) {
                     setState(() {
                       light = value;
+                      _sendIntensityData('LightSwitch', light ? 1 : 0);
+                      if (light) {
+                        _sendIntensityData('Light', lightIntensity == 'LOW' ? 30 : lightIntensity == 'MID' ? 60 : 100);
+                      } else {
+                        _sendIntensityData('Light', 0.0);
+                      }
                     });
                   }, maxWidth, screenWidth, themeProvider),
                   SizedBox(height: buttonSpacing), // Spacing between rows
@@ -87,6 +130,25 @@ class _LightPageState extends State<LightPage> {
       ),
       bottomNavigationBar: BottomNavBar(currentPage: "Light"),
     );
+  }
+
+  // Method to send the haptic and buzzer intensity values to the server
+  Future<void> _sendIntensityData(String type, double intensityValue) async {
+    final url = Uri.parse("http://192.168.4.1/set");
+    try {
+      String dataString = "$type\$$intensityValue\$";
+
+      final response = await http.post(url, body: {
+        'data' : dataString,
+      });
+      if (response.statusCode == 200) {
+        print("Data send succesfully");
+      } else {
+        print("Failed to send data: ${response.statusCode}");
+      }
+    } catch (e) {
+      print("Error sending data: $e");
+    }
   }
 
   // Method to build each row with a label and a switch
@@ -132,7 +194,7 @@ class _LightPageState extends State<LightPage> {
             label,
             style: TextStyle(
               color: themeProvider.accentColor,
-              fontSize: screenWidth * 0.045,
+              fontSize: screenWidth * 0.05,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -140,8 +202,13 @@ class _LightPageState extends State<LightPage> {
         GestureDetector(
           onTap: () {
             setState(() {
-              int currentIndex = intensities.indexOf(value);
-              lightIntensity = intensities[(currentIndex + 1) % intensities.length];
+              if (light) {
+                int currentIndex = intensities.indexOf(value);
+                lightIntensity = intensities[(currentIndex + 1) % intensities.length];
+                _sendIntensityData('Light', lightIntensity == 'LOW' ? 30 : lightIntensity == 'MID' ? 60 : 100);
+              } else {
+                _sendIntensityData('Light', 0.0);
+              }
             });
           },
           child: Container(
