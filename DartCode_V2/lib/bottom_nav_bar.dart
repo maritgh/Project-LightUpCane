@@ -77,7 +77,7 @@ class BottomNavBar extends StatelessWidget {
             label.replaceAll('\n', '\n'), // Format it as two lines
             textAlign: TextAlign.center, // Center text in each button
             style: TextStyle(
-              color: isSelected ? Colors.white : Colors.black,
+              color: themeProvider.accentColor == Colors.white ? Colors.black : Colors.white, // adjusts the text color only if the accent color is white
               fontSize: 14,
               fontWeight: FontWeight.bold,
             ),
