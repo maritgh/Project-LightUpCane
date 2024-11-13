@@ -40,7 +40,7 @@ class _PresetsPageState extends State<PresetsPage> {
                     child: Text(
                       'PRESETS',
                       style: TextStyle(
-                        color: Colors.white,
+                        color: themeProvider.accentColor == Colors.white ? Colors.black : Colors.white, // adjusts the text color only if the accent color is white
                         fontSize: screenWidth * 0.07,
                         fontWeight: FontWeight.bold,
                       ),
@@ -60,7 +60,7 @@ class _PresetsPageState extends State<PresetsPage> {
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        
+
                       ],
                     );
                   },
