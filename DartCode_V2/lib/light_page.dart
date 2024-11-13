@@ -158,7 +158,7 @@ class _LightPageState extends State<LightPage> {
             label,
             style: TextStyle(
               color: themeProvider.accentColor, // Use accent color for label
-              fontSize: screenWidth * 0.05, // Dynamic font size for labels
+              fontSize: screenWidth * 0.045, // Dynamic font size for labels
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -190,7 +190,7 @@ class _LightPageState extends State<LightPage> {
             label,
             style: TextStyle(
               color: themeProvider.accentColor,
-              fontSize: screenWidth * 0.05,
+              fontSize: screenWidth * 0.045,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -207,7 +207,9 @@ class _LightPageState extends State<LightPage> {
             width: maxWidth / 3,
             padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             decoration: BoxDecoration(
-              color: Colors.grey[400],
+              color: themeProvider.themeMode == ThemeMode.dark
+                    ? Colors.grey[850]
+                    : Colors.grey[400],
               borderRadius: BorderRadius.circular(5),
             ),
             child: Center(
