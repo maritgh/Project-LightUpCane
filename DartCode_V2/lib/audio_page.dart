@@ -63,7 +63,7 @@ class _AudioPageState extends State<AudioPage> {
                           child: Text(
                             'AUDIO',
                             style: TextStyle(
-                              color: Colors.white,
+                              color: themeProvider.accentColor == Colors.white ? Colors.black : Colors.white, // adjusts the text color only if the accent color is white
                               fontSize: screenWidth * 0.08, // Dynamic font size based on screen width
                               fontWeight: FontWeight.bold,
                             ),
