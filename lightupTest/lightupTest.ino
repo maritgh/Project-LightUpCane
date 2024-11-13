@@ -19,8 +19,6 @@ Print& operator<<(Print& printer, T value) {
 }
 
 void IRAM_ATTR onTimer() {
-  //++ctr;
-  //Serial << "timer called " << ctr << " times\n";
   bat_voltage = bat_status();
   imu = true;
 }
@@ -28,7 +26,6 @@ void IRAM_ATTR onTimer() {
 void setup() {
   init_hardware();
   init_imu();
-  // Serial.println("test");
   Serial << "\nESP32 Initialized\n";
   profiles.intensity_haptic = int(calc_intensity(profiles.intensity_haptic));
   profiles.intensity_buzzer = int(calc_intensity(profiles.intensity_buzzer));
@@ -130,12 +127,10 @@ void loop() {
     short_press = false;
     toggle_power();
   } else if (check_battery_status && power) {
-// check_battery_status = false;
 #ifdef Debug
     Serial << "Check battery status\n";
     Serial << "Battery is: " << bat_voltage << "V\n";
 #endif
-    // bat_status();
     trig_feedback(battery_filter);
   } else if (change_profile && power) {
 #ifdef Debug
