@@ -9,7 +9,7 @@
 #include "user_settings.h"
 
 // BLE service and characteristic UUIDs
-#define SERVICE_UUID           "4fafc201-1fb5-459e-8fcc-c5c9c331914b"
+#define SERVICE_UUID "4fafc201-1fb5-459e-8fcc-c5c9c331914b"
 #define SET_CHARACTERISTIC_UUID "beb5483e-36e1-4688-b7f5-ea07361b26a8"
 #define GET_CHARACTERISTIC_UUID "6d140001-bcb0-4c43-a293-b21a53dbf9f5"
 
@@ -33,32 +33,32 @@ void IRAM_ATTR onTimer() {
 }
 
 // Callback for BLE Server connection events
-class ServerCallbacks: public BLEServerCallbacks {
-    void onConnect(BLEServer* pServer) {
-      deviceConnected = true;
-      Serial.println("Device connected");
-    }
+class ServerCallbacks : public BLEServerCallbacks {
+  void onConnect(BLEServer* pServer) {
+    deviceConnected = true;
+    Serial.println("Device connected");
+  }
 
-    void onDisconnect(BLEServer* pServer) {
-      deviceConnected = false;
-      Serial.println("Device disconnected");
-      BLEDevice::startAdvertising();  // Restart advertising after client disconnects
-    }
+  void onDisconnect(BLEServer* pServer) {
+    deviceConnected = false;
+    Serial.println("Device disconnected");
+    BLEDevice::startAdvertising();  // Restart advertising after client disconnects
+  }
 };
 
 // Callback for when data is written to the "set" characteristic
-class SetCallbacks: public BLECharacteristicCallbacks {
-    void onWrite(BLECharacteristic *pCharacteristic) {
-      // Get the value and convert it to an Arduino String
-      String value = pCharacteristic->getValue().c_str();
-      
-      // Process the command if it starts with "set"
-     if (value.length() > 0) {
-        splitStringBySpace(value);
-      } else {
-        Serial.println("Invalid command received: empty value");
-      }
+class SetCallbacks : public BLECharacteristicCallbacks {
+  void onWrite(BLECharacteristic* pCharacteristic) {
+    // Get the value and convert it to an Arduino String
+    String value = pCharacteristic->getValue().c_str();
+
+    // Process the command if it starts with "set"
+    if (value.length() > 0) {
+      splitStringBySpace(value);
+    } else {
+      Serial.println("Invalid command received: empty value");
     }
+  }
 };
 
 // Initialize BLE
@@ -76,26 +76,23 @@ void setup() {
   pServer->setCallbacks(new ServerCallbacks());
 
   // Create the BLE Service
-  BLEService *pService = pServer->createService(SERVICE_UUID);
+  BLEService* pService = pServer->createService(SERVICE_UUID);
 
   // Set up the writable characteristic for "set" commands
   setCharacteristic = pService->createCharacteristic(
-                        SET_CHARACTERISTIC_UUID,
-                        BLECharacteristic::PROPERTY_WRITE
-                      );
+    SET_CHARACTERISTIC_UUID,
+    BLECharacteristic::PROPERTY_WRITE);
   setCharacteristic->setCallbacks(new SetCallbacks());
 
   // Set up the readable characteristic for status updates
   getCharacteristic = pService->createCharacteristic(
-                        GET_CHARACTERISTIC_UUID,
-                        BLECharacteristic::PROPERTY_READ |
-                        BLECharacteristic::PROPERTY_NOTIFY
-                      );
+    GET_CHARACTERISTIC_UUID,
+    BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_NOTIFY);
   getCharacteristic->addDescriptor(new BLE2902());
 
   // Start the service and begin advertising
   pService->start();
-  BLEAdvertising *pAdvertising = BLEDevice::getAdvertising();
+  BLEAdvertising* pAdvertising = BLEDevice::getAdvertising();
   pAdvertising->addServiceUUID(SERVICE_UUID);
   pAdvertising->setScanResponse(true);
   BLEDevice::startAdvertising();
@@ -171,12 +168,7 @@ void loop() {
   if (deviceConnected) {
     // Send battery and profile data periodically
     float batteryLevel = bat_status();
-    String data = String(batteryLevel) + " " + 
-                  String(revers_calc_intensity(profiles.intensity_led)) + " " + 
-                  String(revers_calc_intensity(profiles.intensity_buzzer)) + " " + 
-                  String(profiles.frequency) + " " + 
-                  String(revers_calc_intensity(profiles.intensity_haptic)) + " " + 
-                  String(power);
+    String data = String(batteryLevel) + " " + String(revers_calc_intensity(profiles.intensity_led)) + " " + String(revers_calc_intensity(profiles.intensity_buzzer)) + " " + String(profiles.frequency) + " " + String(revers_calc_intensity(profiles.intensity_haptic)) + " " + String(power);
     getCharacteristic->setValue(data.c_str());
     getCharacteristic->notify();
   }
@@ -189,9 +181,7 @@ void loop() {
   } else if (lastState == LOW && currentState == HIGH) {
     releasedTime = millis();
     pressDuration = releasedTime - pressedTime;
-    if ((pressDuration > profiles.time_change_profile) && power && !change_profile) {
-      change_profile = true;
-    } else if ((pressDuration > profiles.time_battery_status) && power && !change_profile) {
+    if ((pressDuration > profiles.time_battery_status) && power) {
       check_battery_status = true;
     } else if (pressDuration > 0) {
       short_press = true;
@@ -209,15 +199,5 @@ void loop() {
     Serial << "Battery is: " << bat_voltage << "V\n";
 #endif
     trig_feedback(battery_filter);
-  } else if (change_profile && power) {
-#ifdef Debug
-    Serial << "Changing profile\n";
-#endif
-    change_profiles();
-    toggle_profiles();
-    change_profile = false;
-#ifdef Debug
-    Serial << "Profile " << profiles.number << "\n";
-#endif
   }
 }

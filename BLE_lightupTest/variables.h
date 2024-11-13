@@ -15,7 +15,6 @@ bool led_state = false;    // the current state of LED
 bool power = false;
 bool imu = false;
 bool short_press = false;
-bool change_profile = false;
 bool check_battery_status = false;
 
 float bat_voltage = 0.0; // ADC batt sens
@@ -30,15 +29,8 @@ int haptic_on_times = 1;
 int haptic_off_times = 2;
 int buzzer_on_times = 1;
 int buzzer_off_times = 2;
-// int haptic_battery = 1;
-// int buzzer_battery = 1;
-int haptic_profiles_times = 3;
-int buzzer_profiles_times = 3;
-// int haptic_dropped_times;
-// int buzzer_dropped_times;
 int battery_filter = 1;
 int power_filter = 2;
-int profiles_filter = 3;
 
 long pressDuration = 0;
 unsigned long pressedTime  = 0;
