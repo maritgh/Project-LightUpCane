@@ -48,7 +48,7 @@ class _StatusPageState extends State<StatusPage> {
                     child: Text(
                       'STATUS',
                       style: TextStyle(
-                        color: Colors.white,
+                        color: themeProvider.accentColor == Colors.white ? Colors.black : Colors.white, // adjusts the text color only if the accent color is white
                         fontSize: screenWidth * 0.07,
                         fontWeight: FontWeight.bold,
                       ),
@@ -80,7 +80,7 @@ class _StatusPageState extends State<StatusPage> {
                 ),
               ),
             ),
-            
+
             // Help Icon in the center under buzzer intensity, with controlled size
             Center(
               child: IconButton(
