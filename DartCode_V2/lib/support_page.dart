@@ -10,7 +10,7 @@ class SupportPage extends StatelessWidget {
   Widget build(BuildContext context) {
     // Access ThemeProvider
     final themeProvider = Provider.of<ThemeProvider>(context);
-    
+
     // Get screen dimensions for dynamic scaling
     var screenWidth = MediaQuery.of(context).size.width;
     var screenHeight = MediaQuery.of(context).size.height;
@@ -42,7 +42,7 @@ class SupportPage extends StatelessWidget {
                     child: Text(
                       'SUPPORT',
                       style: TextStyle(
-                        color: Colors.white,
+                        color: themeProvider.accentColor == Colors.white ? Colors.black : Colors.white, // adjusts the text color only if the accent color is white
                         fontSize: screenWidth * 0.07, // Dynamic font size based on screen width
                         fontWeight: FontWeight.bold,
                       ),
