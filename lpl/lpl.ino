@@ -64,7 +64,6 @@ class SetCallbacks: public BLECharacteristicCallbacks {
 
 
 void setup() {
-  Serial.begin(115200);
   init_hardware();
   init_imu();
   Serial << "\nESP32 Initialized\n";
