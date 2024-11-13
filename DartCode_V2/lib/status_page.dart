@@ -1,7 +1,9 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 import 'theme_provider.dart';
+import 'notification_provider.dart';
 import 'support_page.dart';
 import 'bottom_nav_bar.dart';
 
@@ -14,16 +16,60 @@ class StatusPage extends StatefulWidget {
 
 class _StatusPageState extends State<StatusPage> {
   // Variables to hold the status information
-  String battery = '90%';
-  String light = 'ON';
-  String lightIntensity = 'LOW';
-  String notifications = 'OFF';
-  String hapticIntensity = '25%';
-  String buzzerIntensity = '100%';
+  String battery = '';
+  String light = '';
+  String lightIntensity = '';
+  String notifications = '';
+  String hapticIntensity = '';
+  String buzzerIntensity = '';
+  String buzzerFrequency = '';
+
+  Timer? _timer;
+
+  Future<void> fetchStatusData() async {
+    final url = Uri.parse("http://192.168.4.1/get");
+    try {
+      final response = await http.get(url);
+      if (response.statusCode == 200) {
+        List<String> values = response.body.split(" ");
+        if (values.length >= 6) {
+          setState(() {
+            battery = "${values[0]}%";
+            light = values[5] == "1" ? "ON" : "OFF";
+            lightIntensity = "${values[1]}%";
+            hapticIntensity = "${values[4]}%";
+            buzzerIntensity = "${values[2]}%";
+            buzzerFrequency = "${values[3]}%";
+          });
+        }
+      } else {
+        print("Failed to load data, status code: ${response.statusCode}");
+      }
+    } catch (e) {
+      print("Error fetching data: $e");
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    fetchStatusData();
+    _timer = Timer.periodic(Duration(seconds: 5), (timer) => fetchStatusData());
+  }
+  
+  @override
+  void dispose() {
+    _timer?.cancel(); // Annuleer de timer bij het sluiten van de widget
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
+    final notificationProvider = Provider.of<NotificationProvider>(context);
+
+    notifications = notificationProvider.notifications == true ? 'ON' : 'OFF';
+    
     var screenWidth = MediaQuery.of(context).size.width;
     var screenHeight = MediaQuery.of(context).size.height;
 
@@ -80,7 +126,7 @@ class _StatusPageState extends State<StatusPage> {
                 ),
               ),
             ),
-
+            
             // Help Icon in the center under buzzer intensity, with controlled size
             Center(
               child: IconButton(
