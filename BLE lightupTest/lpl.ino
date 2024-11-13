@@ -20,6 +20,7 @@ BLECharacteristic* getCharacteristic;
 // Flags for BLE connection
 bool deviceConnected = false;
 
+// Operator overload to use << with Serial for convenience
 template<typename T>
 Print& operator<<(Print& printer, T value) {
   printer.print(value);
@@ -31,7 +32,7 @@ void IRAM_ATTR onTimer() {
   imu = true;
 }
 
-// Callback for BLE Server events
+// Callback for BLE Server connection events
 class ServerCallbacks: public BLEServerCallbacks {
     void onConnect(BLEServer* pServer) {
       deviceConnected = true;
@@ -41,28 +42,26 @@ class ServerCallbacks: public BLEServerCallbacks {
     void onDisconnect(BLEServer* pServer) {
       deviceConnected = false;
       Serial.println("Device disconnected");
+      BLEDevice::startAdvertising();  // Restart advertising after client disconnects
     }
 };
 
 // Callback for when data is written to the "set" characteristic
 class SetCallbacks: public BLECharacteristicCallbacks {
     void onWrite(BLECharacteristic *pCharacteristic) {
-      // Haal de waarde op en zet om naar een Arduino String
-      String value = String(pCharacteristic->getValue().c_str());
+      // Get the value and convert it to an Arduino String
+      String value = pCharacteristic->getValue().c_str();
       
-      // Controleer of er gegevens zijn ontvangen
-      if (value.length() > 0) {
-        if (value.startsWith("set")) {
-          splitStringBySpace(value.substring(4));
-        } else {
-          Serial.println("Invalid command received");
-        }
+      // Process the command if it starts with "set"
+     if (value.length() > 0) {
+        splitStringBySpace(value);
+      } else {
+        Serial.println("Invalid command received: empty value");
       }
     }
 };
 
-
-
+// Initialize BLE
 void setup() {
   init_hardware();
   init_imu();
@@ -71,29 +70,35 @@ void setup() {
   profiles.intensity_buzzer = int(calc_intensity(profiles.intensity_buzzer));
   profiles.intensity_led = int(calc_intensity(profiles.intensity_led));
 
-  // Initialize BLE
-  BLEDevice::init("light_up_cane");  // BLE device name
+  // Setup BLE server
+  BLEDevice::init("light_up_cane");
   pServer = BLEDevice::createServer();
   pServer->setCallbacks(new ServerCallbacks());
 
+  // Create the BLE Service
   BLEService *pService = pServer->createService(SERVICE_UUID);
 
-  // Create BLE characteristics for setting and getting data
+  // Set up the writable characteristic for "set" commands
   setCharacteristic = pService->createCharacteristic(
-                      SET_CHARACTERISTIC_UUID,
-                      BLECharacteristic::PROPERTY_WRITE
-                    );
+                        SET_CHARACTERISTIC_UUID,
+                        BLECharacteristic::PROPERTY_WRITE
+                      );
   setCharacteristic->setCallbacks(new SetCallbacks());
 
+  // Set up the readable characteristic for status updates
   getCharacteristic = pService->createCharacteristic(
-                      GET_CHARACTERISTIC_UUID,
-                      BLECharacteristic::PROPERTY_READ |
-                      BLECharacteristic::PROPERTY_NOTIFY
-                    );
+                        GET_CHARACTERISTIC_UUID,
+                        BLECharacteristic::PROPERTY_READ |
+                        BLECharacteristic::PROPERTY_NOTIFY
+                      );
   getCharacteristic->addDescriptor(new BLE2902());
 
+  // Start the service and begin advertising
   pService->start();
-  pServer->getAdvertising()->start();
+  BLEAdvertising *pAdvertising = BLEDevice::getAdvertising();
+  pAdvertising->addServiceUUID(SERVICE_UUID);
+  pAdvertising->setScanResponse(true);
+  BLEDevice::startAdvertising();
   Serial.println("BLE server started and advertising");
 
 #ifdef Debug
@@ -103,57 +108,80 @@ void setup() {
 #endif
 }
 
-// Function to process and split incoming set commands
+// Function to process and handle "set" commands
 void splitStringBySpace(String data) {
-  int firstSpaceIndex = data.indexOf('$');
-  int secondSpaceIndex = data.indexOf('$', firstSpaceIndex + 1);
+  // Log the received command for debugging
+  Serial.print("Received command: ");
+  Serial.println(data);
 
-  if (firstSpaceIndex != -1 && secondSpaceIndex != -1) {
-    String part1 = data.substring(0, firstSpaceIndex);
-    String part2 = data.substring(firstSpaceIndex + 1, secondSpaceIndex);
-    int part = part2.toInt();
+  // Find the first space in the command
+  int spaceIndex = data.indexOf(' ');
 
-    if (strcmp(part1.c_str(), "Battery") == 0) {
-      profiles.time_battery_status = part;
-      Serial.println("Battery status interval changed to:");
-      Serial.println(profiles.time_battery_status);
+  // If no space is found, handle single-word commands like "LightSwitch"
+  if (spaceIndex == -1) {
+    String command = data;
+    command.trim();  // Remove any leading or trailing spaces
 
-    } else if (strcmp(part1.c_str(), "Haptic") == 0) {
-      profiles.intensity_haptic = int(calc_intensity(part));
-      Serial.println("Haptic intensity changed to:");
-      Serial.println(profiles.intensity_haptic);
-
-    } else if (strcmp(part1.c_str(), "Light") == 0) {
-      profiles.intensity_led = int(calc_intensity(part));
-      Serial.println("Light intensity changed to:");
-      Serial.println(profiles.intensity_led);
-
-    } else if (strcmp(part1.c_str(), "Buzzer") == 0) {
-      profiles.intensity_buzzer = int(calc_intensity(part));
-      Serial.println("Buzzer intensity changed to:");
-      Serial.println(profiles.intensity_buzzer);
-      
-    } else if (strcmp(part1.c_str(), "LightSwitch") == 0) {
+    if (command == "LightSwitch") {
       toggle_power();
       Serial.println("Light toggled");
     } else {
-      Serial.println("Unknown setting type. Please use Battery, Haptic, Light, or Buzzer.");
+      Serial.println("Invalid command format or unknown command.");
     }
+    return;
+  }
+
+  // If a space is found, split the command and value
+  String command = data.substring(0, spaceIndex);
+  command.trim();  // Remove any leading or trailing spaces
+
+  String valueString = data.substring(spaceIndex + 1);
+  valueString.trim();  // Remove any leading or trailing spaces
+  int value = valueString.toInt();
+
+  // Process the command with a value
+  if (command == "Battery") {
+    profiles.time_battery_status = value;
+    Serial.print("Battery status interval changed to: ");
+    Serial.println(profiles.time_battery_status);
+
+  } else if (command == "Haptic") {
+    profiles.intensity_haptic = int(calc_intensity(value));
+    Serial.print("Haptic intensity changed to: ");
+    Serial.println(profiles.intensity_haptic);
+
+  } else if (command == "Light") {
+    profiles.intensity_led = int(calc_intensity(value));
+    Serial.print("LED intensity changed to: ");
+    Serial.println(profiles.intensity_led);
+
+  } else if (command == "Buzzer") {
+    profiles.intensity_buzzer = int(calc_intensity(value));
+    Serial.print("Buzzer intensity changed to: ");
+    Serial.println(profiles.intensity_buzzer);
+
+  } else {
+    Serial.println("Unknown command type. Please use Battery, Haptic, Light, Buzzer, or LightSwitch.");
   }
 }
 
+
+
 void loop() {
   if (deviceConnected) {
-    // Check and send battery and profile data on read request
-    float bat = bat_status();
-    String data = String(bat_status()) + " " + String(revers_calc_intensity(profiles.intensity_led)) + " " + 
-                  String(revers_calc_intensity(profiles.intensity_buzzer)) + " " + String(profiles.frequency) + 
-                  " " + String(revers_calc_intensity(profiles.intensity_haptic)) + " " + String(power);
+    // Send battery and profile data periodically
+    float batteryLevel = bat_status();
+    String data = String(batteryLevel) + " " + 
+                  String(revers_calc_intensity(profiles.intensity_led)) + " " + 
+                  String(revers_calc_intensity(profiles.intensity_buzzer)) + " " + 
+                  String(profiles.frequency) + " " + 
+                  String(revers_calc_intensity(profiles.intensity_haptic)) + " " + 
+                  String(power);
     getCharacteristic->setValue(data.c_str());
     getCharacteristic->notify();
   }
 
-  // Handle other button and state changes as in the original loop
+  // Additional handling for button presses or other state changes
   currentState = digitalRead(SW_ON_BOOT);
   if (lastState == HIGH && currentState == LOW) {
     pressedTime = millis();
