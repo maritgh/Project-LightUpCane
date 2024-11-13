@@ -100,7 +100,7 @@ class _ConnectionPageState extends State<ConnectionPage> {
                         child: Text(
                           'CONNECTION',
                           style: TextStyle(
-                            color: Colors.white,
+                            color: themeProvider.accentColor == Colors.white ? Colors.black : Colors.white, // adjusts the text color only if the accent color is white
                             fontSize: screenWidth * 0.08,
                             fontWeight: FontWeight.bold,
                           ),
@@ -153,7 +153,7 @@ class _ConnectionPageState extends State<ConnectionPage> {
                   SizedBox(height: buttonSpacing),
 
                   Spacer(),
-                  
+
                   SizedBox(height: buttonSpacing),
                 ],
               );
