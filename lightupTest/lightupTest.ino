@@ -112,16 +112,14 @@ void loop() {
   } else if (lastState == LOW && currentState == HIGH) {  // button is released
     releasedTime = millis();
     pressDuration = releasedTime - pressedTime;
-    if ((pressDuration > profiles.time_change_profile) && power && !change_profile) {
-      change_profile = true;
-    } else if ((pressDuration > profiles.time_battery_status) && power && !change_profile) {
+
+    if ((pressDuration > profiles.time_battery_status) && power ) {
       check_battery_status = true;
     } else if (pressDuration > 0) {
       short_press = true;
     }
     delay(100);
   }
-
   lastState = currentState;
   if (short_press) {
     short_press = false;
@@ -132,15 +130,5 @@ void loop() {
     Serial << "Battery is: " << bat_voltage << "V\n";
 #endif
     trig_feedback(battery_filter);
-  } else if (change_profile && power) {
-#ifdef Debug
-    Serial << "Changing profile\n";
-#endif
-    change_profiles();
-    toggle_profiles();
-    change_profile = false;
-#ifdef Debug
-    Serial << "Profile " << profiles.number << "\n";
-#endif
   }
 }
