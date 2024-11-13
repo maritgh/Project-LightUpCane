@@ -22,7 +22,7 @@ class SettingsCanePage extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: themeProvider.themeMode == ThemeMode.dark
-          ? Colors.black87 // Dark background for dark theme
+          ? Colors.grey[800] // Dark background for dark theme
           : Colors.grey[300], // Light background for light theme
       body: SafeArea(
         child: Padding(
