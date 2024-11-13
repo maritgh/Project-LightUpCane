@@ -36,7 +36,7 @@ class ThemePage extends StatelessWidget {
                     child: Text(
                       'THEME',
                       style: TextStyle(
-                        color: Colors.white,
+                        color: themeProvider.accentColor == Colors.white ? Colors.black : Colors.white, // adjusts the text color only if the accent color is white
                         fontSize: screenWidth * 0.07,
                         fontWeight: FontWeight.bold,
                       ),
@@ -45,7 +45,7 @@ class ThemePage extends StatelessWidget {
                 ),
               ),
               SizedBox(height: screenHeight * 0.03), // Space between title and content
-              
+
               // Themes Section
               Text(
                 'THEMES',
@@ -57,17 +57,17 @@ class ThemePage extends StatelessWidget {
               ),
               fullWidthButton(
                 'Default System',
-                () => themeProvider.setThemeMode(ThemeMode.system),
+                    () => themeProvider.setThemeMode(ThemeMode.system),
                 themeProvider.themeMode == ThemeMode.system ? themeProvider.accentColor : Colors.grey,
               ),
               fullWidthButton(
                 'Light',
-                () => themeProvider.setThemeMode(ThemeMode.light),
+                    () => themeProvider.setThemeMode(ThemeMode.light),
                 themeProvider.themeMode == ThemeMode.light ? themeProvider.accentColor : Colors.grey,
               ),
               fullWidthButton(
                 'Dark',
-                () => themeProvider.setThemeMode(ThemeMode.dark),
+                    () => themeProvider.setThemeMode(ThemeMode.dark),
                 themeProvider.themeMode == ThemeMode.dark ? themeProvider.accentColor : Colors.grey,
               ),
 
@@ -86,6 +86,8 @@ class ThemePage extends StatelessWidget {
               accentButton('Green', Colors.green[400]!, themeProvider),
               accentButton('Blue', Colors.blue[400]!, themeProvider),
               accentButton('Purple', Colors.purple[400]!, themeProvider),
+              accentButton('White', Colors.white, themeProvider), //both text and box turn white, need to adjust to handle white accent color
+              accentButton('Black', Colors.black, themeProvider),
             ],
           ),
         ),
@@ -98,7 +100,7 @@ class ThemePage extends StatelessWidget {
   Widget accentButton(String label, Color color, ThemeProvider themeProvider) {
     return fullWidthButton(
       label,
-      () => themeProvider.setAccentColor(color),
+          () => themeProvider.setAccentColor(color),
       themeProvider.accentColor == color ? themeProvider.accentColor : Colors.grey,
     );
   }
