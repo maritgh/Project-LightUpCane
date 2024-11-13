@@ -83,6 +83,9 @@ void splitStringBySpace(String data) {
 
     } else if (strcmp(part1.c_str(), "Light") == 0) {
       profiles.intensity_led = int(calc_intensity(part));
+      if (power == 1) {
+        analogWrite(LED_LIGHTS, profiles.intensity_led);
+      }
       Serial.println("light intensity changed to:");
       Serial.println(profiles.intensity_led);
       server.send(200, "text/plain", "Setting updated");
