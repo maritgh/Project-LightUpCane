@@ -56,7 +56,7 @@ class _StatusPageState extends State<StatusPage> {
     fetchStatusData();
     _timer = Timer.periodic(Duration(seconds: 5), (timer) => fetchStatusData());
   }
-  
+
   @override
   void dispose() {
     _timer?.cancel(); // Annuleer de timer bij het sluiten van de widget
@@ -69,7 +69,7 @@ class _StatusPageState extends State<StatusPage> {
     final notificationProvider = Provider.of<NotificationProvider>(context);
 
     notifications = notificationProvider.notifications == true ? 'ON' : 'OFF';
-    
+
     var screenWidth = MediaQuery.of(context).size.width;
     var screenHeight = MediaQuery.of(context).size.height;
 
@@ -87,14 +87,16 @@ class _StatusPageState extends State<StatusPage> {
                   width: screenWidth * 0.8,
                   padding: EdgeInsets.symmetric(vertical: screenHeight * 0.005),
                   decoration: BoxDecoration(
-                    color: themeProvider.accentColor,
+                    color: themeProvider.themeMode == ThemeMode.dark
+                        ? Colors.grey[850]
+                        : Colors.grey[400],
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Center(
                     child: Text(
                       'STATUS',
                       style: TextStyle(
-                        color: themeProvider.accentColor == Colors.white ? Colors.black : Colors.white, // adjusts the text color only if the accent color is white
+                        color: themeProvider.accentColor, // Use accent color from ThemeProvider
                         fontSize: screenWidth * 0.07,
                         fontWeight: FontWeight.bold,
                       ),
@@ -126,7 +128,7 @@ class _StatusPageState extends State<StatusPage> {
                 ),
               ),
             ),
-            
+
             // Help Icon in the center under buzzer intensity, with controlled size
             Center(
               child: IconButton(
@@ -169,8 +171,8 @@ class _StatusPageState extends State<StatusPage> {
           padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           decoration: BoxDecoration(
             color: themeProvider.themeMode == ThemeMode.dark
-                  ? Colors.grey[850]
-                  : Colors.grey[400],
+                ? Colors.grey[850]
+                : Colors.grey[400],
             borderRadius: BorderRadius.circular(5),
           ),
           child: Center(
