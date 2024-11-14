@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include <iostream>
 #include <MPU6050.h>
 #include "variables.h"
 #include <WiFi.h>
@@ -12,12 +11,6 @@ const char* password = "12345678";
 
 WebServer server(80);
 
-template<typename T>
-Print& operator<<(Print& printer, T value) {
-  printer.print(value);
-  return printer;
-}
-
 void IRAM_ATTR onTimer() {
   bat_voltage = bat_status();
   imu = true;
@@ -26,7 +19,7 @@ void IRAM_ATTR onTimer() {
 void setup() {
   init_hardware();
   init_imu();
-  Serial << "\nESP32 Initialized\n";
+  Serial.println("\nESP32 Initialized");
   profiles.intensity_haptic = int(calc_intensity(profiles.intensity_haptic));
   profiles.intensity_buzzer = int(calc_intensity(profiles.intensity_buzzer));
   profiles.intensity_led = int(calc_intensity(profiles.intensity_led));
@@ -35,11 +28,14 @@ void setup() {
   IPAddress myIP = WiFi.softAPIP();
   Serial.print("AP IP address: ");
   Serial.println(myIP);
+  
 #ifdef Debug
-  Serial << "\nESP32 Initialized\n";
-  Serial << "Intensity haptic: " << profiles.intensity_haptic << "\n";
-  Serial << "Intensity buzzer: " << profiles.intensity_buzzer << "\n";
-  Serial << "Intensity led: " << profiles.intensity_led << "\n";
+  Serial.print("Intensity haptic: ");
+  Serial.println(profiles.intensity_haptic);
+  Serial.print("Intensity buzzer: ");
+  Serial.println(profiles.intensity_buzzer);
+  Serial.print("Intensity led: " );
+  Serial.println(profiles.intensity_led);
 #endif
   server.on("/set", HTTP_POST, []() {
     if (server.hasArg("data")) {
@@ -129,8 +125,10 @@ void loop() {
     toggle_power();
   } else if (check_battery_status && power) {
 #ifdef Debug
-    Serial << "Check battery status\n";
-    Serial << "Battery is: " << bat_voltage << "V\n";
+    Serial.println("Check battery status");
+    Serial.print("Battery is: ");
+    Serial.print(bat_voltage);
+    Serial.println("V");
 #endif
     trig_feedback(battery_filter);
   }
