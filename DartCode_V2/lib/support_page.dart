@@ -29,7 +29,7 @@ class SupportPage extends StatelessWidget {
   Widget build(BuildContext context) {
     // Access ThemeProvider
     final themeProvider = Provider.of<ThemeProvider>(context);
-    
+
     // Get screen dimensions for dynamic scaling
     var screenWidth = MediaQuery.of(context).size.width;
     var screenHeight = MediaQuery.of(context).size.height;
@@ -54,14 +54,16 @@ class SupportPage extends StatelessWidget {
                   width: screenWidth * 0.8,
                   padding: EdgeInsets.symmetric(vertical: screenHeight * 0.005),
                   decoration: BoxDecoration(
-                    color: themeProvider.accentColor,
+                    color: themeProvider.themeMode == ThemeMode.dark
+                        ? Colors.grey[850]
+                        : Colors.grey[400],
                     borderRadius: BorderRadius.circular(20), // Rounded corners for title
                   ),
                   child: Center(
                     child: Text(
                       'SUPPORT',
                       style: TextStyle(
-                        color: themeProvider.accentColor == Colors.white ? Colors.black : Colors.white, // adjusts the text color only if the accent color is white
+                        color: themeProvider.accentColor, // Use accent color from ThemeProvider
                         fontSize: screenWidth * 0.07, // Dynamic font size based on screen width
                         fontWeight: FontWeight.bold,
                       ),
