@@ -26,7 +26,7 @@ class _LightPageState extends State<LightPage> {
         if (values.length >= 6) {
           setState(() {
             lightIntensity = values[1] == '30' ? 'LOW' : values[1] == '60' ? 'MID' : 'HIGH';
-            light = values[5] == '0' ? false : true; 
+            light = values[5] == '0' ? false : true;
           });
         }
       } else {
@@ -43,7 +43,7 @@ class _LightPageState extends State<LightPage> {
     fetchStatusData();
     _timer = Timer.periodic(Duration(seconds: 5), (timer) => fetchStatusData());
   }
-  
+
   @override
   void dispose() {
     _timer?.cancel(); // Annuleer de timer bij het sluiten van de widget
@@ -84,14 +84,16 @@ class _LightPageState extends State<LightPage> {
                       width: screenWidth * 0.8,
                       padding: EdgeInsets.symmetric(vertical: screenHeight * 0.005),
                       decoration: BoxDecoration(
-                        color: themeProvider.accentColor, // Use accent color from ThemeProvider
+                        color: themeProvider.themeMode == ThemeMode.dark
+                            ? Colors.grey[850]
+                            : Colors.grey[400],
                         borderRadius: BorderRadius.circular(20), // Rounded corners for the status header
                       ),
                       child: Center(
                         child: Text(
                           'LIGHT',
                           style: TextStyle(
-                            color: themeProvider.accentColor == Colors.white ? Colors.black : Colors.white, // adjusts the text color only if the accent color is white
+                            color: themeProvider.accentColor, // Use accent color from ThemeProvider
                             fontSize: screenWidth * 0.08, // Dynamic font size based on screen width
                             fontWeight: FontWeight.bold,
                           ),
@@ -208,8 +210,8 @@ class _LightPageState extends State<LightPage> {
             padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             decoration: BoxDecoration(
               color: themeProvider.themeMode == ThemeMode.dark
-                    ? Colors.grey[850]
-                    : Colors.grey[400],
+                  ? Colors.grey[850]
+                  : Colors.grey[400],
               borderRadius: BorderRadius.circular(5),
             ),
             child: Center(
