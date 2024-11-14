@@ -30,9 +30,9 @@ class _AudioPageState extends State<AudioPage> {
         if (values.length >= 6) {
           setState(() {
             hapticIntensity = values[4] == '0' ? 0 : values[4] == '70' ? 25 : values[4] == '80' ? 50 : values[4] == '90' ? 75 : 100;
-            haptic = hapticIntensity == 0 ? false : true; 
+            haptic = hapticIntensity == 0 ? false : true;
             buzzerIntensity = values[2] == '0' ? 0 : values[2] == '1' ? 25 : values[2] == '3' ? 50 : values[2] == '5' ? 75 : 100;
-            buzzer = buzzerIntensity == 0 ? false : true; 
+            buzzer = buzzerIntensity == 0 ? false : true;
           });
         }
       } else {
@@ -49,7 +49,7 @@ class _AudioPageState extends State<AudioPage> {
     fetchStatusData();
     _timer = Timer.periodic(Duration(seconds: 5), (timer) => fetchStatusData());
   }
-  
+
   @override
   void dispose() {
     _timer?.cancel(); // Annuleer de timer bij het sluiten van de widget
@@ -97,14 +97,16 @@ class _AudioPageState extends State<AudioPage> {
                         width: screenWidth * 0.8,
                         padding: EdgeInsets.symmetric(vertical: screenHeight * 0.005),
                         decoration: BoxDecoration(
-                          color: themeProvider.accentColor, // Use accent color from ThemeProvider
+                          color: themeProvider.themeMode == ThemeMode.dark
+                              ? Colors.grey[850]
+                              : Colors.grey[400],
                           borderRadius: BorderRadius.circular(20), // Rounded corners for the status header
                         ),
                         child: Center(
                           child: Text(
                             'AUDIO',
                             style: TextStyle(
-                              color: themeProvider.accentColor == Colors.white ? Colors.black : Colors.white, // adjusts the text color only if the accent color is white
+                              color: themeProvider.accentColor, // Use accent color from ThemeProvider
                               fontSize: screenWidth * 0.08, // Dynamic font size based on screen width
                               fontWeight: FontWeight.bold,
                             ),
@@ -261,8 +263,8 @@ class _AudioPageState extends State<AudioPage> {
           padding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
           decoration: BoxDecoration(
             color: themeProvider.themeMode == ThemeMode.dark
-                  ? Colors.grey[850]
-                  : Colors.grey[400],
+                ? Colors.grey[850]
+                : Colors.grey[400],
             borderRadius: BorderRadius.circular(5),
           ),
           child: Center(
