@@ -36,7 +36,7 @@ void toggle_power() {
     analogWrite(LED_LIGHTS, 0);
   }
 #ifdef Debug
-  Serial << "Power = " << power << "\n";
+  Serial.println("Power = " + power);
 #endif
   delay(200);
   if (power) {
@@ -68,7 +68,6 @@ void trig_feedback(int feedback) {
     buzzer_battery = battery_status;
     if (check_battery_status) {
       while ((haptic_battery > 0) || (buzzer_battery > 0)) {
-        // Serial << "BATTERY\n";
         if (buzzer_battery > 0) {
           ledcWrite(BUZZER, profiles.intensity_buzzer);
           buzzer_battery--;
@@ -92,7 +91,6 @@ void trig_feedback(int feedback) {
     buzzer_off = buzzer_off_times;
     if (power) {
       while ((buzzer_on > 0) || (haptic_on > 0)) {
-        // Serial << "POWER\n";
 
         if (buzzer_on > 0) {
           ledcWrite(BUZZER, profiles.intensity_buzzer);
@@ -127,7 +125,6 @@ void trig_feedback(int feedback) {
       }
     }
   }
- 
 }
 
 
@@ -143,8 +140,5 @@ float bat_status() {
     sum += bat_voltages[i];
   }
   avg = sum / 20.0;
-#ifdef Debug
-//  Serial << "Avg: " << avg << "\n";
-#endif
   return (avg/9)*100;
 }
