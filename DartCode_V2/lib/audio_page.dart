@@ -72,7 +72,7 @@ class _AudioPageState extends State<AudioPage> {
 
     return Scaffold(
       backgroundColor: themeProvider.themeMode == ThemeMode.dark
-          ? Colors.black87 // Dark background for dark theme
+          ? Colors.grey[800] // Dark background for dark theme
           : Colors.grey[300], // Light background for light theme
       body: SafeArea(
         child: Container(
@@ -218,7 +218,7 @@ class _AudioPageState extends State<AudioPage> {
             label,
             style: TextStyle(
               color: themeProvider.accentColor, // Use accent color for label
-              fontSize: screenWidth * 0.05, // Dynamic font size for labels
+              fontSize: screenWidth * 0.045, // Dynamic font size for labels
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -250,7 +250,7 @@ class _AudioPageState extends State<AudioPage> {
             label,
             style: TextStyle(
               color: themeProvider.accentColor, // Use accent color for label
-              fontSize: screenWidth * 0.05, // Dynamic font size for labels
+              fontSize: screenWidth * 0.045, // Dynamic font size for labels
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -260,7 +260,9 @@ class _AudioPageState extends State<AudioPage> {
           width: maxWidth / 3, // Ensures each grey box has the same width
           padding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
           decoration: BoxDecoration(
-            color: Colors.grey[400],
+            color: themeProvider.themeMode == ThemeMode.dark
+                  ? Colors.grey[850]
+                  : Colors.grey[400],
             borderRadius: BorderRadius.circular(5),
           ),
           child: Center(
@@ -270,7 +272,7 @@ class _AudioPageState extends State<AudioPage> {
                 '${intensityValue.toInt()}%', // Display the current intensity as an integer
                 style: TextStyle(
                   color: themeProvider.accentColor, // Use accent color for intensity value
-                  fontSize: screenWidth * 0.05, // Dynamic font size for intensity values
+                  fontSize: screenWidth * 0.045, // Dynamic font size for intensity values
                   fontWeight: FontWeight.bold,
                 ),
               ),

@@ -15,7 +15,7 @@ class ThemePage extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: themeProvider.themeMode == ThemeMode.dark
-          ? Colors.black87
+          ? Colors.grey[800]
           : Colors.grey[300],
       body: SafeArea(
         child: Padding(
@@ -45,7 +45,7 @@ class ThemePage extends StatelessWidget {
                 ),
               ),
               SizedBox(height: screenHeight * 0.03), // Space between title and content
-
+              
               // Themes Section
               Text(
                 'THEMES',
@@ -57,19 +57,23 @@ class ThemePage extends StatelessWidget {
               ),
               fullWidthButton(
                 'Default System',
-                    () => themeProvider.setThemeMode(ThemeMode.system),
+                  () => themeProvider.setThemeMode(ThemeMode.system),
                 themeProvider.themeMode == ThemeMode.system ? themeProvider.accentColor : Colors.grey,
+                screenWidth,
               ),
               fullWidthButton(
                 'Light',
-                    () => themeProvider.setThemeMode(ThemeMode.light),
+                  () => themeProvider.setThemeMode(ThemeMode.light),
                 themeProvider.themeMode == ThemeMode.light ? themeProvider.accentColor : Colors.grey,
+                screenWidth,
               ),
               fullWidthButton(
                 'Dark',
-                    () => themeProvider.setThemeMode(ThemeMode.dark),
+                  () => themeProvider.setThemeMode(ThemeMode.dark),
                 themeProvider.themeMode == ThemeMode.dark ? themeProvider.accentColor : Colors.grey,
+                screenWidth,
               ),
+              SizedBox(height: screenHeight * 0.03),
 
               // Accents Section
               Text(
@@ -80,14 +84,35 @@ class ThemePage extends StatelessWidget {
                   color: themeProvider.accentColor,
                 ),
               ),
-              accentButton('Red', Colors.red[400]!, themeProvider),
-              accentButton('Orange', Colors.orange[400]!, themeProvider),
-              accentButton('Yellow', Colors.yellow[600]!, themeProvider),
-              accentButton('Green', Colors.green[400]!, themeProvider),
-              accentButton('Blue', Colors.blue[400]!, themeProvider),
-              accentButton('Purple', Colors.purple[400]!, themeProvider),
-              accentButton('White', Colors.white, themeProvider), //both text and box turn white, need to adjust to handle white accent color
-              accentButton('Black', Colors.black, themeProvider),
+              
+              // Row to split accent buttons into two columns
+              Row(
+                children: [
+                  // Left column for the first 4 accent buttons
+                  Expanded(
+                    child: Column(
+                      children: [
+                        accentButton('Red', Colors.red[400]!, themeProvider, screenWidth),
+                        accentButton('Orange', Colors.orange[400]!, themeProvider, screenWidth),
+                        accentButton('Yellow', Colors.yellow[600]!, themeProvider, screenWidth),
+                        accentButton('Green', Colors.green[400]!, themeProvider, screenWidth),
+                      ],
+                    ),
+                  ),
+
+                  // Right column for the last 4 accent buttons
+                  Expanded(
+                    child: Column(
+                      children: [
+                        accentButton('Blue', Colors.blue[400]!, themeProvider, screenWidth),
+                        accentButton('Purple', Colors.purple[400]!, themeProvider, screenWidth),
+                        accentButton('White', Colors.white, themeProvider, screenWidth),
+                        accentButton('Black', Colors.black, themeProvider, screenWidth),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ],
           ),
         ),
@@ -97,16 +122,17 @@ class ThemePage extends StatelessWidget {
   }
 
   // Helper method to generate accent color buttons
-  Widget accentButton(String label, Color color, ThemeProvider themeProvider) {
+  Widget accentButton(String label, Color color, ThemeProvider themeProvider, double screenWidth) {
     return fullWidthButton(
       label,
-          () => themeProvider.setAccentColor(color),
+        () => themeProvider.setAccentColor(color),
       themeProvider.accentColor == color ? themeProvider.accentColor : Colors.grey,
+      screenWidth,
     );
   }
 
   // Helper method to create full-width buttons
-  Widget fullWidthButton(String label, VoidCallback onPressed, Color textColor) {
+  Widget fullWidthButton(String label, VoidCallback onPressed, Color textColor, double screenWidth) {
     return SizedBox(
       width: double.infinity,
       child: TextButton(
@@ -118,7 +144,7 @@ class ThemePage extends StatelessWidget {
         child: Text(
           label,
           style: TextStyle(
-            fontSize: 18,
+            fontSize: screenWidth * 0.045,
             color: textColor,
           ),
         ),

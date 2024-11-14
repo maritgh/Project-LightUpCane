@@ -1,16 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 import 'theme_provider.dart';
 import 'bottom_nav_bar.dart';
 
 class SupportPage extends StatelessWidget {
-  const SupportPage({Key? key}) : super(key: key);
+  SupportPage({Key? key}) : super(key: key) {
+    _initializeTts(); // Initialize TTS before speaking
+  }
+
+  final FlutterTts flutterTts = FlutterTts();
+
+  // Method to initialize TTS
+  Future<void> _initializeTts() async {
+    await flutterTts.awaitSpeakCompletion(true); // Wait until completion of each utterance
+    await flutterTts.setLanguage("en-US"); // Set language
+    await flutterTts.setSpeechRate(0.5); // Set speech rate
+    await flutterTts.setVolume(1.0); // Set volume
+    await flutterTts.setPitch(1.0); // Set pitch
+  }
+
+  // Method to speak a given text
+  Future<void> _speak(String text) async {
+    await flutterTts.speak(text);
+  }
 
   @override
   Widget build(BuildContext context) {
     // Access ThemeProvider
     final themeProvider = Provider.of<ThemeProvider>(context);
-
+    
     // Get screen dimensions for dynamic scaling
     var screenWidth = MediaQuery.of(context).size.width;
     var screenHeight = MediaQuery.of(context).size.height;
@@ -21,7 +40,7 @@ class SupportPage extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: themeProvider.themeMode == ThemeMode.dark
-          ? Colors.black87
+          ? Colors.grey[800]
           : Colors.grey[300],
       body: SafeArea(
         child: Padding(
@@ -85,15 +104,34 @@ class SupportPage extends StatelessWidget {
             label,
             style: TextStyle(
               color: themeProvider.accentColor,
-              fontSize: screenWidth * 0.06, // Increased font size for better visibility
+              fontSize: screenWidth * 0.045, // Increased font size for better visibility
               fontWeight: FontWeight.bold,
             ),
           ),
         ),
-        Icon(
-          icon,
-          color: Colors.black,
-          size: screenWidth * 0.07, // Increased icon size for better visibility
+        GestureDetector(
+          onTap: () async {
+            String textToSay = '';
+            switch (label) {
+              case 'APP':
+                textToSay = 'This is an explanation about the app';
+              case 'PRESETS':
+                textToSay = 'This is an explanation about the presets function of the app';
+              case 'SETTINGS CANE':
+                textToSay = 'This is an explanation about the settings cane function of the app';
+              case 'SETTINGS APP':
+                textToSay = 'This is an explanation about the setting app function of the app';
+              case 'STATUS':
+                textToSay = 'The status page shows the current status of your connected cane, including battery level, light and notifications status, light haptic and buzzer intensities. The information updates every few seconds to keep you up-to-date. Only through the status page can you get to the support page.';
+            }
+            print("TTS Speaking: $textToSay"); // Debugging output
+            await _speak(textToSay); // Ensure the method is awaited
+          },
+          child: Icon(
+            icon,
+            color: Colors.black,
+            size: screenWidth * 0.07,
+          ),
         ),
       ],
     );
@@ -109,7 +147,7 @@ class SupportPage extends StatelessWidget {
             label,
             style: TextStyle(
               color: themeProvider.accentColor,
-              fontSize: screenWidth * 0.06, // Increased font size for better visibility
+              fontSize: screenWidth * 0.045, // Increased font size for better visibility
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -123,3 +161,9 @@ class SupportPage extends StatelessWidget {
     );
   }
 }
+
+//in pubspec.yaml change dependecies into below to make it work
+//dependencies:
+//  flutter:
+//    sdk: flutter
+//  flutter_tts: ^4.1.0
