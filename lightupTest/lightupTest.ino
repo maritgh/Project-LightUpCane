@@ -10,7 +10,6 @@ WebServer server(80);
 void setup() {
   init_hardware();
   init_imu();
-
   Serial.println("\nESP32 Initialized"); // print al the start values
   profiles.intensity_haptic = int(calc_intensity(profiles.intensity_haptic)); // from percentage to actual value
   profiles.intensity_buzzer = int(calc_intensity(profiles.intensity_buzzer));
@@ -42,8 +41,8 @@ void setup() {
   });
 
   server.on("/get", HTTP_GET, []() { // to send data to the app
-    float bat = bat_status();
-    String data = String(bat_status()) + " " + String(revers_calc_intensity(profiles.intensity_led)) + " " + String(revers_calc_intensity(profiles.intensity_buzzer)) + " " + String(profiles.frequency) + " " + String(revers_calc_intensity(profiles.intensity_haptic)) + " " + String(power);
+    float bat = (bat_status()/9)*100;
+    String data = String(bat) + " " + String(revers_calc_intensity(profiles.intensity_led)) + " " + String(revers_calc_intensity(profiles.intensity_buzzer)) + " " + String(profiles.frequency) + " " + String(revers_calc_intensity(profiles.intensity_haptic)) + " " + String(power);
     server.send(200, "text/plain", data);
   });
   

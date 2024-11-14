@@ -3,6 +3,7 @@ void init_hardware() {
   // init LEDS
   pinMode(SW_ON_BOOT, INPUT_PULLUP);
   pinMode(LED_LIGHTS, OUTPUT);
+  pinMode(A0, INPUT); 
   // init HAPTIC
   ledcAttachChannel(HAPTIC, 100000, 8, 0);
   // init BUZZER
@@ -130,7 +131,7 @@ void trig_feedback(int feedback) {
 float bat_status() {
   float sum = 0.0;
   float avg = 0.0;
-  float bat = analogRead(BATT_SENS) / 226.0;
+  float bat = analogRead(A0) / 226.0;
   for (int i = 0; i < 19; i++) {
     bat_voltages[i + 1] = bat_voltages[i];
   }
@@ -138,8 +139,14 @@ float bat_status() {
   for (int i = 0; i < 20; i++) {
     sum += bat_voltages[i];
   }
-  avg = sum / 20.0;
-  return (avg / 9) * 100;
+  avg = sum / 20;
+  return avg;
+  // uint32_t Vbatt = 0;
+  // for(int i = 0; i < 20; i++) {
+  //   Vbatt = Vbatt + analogReadMilliVolts(A0); // ADC with correction   
+  // }
+  // float Vbattf = 2 * Vbatt / 20 / 100.0; 
+  // return Vbattf;
 }
 
 void splitStringBySpace(String data) {

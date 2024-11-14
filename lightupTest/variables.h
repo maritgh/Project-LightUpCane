@@ -3,7 +3,7 @@
 #define SDA_PIN 0
 #define BUZZER 8
 #define HAPTIC 10
-#define LED_LIGHTS 2
+#define LED_LIGHTS 3
 #define SW_ON_BOOT 9
 #define BATT_SENS 3
 
