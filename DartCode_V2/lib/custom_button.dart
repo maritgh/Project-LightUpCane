@@ -20,7 +20,7 @@ class CustomButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context); // Access ThemeProvider
-    Color buttonTextColor = themeProvider.themeMode == ThemeMode.dark ? Colors.black : Colors.white; // Set text color based on theme
+    Color buttonTextColor = themeProvider.accentColor; // Use accent color from ThemeProvider
 
     return SizedBox(
       width: screenWidth * 0.8, // Set width for the button
