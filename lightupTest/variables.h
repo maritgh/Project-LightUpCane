@@ -1,4 +1,4 @@
-/* DEFINES */
+/* DEFINES PINS*/
 #define SCL_PIN 1
 #define SDA_PIN 0
 #define BUZZER 8
@@ -10,9 +10,13 @@
 /* DEBUG DEFINES */
 #define Debug
 
+// WiFi access point credentials
+const char* ssid = "light_up_cane";
+const char* password = "12345678";
+
+
 /* VARIABLES */
-bool led_state = false;    // the current state of LED
-bool power = false;
+bool power = false;           // the current state of LED
 bool imu = false;
 bool short_press = false;
 bool check_battery_status = false;
@@ -25,10 +29,13 @@ int ctr = 0;
 int lastState = HIGH;  // the previous state from the input pin
 int currentState;     // the current reading from the input pin
 int battery_status = 4;
-int haptic_on_times = 1;
-int haptic_off_times = 2;
-int buzzer_on_times = 1;
-int buzzer_off_times = 2;
+
+int haptic_on_times = 1;  //how many times haptic when light is turned on
+int haptic_off_times = 2; //how many times haptic when light is turned off
+
+int buzzer_on_times = 1; //how many times buzzer when light is turned on
+int buzzer_off_times = 2;  //how many times buzzer when light is turned off
+
 int battery_filter = 1;
 int power_filter = 2;
 

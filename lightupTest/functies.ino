@@ -9,6 +9,11 @@ void init_hardware() {
   ledcAttachChannel(BUZZER, profiles.frequency, 8, 1);
 }
 
+void IRAM_ATTR onTimer() {
+  bat_voltage = bat_status();
+  imu = true;
+}
+
 void init_imu() {
   Wire.begin(SDA_PIN, SCL_PIN);  // Gebruik GPIO8 als SDA en GPIO6 als SCL
   mpu.initialize();
@@ -35,17 +40,10 @@ void toggle_power() {
   } else {
     analogWrite(LED_LIGHTS, 0);
   }
-#ifdef Debug
   Serial.print("Power = ");
   Serial.println(power);
-#endif
   delay(200);
-  if (power) {
-    trig_feedback(power_filter);
-
-  } else if (!power) {
-    trig_feedback(power_filter);
-  }
+  trig_feedback(power_filter);
 }
 
 void trig_feedback(int feedback) {
@@ -129,7 +127,6 @@ void trig_feedback(int feedback) {
   }
 }
 
-
 float bat_status() {
   float sum = 0.0;
   float avg = 0.0;
@@ -142,8 +139,51 @@ float bat_status() {
     sum += bat_voltages[i];
   }
   avg = sum / 20.0;
-#ifdef Debug
-#endif
   return (avg / 9) * 100;
 }
 
+void splitStringBySpace(String data) {
+  int firstSpaceIndex = data.indexOf('$');
+  int secondSpaceIndex = data.indexOf('$', firstSpaceIndex + 1);
+
+  if (firstSpaceIndex != -1 && secondSpaceIndex != -1) {
+    String part1 = data.substring(0, firstSpaceIndex);
+    String part2 = data.substring(firstSpaceIndex + 1, secondSpaceIndex);
+    int part = part2.toInt();
+
+    if (strcmp(part1.c_str(), "Battery") == 0) {
+      profiles.time_battery_status = part;
+      Serial.println("time battery status changed to:");
+      Serial.println(profiles.time_battery_status);
+      server.send(200, "text/plain", "Setting updated");
+
+    } else if (strcmp(part1.c_str(), "Haptic") == 0) {
+      profiles.intensity_haptic = int(calc_intensity(part));
+      Serial.println("haptic intensity changed to:");
+      Serial.println(profiles.intensity_haptic);
+      server.send(200, "text/plain", "Setting updated");
+
+    } else if (strcmp(part1.c_str(), "Light") == 0) {
+      profiles.intensity_led = int(calc_intensity(part));
+      if (power == 1) {
+        analogWrite(LED_LIGHTS, profiles.intensity_led);
+      }
+      Serial.println("light intensity changed to:");
+      Serial.println(profiles.intensity_led);
+      server.send(200, "text/plain", "Setting updated");
+
+    } else if (strcmp(part1.c_str(), "Buzzer") == 0) {
+      profiles.intensity_buzzer = int(calc_intensity(part));
+      Serial.println("buzzer intensity changed to:");
+      Serial.println(profiles.intensity_buzzer);
+      server.send(200, "text/plain", "Setting updated");
+      
+    } else if(strcmp(part1.c_str(), "LightSwitch") == 0){
+      toggle_power();
+      Serial.println("light was changed");
+      server.send(200, "text/plain", "light toggled");
+    } else {
+      server.send(400, "text/plain", "Unknown setting type. Please use Battery, Haptic, Light, or Buzzer.");
+    }
+  }
+}
