@@ -29,14 +29,16 @@ class ThemePage extends StatelessWidget {
                   width: screenWidth * 0.8,
                   padding: EdgeInsets.symmetric(vertical: screenHeight * 0.005),
                   decoration: BoxDecoration(
-                    color: themeProvider.accentColor,
+                    color: themeProvider.themeMode == ThemeMode.dark
+                        ? Colors.grey[850]
+                        : Colors.grey[400],
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Center(
                     child: Text(
                       'THEME',
                       style: TextStyle(
-                        color: themeProvider.accentColor == Colors.white ? Colors.black : Colors.white, // adjusts the text color only if the accent color is white
+                        color: themeProvider.accentColor, // Use accent color from ThemeProvider
                         fontSize: screenWidth * 0.07,
                         fontWeight: FontWeight.bold,
                       ),
@@ -45,7 +47,7 @@ class ThemePage extends StatelessWidget {
                 ),
               ),
               SizedBox(height: screenHeight * 0.03), // Space between title and content
-              
+
               // Themes Section
               Text(
                 'THEMES',
@@ -57,19 +59,19 @@ class ThemePage extends StatelessWidget {
               ),
               fullWidthButton(
                 'Default System',
-                  () => themeProvider.setThemeMode(ThemeMode.system),
+                    () => themeProvider.setThemeMode(ThemeMode.system),
                 themeProvider.themeMode == ThemeMode.system ? themeProvider.accentColor : Colors.grey,
                 screenWidth,
               ),
               fullWidthButton(
                 'Light',
-                  () => themeProvider.setThemeMode(ThemeMode.light),
+                    () => themeProvider.setThemeMode(ThemeMode.light),
                 themeProvider.themeMode == ThemeMode.light ? themeProvider.accentColor : Colors.grey,
                 screenWidth,
               ),
               fullWidthButton(
                 'Dark',
-                  () => themeProvider.setThemeMode(ThemeMode.dark),
+                    () => themeProvider.setThemeMode(ThemeMode.dark),
                 themeProvider.themeMode == ThemeMode.dark ? themeProvider.accentColor : Colors.grey,
                 screenWidth,
               ),
@@ -84,7 +86,7 @@ class ThemePage extends StatelessWidget {
                   color: themeProvider.accentColor,
                 ),
               ),
-              
+
               // Row to split accent buttons into two columns
               Row(
                 children: [
@@ -125,7 +127,7 @@ class ThemePage extends StatelessWidget {
   Widget accentButton(String label, Color color, ThemeProvider themeProvider, double screenWidth) {
     return fullWidthButton(
       label,
-        () => themeProvider.setAccentColor(color),
+          () => themeProvider.setAccentColor(color),
       themeProvider.accentColor == color ? themeProvider.accentColor : Colors.grey,
       screenWidth,
     );

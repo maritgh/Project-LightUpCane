@@ -20,6 +20,11 @@ class SettingsAppPage extends StatelessWidget {
     double horizontalPadding = screenWidth * 0.1; // 10% padding
     double buttonSpacing = screenHeight * 0.05; // Spacing between buttons
 
+    // Define the dynamic color based on the theme, required for THEME and CONNECTION to adjust theme
+    Color dynamicColor = themeProvider.themeMode == ThemeMode.dark
+        ? Colors.grey[850]!
+        : Colors.grey[400]!;
+
     return Scaffold(
       backgroundColor: themeProvider.themeMode == ThemeMode.dark
           ? Colors.grey[800] // Dark background for dark theme
@@ -39,14 +44,16 @@ class SettingsAppPage extends StatelessWidget {
                       width: screenWidth * 0.8,
                       padding: EdgeInsets.symmetric(vertical: screenHeight * 0.005),
                       decoration: BoxDecoration(
-                        color: themeProvider.accentColor, // Use accent color from ThemeProvider
+                        color: themeProvider.themeMode == ThemeMode.dark
+                            ? Colors.grey[850]
+                            : Colors.grey[400],
                         borderRadius: BorderRadius.circular(20), // Rounded corners for the header
                       ),
                       child: Center(
                         child: Text(
                           'SETTINGS APP',
                           style: TextStyle(
-                            color: themeProvider.accentColor == Colors.white ? Colors.black : Colors.white, // adjusts the text color only if the accent color is white
+                            color: themeProvider.accentColor, // Use accent color from ThemeProvider
                             fontSize: screenWidth * 0.08, // Dynamic font size based on screen width
                             fontWeight: FontWeight.bold,
                           ),
@@ -67,7 +74,7 @@ class SettingsAppPage extends StatelessWidget {
                     },
                     screenWidth: screenWidth, // Pass screen dimensions for dynamic sizing
                     screenHeight: screenHeight,
-                    color: themeProvider.accentColor, // Use accent color from ThemeProvider
+                    color: dynamicColor, // Use accent color from ThemeProvider
                   ),
                   SizedBox(height: buttonSpacing), // Spacing between buttons
 
@@ -82,7 +89,7 @@ class SettingsAppPage extends StatelessWidget {
                     },
                     screenWidth: screenWidth, // Pass screen dimensions for dynamic sizing
                     screenHeight: screenHeight,
-                    color: themeProvider.accentColor, // Use accent color from ThemeProvider
+                    color: dynamicColor, // Use accent color from ThemeProvider
                   ),
                   SizedBox(height: buttonSpacing), // Spacing between buttons
 

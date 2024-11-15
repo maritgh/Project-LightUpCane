@@ -13,6 +13,11 @@ class WelcomePage extends StatelessWidget {
     // Access ThemeProvider
     final themeProvider = Provider.of<ThemeProvider>(context);
 
+    // Define the dynamic color based on the theme, required for Verder gaan to adjust theme
+    Color dynamicColor = themeProvider.themeMode == ThemeMode.dark
+        ? Colors.grey[850]!
+        : Colors.grey[400]!;
+
     return Scaffold(
       backgroundColor: themeProvider.themeMode == ThemeMode.light
           ? Colors.grey[300]
@@ -35,7 +40,7 @@ class WelcomePage extends StatelessWidget {
                 textAlign: TextAlign.center,
               ),
               SizedBox(height: screenHeight * 0.02),
-              
+
               // App Name Text
               Text(
                 'LIGHTUP CANE',
@@ -48,7 +53,7 @@ class WelcomePage extends StatelessWidget {
                 textAlign: TextAlign.center,
               ),
               SizedBox(height: screenHeight * 0.15),
-              
+
               // Description Text
               Text(
                 'De app voor jouw Lightup Cane',
@@ -61,7 +66,7 @@ class WelcomePage extends StatelessWidget {
                 textAlign: TextAlign.center,
               ),
               SizedBox(height: screenHeight * 0.2),
-              
+
               // Return Button (Navigates to StatusPage)
               CustomButton(
                 label: 'Verder gaan',
@@ -73,7 +78,7 @@ class WelcomePage extends StatelessWidget {
                 },
                 screenWidth: screenWidth,
                 screenHeight: screenHeight,
-                color: themeProvider.accentColor, // Dynamic accent color from ThemeProvider
+                color: dynamicColor, // Dynamic accent color from ThemeProvider
               ),
             ],
           ),
