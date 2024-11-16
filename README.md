@@ -3,7 +3,7 @@
 **DartCode_V2**
 
   this code is for an app to install the light up cane through wifi or bluetooth the code can be run in multiple ways one way is to run it     in VS-code with a simulator for ios or android. For this u need to open a flutter project in vs code and copy this map as the lib map.       After that u need to edit the pubspec.yaml file to add these dependencies:
-  dependencies:
+  dependencies:/n
   flutter:
     sdk: flutter
 
