@@ -36,9 +36,9 @@ class _StatusPageState extends State<StatusPage> {
           setState(() {
             battery = "${values[0]}%";
             light = values[5] == "1" ? "ON" : "OFF";
-            lightIntensity = "${values[1]}%";
-            hapticIntensity = "${values[4]}%";
-            buzzerIntensity = "${values[2]}%";
+            lightIntensity = values[1] == "30" ? "LOW" : values[1] == "60" ? "MID" : "HIGH";
+            hapticIntensity = "${values[4] == '0' ? 0 : values[4] == '70' ? 25 : values[4] == '80' ? 50 : values[4] == '90' ? 75 : 100}%";
+            buzzerIntensity = "${values[2] == '0' ? 0 : values[2] == '1' ? 25 : values[2] == '3' ? 50 : values[2] == '5' ? 75 : 100}%";
             buzzerFrequency = "${values[3]}%";
           });
         }

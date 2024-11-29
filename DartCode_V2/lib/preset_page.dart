@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'custom_button.dart';
 import 'theme_provider.dart';
 
-class StatusPage extends StatefulWidget {
-  const StatusPage({Key? key}) : super(key: key);
+class PresetPage extends StatefulWidget {
+  const PresetPage({Key? key}) : super(key: key);
 
   @override
-  _StatusPageState createState() => _StatusPageState();
+  _PresetPageState createState() => _PresetPageState();
 }
 
-class _StatusPageState extends State<StatusPage> {
+class _PresetPageState extends State<PresetPage> {
   List<String> presets = ['Preset_1', 'Preset_2'];
 
   @override
