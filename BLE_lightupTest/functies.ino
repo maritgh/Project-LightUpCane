@@ -36,7 +36,8 @@ void toggle_power() {
     analogWrite(LED_LIGHTS, 0);
   }
 #ifdef Debug
-  Serial.println("Power = " + power);
+  Serial.print("Power = ");
+  Serial.println(power);
 #endif
   delay(200);
   if (power) {

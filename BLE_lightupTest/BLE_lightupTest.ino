@@ -115,19 +115,6 @@ void splitStringBySpace(String data) {
   // Find the first space in the command
   int spaceIndex = data.indexOf(' ');
 
-  if (spaceIndex == 0) {
-    String command = data;
-    command.trim();  // Remove any leading or trailing spaces
-
-    if (command == "LightSwitch") {
-      toggle_power();
-      Serial.println("Light toggled");
-    } else {
-      Serial.println("Invalid command format or unknown command.");
-    }
-    return;
-  }
-
   String command = data.substring(0, spaceIndex);
   command.trim();
 
@@ -148,6 +135,9 @@ void splitStringBySpace(String data) {
 
   } else if (command == "Light") {
     profiles.intensity_led = int(calc_intensity(value));
+    if (power == 1) {
+      analogWrite(LED_LIGHTS, profiles.intensity_led);
+    }
     Serial.print("LED intensity changed to: ");
     Serial.println(profiles.intensity_led);
 
@@ -156,6 +146,9 @@ void splitStringBySpace(String data) {
     Serial.print("Buzzer intensity changed to: ");
     Serial.println(profiles.intensity_buzzer);
 
+  } else if (command == "LightSwitch"){
+    toggle_power();
+    Serial.println("Light toggled");
   } else {
     Serial.println("Unknown command type. Please use Battery, Haptic, Light, Buzzer, or LightSwitch.");
   }
