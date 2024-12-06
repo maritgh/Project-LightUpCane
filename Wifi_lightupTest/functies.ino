@@ -24,12 +24,12 @@ void init_imu() {
   timerAlarm(imu_timer, 100000, true, 1);
 }
 
-int calc_intensity(float intensity) {
-  intensity = ((intensity / 100.0) * 256.0) + 0.5;
+float calc_intensity(float intensity) {
+  intensity = ((intensity / 100.0) * 256.0) ;// 0.5 erbij als naar int
   return intensity;
 }
 
-int revers_calc_intensity(float intens) {
+float revers_calc_intensity(float intens) {
   intens = ((intens / 256) * 100) + 0.5;
   return intens;
 }
@@ -160,18 +160,20 @@ void splitStringBySpace(String data) {
 
     if (strcmp(part1.c_str(), "Battery") == 0) {
       profiles.time_battery_status = part;
+      saveProfileSettings();
       Serial.println("time battery status changed to:");
       Serial.println(profiles.time_battery_status);
       server.send(200, "text/plain", "Setting updated");
 
     } else if (strcmp(part1.c_str(), "Haptic") == 0) {
-      profiles.intensity_haptic = int(calc_intensity(part));
+      profiles.intensity_haptic = calc_intensity(part);
+      saveProfileSettings();
       Serial.println("haptic intensity changed to:");
       Serial.println(profiles.intensity_haptic);
       server.send(200, "text/plain", "Setting updated");
-
     } else if (strcmp(part1.c_str(), "Light") == 0) {
-      profiles.intensity_led = int(calc_intensity(part));
+      profiles.intensity_led = calc_intensity(part);
+      preferences.putFloat("intensity_led", profiles.intensity_led);
       if (power == 1) {
         analogWrite(LED_LIGHTS, profiles.intensity_led);
       }
@@ -180,7 +182,8 @@ void splitStringBySpace(String data) {
       server.send(200, "text/plain", "Setting updated");
 
     } else if (strcmp(part1.c_str(), "Buzzer") == 0) {
-      profiles.intensity_buzzer = int(calc_intensity(part));
+      profiles.intensity_buzzer = calc_intensity(part);
+      saveProfileSettings();
       Serial.println("buzzer intensity changed to:");
       Serial.println(profiles.intensity_buzzer);
       server.send(200, "text/plain", "Setting updated");
@@ -193,4 +196,45 @@ void splitStringBySpace(String data) {
       server.send(400, "text/plain", "Unknown setting type. Please use Battery, Haptic, Light, or Buzzer.");
     }
   }
+}
+
+//has been tested
+void saveProfileSettings() {
+  preferences.begin("profile", false); // Open the preferences with namespace "profile"
+  preferences.clear();
+  // Save profile settings to flash memory
+  preferences.putInt("intensity_haptic", profiles.intensity_haptic);
+  preferences.putInt("intensity_buzzer", profiles.intensity_buzzer);
+  preferences.putInt("intensity_led", profiles.intensity_led);
+  preferences.putInt("time_battery_status", profiles.time_battery_status);
+  preferences.putInt("haptic_on_times", haptic_on_times);
+  preferences.putInt("haptic_off_times", haptic_off_times);
+  preferences.putInt("buzzer_on_times", buzzer_on_times);
+  preferences.putInt("buzzer_off_times", buzzer_off_times);
+  // Add more lines to save additional settings as needed...
+  Serial.println("dit is een test");
+  Serial.println(profiles.intensity_haptic);
+  
+  preferences.end(); // Close the preferences
+}
+
+//has been tested
+void loadProfileSettings() {
+  preferences.begin("profile", false); // Open the preferences with namespace "profile"
+  
+  // Load profile settings from flash memory
+  profiles.intensity_haptic = preferences.getInt("intensity_haptic", profiles.intensity_haptic);
+  profiles.intensity_buzzer = preferences.getInt("intensity_buzzer", profiles.intensity_buzzer);
+  profiles.intensity_led = preferences.getInt("intensity_led", profiles.intensity_led);
+  profiles.time_battery_status = preferences.getInt("time_battery_status", profiles.time_battery_status);
+  haptic_on_times = preferences.getInt("haptic_on_times", haptic_on_times); // Update haptic_on_times
+  haptic_off_times = preferences.getInt("haptic_off_times", haptic_off_times); // Update haptic_off_times
+  buzzer_on_times = preferences.getInt("buzzer_on_times", buzzer_on_times);
+  buzzer_off_times = preferences.getInt("buzzer_off_times", buzzer_off_times);
+  // Add more lines to load additional settings as needed...
+
+  Serial.println(haptic_on_times) ;
+  Serial.println(haptic_off_times) ;
+
+  preferences.end(); // Close the preferences
 }

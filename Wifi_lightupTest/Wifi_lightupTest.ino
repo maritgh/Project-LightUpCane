@@ -4,16 +4,17 @@
 #include <WiFi.h>
 #include "user_settings.h"
 #include <WebServer.h>
+#include <Preferences.h>
+
+Preferences preferences;
 
 WebServer server(80);
 
 void setup() {
   init_hardware();
   init_imu();
+  loadProfileSettings();
   Serial.println("\nESP32 Initialized"); // print al the start values
-  profiles.intensity_haptic = int(calc_intensity(profiles.intensity_haptic)); // from percentage to actual value
-  profiles.intensity_buzzer = int(calc_intensity(profiles.intensity_buzzer));
-  profiles.intensity_led = int(calc_intensity(profiles.intensity_led));
 
 #ifdef Debug
   Serial.print("Intensity haptic: ");
