@@ -198,7 +198,6 @@ void splitStringBySpace(String data) {
   }
 }
 
-//has been tested
 void saveProfileSettings() {
   preferences.begin("profile", false); // Open the preferences with namespace "profile"
   preferences.clear();
@@ -218,7 +217,6 @@ void saveProfileSettings() {
   preferences.end(); // Close the preferences
 }
 
-//has been tested
 void loadProfileSettings() {
   preferences.begin("profile", false); // Open the preferences with namespace "profile"
   
