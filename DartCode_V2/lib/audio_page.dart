@@ -120,6 +120,7 @@ class _AudioPageState extends State<AudioPage> {
                     _buildSwitchRow('NOTIFICATIONS', notificationProvider.notifications, (value) {
                       setState(() {
                         notificationProvider.notifications = value;
+                        // _sendIntensityData('Find', 0);
                       });
                     }, maxWidth, screenWidth, themeProvider),
                     SizedBox(height: buttonSpacing), // Spacing between rows

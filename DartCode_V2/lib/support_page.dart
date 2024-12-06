@@ -116,13 +116,13 @@ class SupportPage extends StatelessWidget {
             String textToSay = '';
             switch (label) {
               case 'APP':
-                textToSay = 'This is an explanation about the app';
+                textToSay = 'The Light Up Cane app is an app in which the user can manage the settings of their connected cane. These settings are divided into the pages presets settings cane settings app and status. From every page you have the possibility to go to the previously listed pages.';
               case 'PRESETS':
-                textToSay = 'This is an explanation about the presets function of the app';
+                textToSay = 'The presets page shows the currently saved presets of your app and a save button that allows you to give a name and save all of your current settings under that name. When a preset is selected you get the options to select the settings of that preset delete the preset rename the preset or go back to the preset list.';
               case 'SETTINGS CANE':
-                textToSay = 'This is an explanation about the settings cane function of the app';
+                textToSay = 'The settings cane page has two subpages, audio and light. On the audio page you can select if you want to receive notifications and you can turn on or off and select the intensities of the haptic and buzzer that are located in the cane. On the light page you can turn the light of the cane on or off and select the intensity of the light.';
               case 'SETTINGS APP':
-                textToSay = 'This is an explanation about the setting app function of the app';
+                textToSay = 'The settings app page has two subpages, theme and connection. On the theme page you can select themes and accents that will be used throughout the app. On the connection, if your bluetooth is turned on, you can select a cane that you want to connect with.';
               case 'STATUS':
                 textToSay = 'The status page shows the current status of your connected cane, including battery level, light and notifications status, light haptic and buzzer intensities. The information updates every few seconds to keep you up-to-date. Only through the status page can you get to the support page.';
             }
