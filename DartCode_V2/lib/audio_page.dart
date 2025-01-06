@@ -14,10 +14,10 @@ class AudioPage extends StatefulWidget {
 class _AudioPageState extends State<AudioPage> {
   // Variables to hold the state of the toggles and intensity buttons
   // bool notifications = false;
-  bool haptic = true;
-  double hapticIntensity = 25.0; // Use double for Haptic Intensity (initial value)
-  bool buzzer = true;
-  double buzzerIntensity = 75.0; // Use double for Buzzer Intensity (initial value)
+  // bool haptic = true;
+  // double hapticIntensity = 25.0; // Use double for Haptic Intensity (initial value)
+  // bool buzzer = true;
+  // double buzzerIntensity = 75.0; // Use double for Buzzer Intensity (initial value)
 
   Timer? _timer;
 
@@ -28,12 +28,11 @@ class _AudioPageState extends State<AudioPage> {
       if (response.statusCode == 200) {
         List<String> values = response.body.split(" ");
         if (values.length >= 6) {
-          setState(() {
-            hapticIntensity = values[4] == '0' ? 0 : values[4] == '70' ? 25 : values[4] == '80' ? 50 : values[4] == '90' ? 75 : 100;
-            haptic = hapticIntensity == 0 ? false : true;
-            buzzerIntensity = values[2] == '0' ? 0 : values[2] == '1' ? 25 : values[2] == '3' ? 50 : values[2] == '5' ? 75 : 100;
-            buzzer = buzzerIntensity == 0 ? false : true;
-          });
+          final notificationProvider = Provider.of<NotificationProvider>(context, listen: false);
+          notificationProvider.setHapticIntensity(values[4] == '0' ? 0 : values[4] == '70' ? 25 : values[4] == '80' ? 50 : values[4] == '90' ? 75 : 100);  
+          notificationProvider.setHaptic(notificationProvider.hapticIntensity > 0);
+          notificationProvider.setBuzzerIntensity(values[2] == '0' ? 0 : values[2] == '1' ? 25 : values[2] == '3' ? 50 : values[2] == '5' ? 75 : 100);
+  	      notificationProvider.setBuzzer(notificationProvider.buzzerIntensity > 0);
         }
       } else {
         print("Failed to load data, status code: ${response.statusCode}");
@@ -119,18 +118,18 @@ class _AudioPageState extends State<AudioPage> {
                     // Notifications Toggle
                     _buildSwitchRow('NOTIFICATIONS', notificationProvider.notifications, (value) {
                       setState(() {
-                        notificationProvider.notifications = value;
+                        notificationProvider.setNotifications(value);
                         // _sendIntensityData('Find', 0);
                       });
                     }, maxWidth, screenWidth, themeProvider),
                     SizedBox(height: buttonSpacing), // Spacing between rows
 
                     // Haptic Toggle
-                    _buildSwitchRow('HAPTIC', haptic, (value) {
+                    _buildSwitchRow('HAPTIC', notificationProvider.haptic, (value) {
                       setState(() {
-                        haptic = value;
-                        if (haptic) {
-                          _sendIntensityData('Haptic', hapticIntensity == 25 ? 70 : hapticIntensity == 50 ? 80 : hapticIntensity == 75 ? 90 : 100);
+                        notificationProvider.setHaptic(value);
+                        if (notificationProvider.haptic) {
+                          _sendIntensityData('Haptic', notificationProvider.hapticIntensity == 25 ? 70 : notificationProvider.hapticIntensity == 50 ? 80 : notificationProvider.hapticIntensity == 75 ? 90 : 100);
                         } else {
                           _sendIntensityData('Haptic', 0.0);
                         }
@@ -139,11 +138,12 @@ class _AudioPageState extends State<AudioPage> {
                     SizedBox(height: buttonSpacing), // Spacing between rows
 
                     // Haptic Intensity Button
-                    _buildIntensityButtonRow('HAPTIC INTENSITY', hapticIntensity, () {
+                    _buildIntensityButtonRow('HAPTIC INTENSITY', notificationProvider.hapticIntensity, () {
                       setState(() {
-                        if (haptic) {
-                          hapticIntensity = _cycleIntensity(hapticIntensity); // Ensure this is a double
-                          _sendIntensityData('Haptic', hapticIntensity == 25 ? 70 : hapticIntensity == 50 ? 80 : hapticIntensity == 75 ? 90 : 100);
+                        final newHapticIntensity = _cycleIntensity(notificationProvider.hapticIntensity);
+                        notificationProvider.setHapticIntensity(newHapticIntensity);
+                        if (notificationProvider.haptic) {
+                          _sendIntensityData('Haptic', newHapticIntensity == 25 ? 70 : newHapticIntensity == 50 ? 80 : newHapticIntensity == 75 ? 90 : 100);
                         } else {
                           _sendIntensityData('Haptic', 0.0);
                         }
@@ -152,11 +152,11 @@ class _AudioPageState extends State<AudioPage> {
                     SizedBox(height: buttonSpacing), // Spacing between rows
 
                     // Buzzer Toggle
-                    _buildSwitchRow('BUZZER', buzzer, (value) {
+                    _buildSwitchRow('BUZZER', notificationProvider.buzzer, (value) {
                       setState(() {
-                        buzzer = value;
-                        if (buzzer) {
-                          _sendIntensityData('Buzzer', buzzerIntensity == 25 ? 1 : buzzerIntensity == 50 ? 3 : buzzerIntensity == 75 ? 5 : 10);
+                        notificationProvider.setBuzzer(value);
+                        if (notificationProvider.buzzer) {
+                          _sendIntensityData('Buzzer', notificationProvider.buzzerIntensity == 25 ? 1 : notificationProvider.buzzerIntensity == 50 ? 3 : notificationProvider.buzzerIntensity == 75 ? 5 : 10);
                         } else {
                           _sendIntensityData('Buzzer', 0.0);
                         }
@@ -165,11 +165,12 @@ class _AudioPageState extends State<AudioPage> {
                     SizedBox(height: buttonSpacing), // Spacing between rows
 
                     // Buzzer Intensity Button
-                    _buildIntensityButtonRow('BUZZER INTENSITY', buzzerIntensity, () {
+                    _buildIntensityButtonRow('BUZZER INTENSITY', notificationProvider.buzzerIntensity, () {
                       setState(() {
-                        if (buzzer) {
-                          buzzerIntensity = _cycleIntensity(buzzerIntensity); // Ensure this is a double
-                          _sendIntensityData('Buzzer', buzzerIntensity == 25 ? 1 : buzzerIntensity == 50 ? 3 : buzzerIntensity == 75 ? 5 : 10);
+                        final newBuzzerIntensity = _cycleIntensity(notificationProvider.buzzerIntensity);
+                        notificationProvider.setBuzzerIntensity(newBuzzerIntensity);
+                        if (notificationProvider.buzzer) {
+                          _sendIntensityData('Buzzer', newBuzzerIntensity == 25 ? 1 : newBuzzerIntensity == 50 ? 3 : newBuzzerIntensity == 75 ? 5 : 10);
                         } else {
                           _sendIntensityData('Buzzer', 0.0);
                         }

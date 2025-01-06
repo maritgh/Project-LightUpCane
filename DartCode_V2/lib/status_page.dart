@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
+import 'generated/l10n.dart';
 import 'theme_provider.dart';
 import 'notification_provider.dart';
 import 'support_page.dart';
@@ -94,7 +95,7 @@ class _StatusPageState extends State<StatusPage> {
                   ),
                   child: Center(
                     child: Text(
-                      'STATUS',
+                      S.of(context).status,
                       style: TextStyle(
                         color: themeProvider.accentColor, // Use accent color from ThemeProvider
                         fontSize: screenWidth * 0.07,
@@ -116,12 +117,12 @@ class _StatusPageState extends State<StatusPage> {
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        _buildDisplayRow('BATTERY', battery, maxWidth, screenWidth, themeProvider),
-                        _buildDisplayRow('LIGHT', light, maxWidth, screenWidth, themeProvider),
-                        _buildDisplayRow('NOTIFICATIONS', notifications, maxWidth, screenWidth, themeProvider),
-                        _buildDisplayRow('LIGHT INTENSITY', lightIntensity, maxWidth, screenWidth, themeProvider),
-                        _buildDisplayRow('HAPTIC INTENSITY', hapticIntensity, maxWidth, screenWidth, themeProvider),
-                        _buildDisplayRow('BUZZER INTENSITY', buzzerIntensity, maxWidth, screenWidth, themeProvider),
+                        _buildDisplayRow(S.of(context).battery, battery, maxWidth, screenWidth, themeProvider),
+                        _buildDisplayRow(S.of(context).light, light, maxWidth, screenWidth, themeProvider),
+                        _buildDisplayRow(S.of(context).notifications, notifications, maxWidth, screenWidth, themeProvider),
+                        _buildDisplayRow(S.of(context).light_intensity, lightIntensity, maxWidth, screenWidth, themeProvider),
+                        _buildDisplayRow(S.of(context).haptic_intensity, hapticIntensity, maxWidth, screenWidth, themeProvider),
+                        _buildDisplayRow(S.of(context).buzzer_intensity, buzzerIntensity, maxWidth, screenWidth, themeProvider),
                       ],
                     );
                   },

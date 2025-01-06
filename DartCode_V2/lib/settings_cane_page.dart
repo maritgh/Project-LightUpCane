@@ -1,12 +1,22 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
 import 'custom_button.dart';
 import 'audio_page.dart';
 import 'light_page.dart';
 import 'theme_provider.dart';
 import 'bottom_nav_bar.dart'; // Import your BottomNavBar
 
-class SettingsCanePage extends StatelessWidget {
+class SettingsCanePage extends StatefulWidget {
+  const SettingsCanePage({Key? key}) : super(key: key);
+
+  @override
+  _SettingsCanePageState createState() => _SettingsCanePageState();
+}
+
+class _SettingsCanePageState extends State<SettingsCanePage> {
+  
   @override
   Widget build(BuildContext context) {
     // Access ThemeProvider
@@ -93,6 +103,36 @@ class SettingsCanePage extends StatelessWidget {
                   ),
                   SizedBox(height: buttonSpacing), // Spacing between buttons
 
+                  // Find My Cane Button
+                  GestureDetector(
+                    onTap: () {
+                      _sendIntensityData('Find', 0);
+                      // Add your "Find My Cane" action here
+                      print('Find My Cane button pressed');
+                      // ScaffoldMessenger.of(context).showSnackBar(
+                      // const SnackBar(content: Text('Finding your cane...')),
+                      // );
+                    },
+                    child: Container(
+                      height: screenHeight * 0.25,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: dynamicColor,
+                      ),
+                      child: Center(
+                        child: Text(
+                          'Find My Cane',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: themeProvider.accentColor,
+                            fontSize: screenWidth * 0.05,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+
                   Spacer(), // Push content up to make space for bottom navigation bar
 
                   SizedBox(height: buttonSpacing),
@@ -105,5 +145,23 @@ class SettingsCanePage extends StatelessWidget {
       // Add the BottomNavBar with the currentPage set to "SettingsCane"
       bottomNavigationBar: BottomNavBar(currentPage: "SettingsCane"),
     );
+  }
+
+  Future<void> _sendIntensityData(String type, double intensityValue) async {
+    final url = Uri.parse("http://192.168.4.1/set");
+    try {
+      String dataString = "$type\$$intensityValue\$";
+ 
+      final response = await http.post(url, body: {
+        'data': dataString,
+      });
+      if (response.statusCode == 200) {
+        print("Data send succesfully");
+      } else {
+        print("Failed to send data: ${response.statusCode}");
+      }
+    } catch (e) {
+      print("Error sending data: $e");
+    }
   }
 }

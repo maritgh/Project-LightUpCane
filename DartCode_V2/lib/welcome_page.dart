@@ -5,6 +5,7 @@ import 'theme_provider.dart';
 import 'status_page.dart'; // Import StatusPage
 
 class WelcomePage extends StatelessWidget {
+  
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
@@ -27,7 +28,7 @@ class WelcomePage extends StatelessWidget {
           padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.1),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
+            children: <Widget>[              
               // Welcome Text
               Text(
                 'WELKOM BIJ',
@@ -66,6 +67,7 @@ class WelcomePage extends StatelessWidget {
                 textAlign: TextAlign.center,
               ),
               SizedBox(height: screenHeight * 0.2),
+
 
               // Return Button (Navigates to StatusPage)
               CustomButton(

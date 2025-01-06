@@ -30,6 +30,7 @@ void main() async {
 //   flutter_tts: ^4.1.0
 //   hive: ^2.2.3
 //   hive_flutter: ^1.1.0 
+//   flutter_local_notifications: ^18.0.1
 
 // class MyApp extends StatelessWidget {
 //   @override

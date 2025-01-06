@@ -1,6 +1,10 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:hive/hive.dart';
+import 'package:http/http.dart' as http;
 import 'theme_provider.dart';
+import 'notification_provider.dart';
 import 'bottom_nav_bar.dart';
 
 class PresetsPage extends StatefulWidget {
@@ -11,9 +15,23 @@ class PresetsPage extends StatefulWidget {
 }
 
 class _PresetsPageState extends State<PresetsPage> {
-  // List of preset names
-  List<String> presets = ["Preset_1", "Preset_2"];
+  late Box _settingsBox;
+  List<String> presets = [];
   String? selectedPreset;
+  bool notificationsEnabled = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeMemory();
+  }
+
+  Future<void> _initializeMemory() async {
+    _settingsBox = await Hive.openBox('presetsBox');
+    setState(() {
+      presets = List<String>.from(_settingsBox.get('presets', defaultValue: []));
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +71,6 @@ class _PresetsPageState extends State<PresetsPage> {
                 ),
               ),
             ),
-            // Adding space between the title and presets
             SizedBox(height: screenHeight * 0.03),
             Expanded(
               child: Padding(
@@ -66,7 +83,8 @@ class _PresetsPageState extends State<PresetsPage> {
                             children: presets
                                 .map((preset) => Padding(
                                       padding: const EdgeInsets.symmetric(vertical: 8),
-                                      child: _buildPresetTile(preset, maxWidth, screenWidth, themeProvider),
+                                      child: _buildPresetTile(
+                                          preset, maxWidth, screenWidth, themeProvider),
                                     ))
                                 .toList(),
                           )
@@ -83,17 +101,20 @@ class _PresetsPageState extends State<PresetsPage> {
     );
   }
 
-  // Widget to build each preset tile in the list
-  Widget _buildPresetTile(String preset, double maxWidth, double screenWidth, ThemeProvider themeProvider) {
+  Widget _buildPresetTile(
+      String preset, double maxWidth, double screenWidth, ThemeProvider themeProvider) {
     return GestureDetector(
-      onTap: () => setState(() => selectedPreset = preset),
+      onTap: () => setState(() {
+        selectedPreset = preset;
+        _loadPresetIntoTempStorage(preset);
+      }),
       child: Container(
         width: maxWidth,
         padding: EdgeInsets.symmetric(vertical: 12),
         decoration: BoxDecoration(
           color: themeProvider.themeMode == ThemeMode.dark
-                ? Colors.grey[850]
-                : Colors.grey[400],
+              ? Colors.grey[850]
+              : Colors.grey[400],
           borderRadius: BorderRadius.circular(5),
         ),
         child: Center(
@@ -110,33 +131,39 @@ class _PresetsPageState extends State<PresetsPage> {
     );
   }
 
-  // Widget to build the preset options when a preset is selected
-  Widget _buildPresetOptions(double screenWidth, double maxWidth, ThemeProvider themeProvider) {
+  Widget _buildPresetOptions(
+      double screenWidth, double maxWidth, ThemeProvider themeProvider) {
     return Column(
       children: [
-        _buildOptionButton("SELECT", screenWidth, themeProvider),
+        _buildOptionButton("SELECT", screenWidth, themeProvider, onPressed: () {
+          _applyPresetSettings();
+          setState(() => selectedPreset = null);
+        }),
         _buildOptionButton("RENAME", screenWidth, themeProvider, onPressed: _showRenameDialog),
         _buildOptionButton("DELETE", screenWidth, themeProvider, onPressed: () {
           setState(() {
+            _settingsBox.delete(selectedPreset);
             presets.remove(selectedPreset);
+            _savePresets();
             selectedPreset = null;
           });
         }),
-        _buildOptionButton("BACK", screenWidth, themeProvider, onPressed: () => setState(() => selectedPreset = null)),
+        _buildOptionButton("BACK", screenWidth, themeProvider,
+            onPressed: () => setState(() => selectedPreset = null)),
       ],
     );
   }
 
-  // Helper to build each option button in the preset options menu
-  Widget _buildOptionButton(String label, double screenWidth, ThemeProvider themeProvider, {VoidCallback? onPressed}) {
+  Widget _buildOptionButton(String label, double screenWidth, ThemeProvider themeProvider,
+      {VoidCallback? onPressed}) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 5),
       child: ElevatedButton(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
           backgroundColor: themeProvider.themeMode == ThemeMode.dark
-                        ? Colors.grey[850]
-                        : Colors.grey[400],
+              ? Colors.grey[850]
+              : Colors.grey[400],
           minimumSize: Size(double.infinity, 50),
         ),
         child: Text(
@@ -150,16 +177,16 @@ class _PresetsPageState extends State<PresetsPage> {
     );
   }
 
-  // Widget for the Save button at the bottom of the page
-  Widget _buildSaveButton(double screenWidth, double screenHeight, ThemeProvider themeProvider) {
+  Widget _buildSaveButton(
+      double screenWidth, double screenHeight, ThemeProvider themeProvider) {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: screenHeight * 0.02),
       child: ElevatedButton(
         onPressed: _showSaveDialog,
         style: ElevatedButton.styleFrom(
           backgroundColor: themeProvider.themeMode == ThemeMode.dark
-                        ? Colors.grey[850]
-                        : Colors.grey[400],
+              ? Colors.grey[850]
+              : Colors.grey[400],
           padding: EdgeInsets.symmetric(vertical: 15),
           minimumSize: Size(screenWidth * 0.8, 50),
         ),
@@ -174,75 +201,149 @@ class _PresetsPageState extends State<PresetsPage> {
     );
   }
 
-  // Method to show a dialog to save a new preset with a custom name
+  void _savePreset(String presetName) {
+    final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
+    final notificationProvider = Provider.of<NotificationProvider>(context, listen: false);
+    _settingsBox.put(presetName, {
+      'themeMode': themeProvider.themeMode.toString(),
+      'accentColor': themeProvider.accentColor.value,
+      'notificationsEnabled': notificationProvider.notifications,
+      'hapticEnabled': notificationProvider.haptic,
+      'hapticIntensity': notificationProvider.hapticIntensity,
+      'buzzerEnabled': notificationProvider.buzzer,
+      'buzzerIntensity': notificationProvider.buzzerIntensity,
+      'lightIntensity': notificationProvider.lightIntensity,
+    });
+  }
+
+  void _loadPresetIntoTempStorage(String presetName) {
+    final presetData = _settingsBox.get(presetName, defaultValue: {});
+    if (presetData.isNotEmpty) {
+      notificationsEnabled = presetData['notificationsEnabled'] ?? false;
+    }
+  }
+
+  void _applyPresetSettings() async {
+  final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
+  final notificationProvider = Provider.of<NotificationProvider>(context, listen: false);
+  final presetData = _settingsBox.get(selectedPreset, defaultValue: {});
+
+  if (presetData.isNotEmpty) {
+    themeProvider.setThemeMode(
+      presetData['themeMode'] == 'ThemeMode.dark' ? ThemeMode.dark : ThemeMode.light,
+    );
+    themeProvider.setAccentColor(Color(presetData['accentColor']));
+
+    // Notifications
+    notificationProvider.setNotifications(presetData['notificationsEnabled'] ?? false);
+
+    // Haptic
+    notificationProvider.setHaptic(presetData['hapticEnabled'] ?? false);
+    notificationProvider.setHapticIntensity(presetData['hapticIntensity'] ?? 0.0);
+    await _sendPresetData('Haptic', presetData['hapticEnabled'] ? presetData['hapticIntensity'] : 0.0);
+
+    // Buzzer
+    notificationProvider.setBuzzer(presetData['buzzerEnabled'] ?? false);
+    notificationProvider.setBuzzerIntensity(presetData['buzzerIntensity'] ?? 0.0);
+    await _sendPresetData('Buzzer', presetData['buzzerEnabled'] ? presetData['buzzerIntensity'] : 0.0);
+
+    // Light
+    notificationProvider.setLightIntensity(presetData['lightIntensity'] ?? 'LOW');
+    await _sendPresetData('Light', presetData['lightIntensity'] == 'LOW' ? 30 : presetData['lightIntensity'] == 'MID' ? 60 : 100);
+  }
+}
+
+
+  void _savePresets() {
+    _settingsBox.put('presets', presets);
+  }
+
   void _showSaveDialog() {
     TextEditingController nameController = TextEditingController();
-
     showDialog(
       context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text("Save New Preset"),
-          content: TextField(
-            controller: nameController,
-            decoration: InputDecoration(hintText: "Enter preset name"),
+      builder: (context) => AlertDialog(
+        title: Text("Save New Preset"),
+        content: TextField(
+          controller: nameController,
+          decoration: InputDecoration(hintText: "Enter preset name"),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              setState(() {
+                if (nameController.text.isNotEmpty) {
+                  presets.add(nameController.text);
+                  _savePreset(nameController.text);
+                  _savePresets();
+                }
+              });
+              Navigator.pop(context);
+            },
+            child: Text("Save"),
           ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                setState(() {
-                  if (nameController.text.isNotEmpty) {
-                    presets.add(nameController.text);
-                  }
-                });
-                Navigator.pop(context);
-              },
-              child: Text("Save"),
-            ),
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: Text("Cancel"),
-            ),
-          ],
-        );
-      },
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text("Cancel"),
+          ),
+        ],
+      ),
     );
   }
 
-  // Method to show a dialog for renaming the selected preset
   void _showRenameDialog() {
     TextEditingController renameController = TextEditingController(text: selectedPreset);
 
     showDialog(
       context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text("Rename Preset"),
-          content: TextField(
-            controller: renameController,
-            decoration: InputDecoration(hintText: "Enter new name"),
+      builder: (context) => AlertDialog(
+        title: Text("Rename Preset"),
+        content: TextField(
+          controller: renameController,
+          decoration: InputDecoration(hintText: "Enter new name"),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              setState(() {
+                if (renameController.text.isNotEmpty) {
+                  int index = presets.indexOf(selectedPreset!);
+                  presets[index] = renameController.text;
+                  _settingsBox.delete(selectedPreset);
+                  _savePreset(renameController.text);
+                  selectedPreset = renameController.text;
+                  _savePresets();
+                }
+              });
+              Navigator.pop(context);
+            },
+            child: Text("Rename"),
           ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                setState(() {
-                  if (renameController.text.isNotEmpty) {
-                    int index = presets.indexOf(selectedPreset!);
-                    presets[index] = renameController.text;
-                    selectedPreset = renameController.text;
-                  }
-                });
-                Navigator.pop(context);
-              },
-              child: Text("Rename"),
-            ),
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: Text("Cancel"),
-            ),
-          ],
-        );
-      },
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text("Cancel"),
+          ),
+        ],
+      ),
     );
+  }
+
+  // Method to send the haptic and buzzer intensity values to the server
+  Future<void> _sendPresetData(String type, double intensityValue) async {
+    final url = Uri.parse("http://192.168.4.1/set");
+    try {
+      String dataString = "$type\$$intensityValue\$";
+
+      final response = await http.post(url, body: {
+        'data' : dataString,
+      });
+      if (response.statusCode == 200) {
+        print("Data send succesfully");
+      } else {
+        print("Failed to send data: ${response.statusCode}");
+      }
+    } catch (e) {
+      print("Error sending data: $e");
+    }
   }
 }

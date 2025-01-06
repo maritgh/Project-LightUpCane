@@ -1,0 +1,20 @@
+{
+  "dutch": "DUTCH",
+  "english": "ENGLISH",
+  "hello": "Hello",
+  "welcome": "Welcome",
+  "status": "STATUS",
+  "battery": "BATTERY",
+  "light": "LIGHT",
+  "light_intensity": "LIGHT INTENSITY",
+  "notifications": "NOTIFICATIONS",
+  "haptic_intensity": "HAPTIC INTENSITY",
+  "buzzer_intensity": "BUZZER INTENSITY",
+  "": "",
+  "": "",
+  "": "",
+  "": "",
+  "": "",
+  "": "",
+  "": ""
+}

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart'; // Import provider
 import 'package:http/http.dart' as http;
 import 'theme_provider.dart'; // Import ThemeProvider
+import 'notification_provider.dart';
 import 'bottom_nav_bar.dart';
 
 class LightPage extends StatefulWidget {
@@ -12,8 +13,8 @@ class LightPage extends StatefulWidget {
 
 class _LightPageState extends State<LightPage> {
   // Variables to hold the state of the toggles and intensity buttons
-  bool light = false;
-  String lightIntensity = 'LOW';
+  // bool light = false;
+  // String lightIntensity = 'LOW';
 
   Timer? _timer;
 
@@ -24,10 +25,9 @@ class _LightPageState extends State<LightPage> {
       if (response.statusCode == 200) {
         List<String> values = response.body.split(" ");
         if (values.length >= 6) {
-          setState(() {
-            lightIntensity = values[1] == '30' ? 'LOW' : values[1] == '60' ? 'MID' : 'HIGH';
-            light = values[5] == '0' ? false : true;
-          });
+          final notificationProvider = Provider.of<NotificationProvider>(context, listen: false);
+          notificationProvider.setLightIntensity(values[1] == '30' ? 'LOW' : values[1] == '60' ? 'MID' : 'HIGH');
+          notificationProvider.setLight(values[5] == '0' ? false : true);
         }
       } else {
         print("Failed to load data, status code: ${response.statusCode}");
@@ -54,6 +54,7 @@ class _LightPageState extends State<LightPage> {
   Widget build(BuildContext context) {
     // Access ThemeProvider
     final themeProvider = Provider.of<ThemeProvider>(context);
+    final notificationProvider = Provider.of<NotificationProvider>(context);
 
     // Get screen dimensions for dynamic scaling
     var screenWidth = MediaQuery.of(context).size.width;
@@ -104,17 +105,17 @@ class _LightPageState extends State<LightPage> {
                   SizedBox(height: buttonSpacing), // Space between header and rows
 
                   // Light Toggle
-                  _buildSwitchRow('LIGHT', light, (value) {
+                  _buildSwitchRow('LIGHT', notificationProvider.light, (value) {
                     setState(() {
-                      light = value;
-                      _sendIntensityData('LightSwitch', light ? 1 : 0);
-                      _sendIntensityData('Light', lightIntensity == 'LOW' ? 30 : lightIntensity == 'MID' ? 60 : 100);
+                      notificationProvider.setLight(value);
+                      _sendIntensityData('LightSwitch', notificationProvider.light ? 1 : 0);
+                      _sendIntensityData('Light', notificationProvider.lightIntensity == 'LOW' ? 30 : notificationProvider.lightIntensity == 'MID' ? 60 : 100);
                     });
                   }, maxWidth, screenWidth, themeProvider),
                   SizedBox(height: buttonSpacing), // Spacing between rows
 
                   // Light Intensity Toggle
-                  _buildLightIntensityRow('LIGHT INTENSITY', lightIntensity, maxWidth, screenWidth, themeProvider),
+                  _buildLightIntensityRow('LIGHT INTENSITY', notificationProvider.lightIntensity, maxWidth, screenWidth, themeProvider, notificationProvider),
                   SizedBox(height: buttonSpacing), // Spacing between rows
 
                   Spacer(),
@@ -182,7 +183,7 @@ class _LightPageState extends State<LightPage> {
   }
 
   // Updated Light Intensity row with cycling button
-  Widget _buildLightIntensityRow(String label, String value, double maxWidth, double screenWidth, ThemeProvider themeProvider) {
+  Widget _buildLightIntensityRow(String label, String value, double maxWidth, double screenWidth, ThemeProvider themeProvider, NotificationProvider notificationProvider) {
     List<String> intensities = ['LOW', 'MID', 'HIGH'];
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -201,8 +202,9 @@ class _LightPageState extends State<LightPage> {
           onTap: () {
             setState(() {
               int currentIndex = intensities.indexOf(value);
-              lightIntensity = intensities[(currentIndex + 1) % intensities.length];
-              _sendIntensityData('Light', lightIntensity == 'LOW' ? 30 : lightIntensity == 'MID' ? 60 : 100);
+              final newLightIntensity = intensities[(currentIndex + 1) % intensities.length];
+              notificationProvider.setLightIntensity(newLightIntensity);
+              _sendIntensityData('Light', newLightIntensity == 'LOW' ? 30 : newLightIntensity == 'MID' ? 60 : 100);
             });
           },
           child: Container(
