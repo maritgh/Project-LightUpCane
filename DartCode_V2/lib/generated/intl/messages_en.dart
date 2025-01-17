@@ -22,19 +22,75 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
+        "accents": MessageLookupByLibrary.simpleMessage("ACCENTS"),
+        "app": MessageLookupByLibrary.simpleMessage("APP"),
+        "app_description": MessageLookupByLibrary.simpleMessage(
+            "The app for your Lightup Cane"),
+        "audio": MessageLookupByLibrary.simpleMessage("AUDIO"),
+        "back": MessageLookupByLibrary.simpleMessage("BACK"),
         "battery": MessageLookupByLibrary.simpleMessage("BATTERY"),
+        "black": MessageLookupByLibrary.simpleMessage("Black"),
+        "blue": MessageLookupByLibrary.simpleMessage("Blue"),
+        "buzzer": MessageLookupByLibrary.simpleMessage("BUZZER"),
         "buzzer_intensity":
             MessageLookupByLibrary.simpleMessage("BUZZER INTENSITY"),
+        "cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
+        "confirm_rename": MessageLookupByLibrary.simpleMessage("Rename"),
+        "confirm_save": MessageLookupByLibrary.simpleMessage("Save"),
+        "connection": MessageLookupByLibrary.simpleMessage("CONNECTION"),
+        "contact": MessageLookupByLibrary.simpleMessage("CONTACT"),
+        "dark_theme": MessageLookupByLibrary.simpleMessage("Dark"),
+        "default_system":
+            MessageLookupByLibrary.simpleMessage("Default System"),
+        "delete": MessageLookupByLibrary.simpleMessage("DELETE"),
         "dutch": MessageLookupByLibrary.simpleMessage("DUTCH"),
         "english": MessageLookupByLibrary.simpleMessage("ENGLISH"),
+        "enter_preset_name":
+            MessageLookupByLibrary.simpleMessage("Enter Preset Name"),
+        "explanation_app": MessageLookupByLibrary.simpleMessage(""),
+        "explanation_presets": MessageLookupByLibrary.simpleMessage(""),
+        "explanation_settings_app": MessageLookupByLibrary.simpleMessage(""),
+        "explanation_settings_cane": MessageLookupByLibrary.simpleMessage(""),
+        "explanation_status": MessageLookupByLibrary.simpleMessage(""),
+        "find_my_cane": MessageLookupByLibrary.simpleMessage("Find My Cane"),
+        "green": MessageLookupByLibrary.simpleMessage("Green"),
+        "haptic": MessageLookupByLibrary.simpleMessage("HAPTIC"),
         "haptic_intensity":
             MessageLookupByLibrary.simpleMessage("HAPTIC INTENSITY"),
-        "hello": MessageLookupByLibrary.simpleMessage("Hello"),
+        "language": MessageLookupByLibrary.simpleMessage("LANGUAGE"),
+        "languages": MessageLookupByLibrary.simpleMessage("LANGUAGES"),
         "light": MessageLookupByLibrary.simpleMessage("LIGHT"),
         "light_intensity":
             MessageLookupByLibrary.simpleMessage("LIGHT INTENSITY"),
+        "light_theme": MessageLookupByLibrary.simpleMessage("Light"),
+        "move_on": MessageLookupByLibrary.simpleMessage("Move On"),
+        "nav_presets": MessageLookupByLibrary.simpleMessage("Presets"),
+        "nav_settings_app":
+            MessageLookupByLibrary.simpleMessage("Settings\nApp"),
+        "nav_settings_cane":
+            MessageLookupByLibrary.simpleMessage("Settings\nCane"),
+        "nav_status": MessageLookupByLibrary.simpleMessage("Status"),
         "notifications": MessageLookupByLibrary.simpleMessage("NOTIFICATIONS"),
+        "off": MessageLookupByLibrary.simpleMessage("OFF"),
+        "on": MessageLookupByLibrary.simpleMessage("ON"),
+        "orange": MessageLookupByLibrary.simpleMessage("Orange"),
+        "presets": MessageLookupByLibrary.simpleMessage("PRESETS"),
+        "purple": MessageLookupByLibrary.simpleMessage("Purple"),
+        "red": MessageLookupByLibrary.simpleMessage("Red"),
+        "rename": MessageLookupByLibrary.simpleMessage("RENAME"),
+        "rename_preset": MessageLookupByLibrary.simpleMessage("Rename Preset"),
+        "save": MessageLookupByLibrary.simpleMessage("SAVE"),
+        "save_new_preset":
+            MessageLookupByLibrary.simpleMessage("Save New Preset"),
+        "select": MessageLookupByLibrary.simpleMessage("SELECT"),
+        "settings_app": MessageLookupByLibrary.simpleMessage("SETTINGS APP"),
+        "settings_cane": MessageLookupByLibrary.simpleMessage("SETTINGS CANE"),
         "status": MessageLookupByLibrary.simpleMessage("STATUS"),
-        "welcome": MessageLookupByLibrary.simpleMessage("Welcome")
+        "support": MessageLookupByLibrary.simpleMessage("SUPPORT"),
+        "theme": MessageLookupByLibrary.simpleMessage("THEME"),
+        "themes": MessageLookupByLibrary.simpleMessage("THEMES"),
+        "welcome": MessageLookupByLibrary.simpleMessage("WELCOME TO"),
+        "white": MessageLookupByLibrary.simpleMessage("White"),
+        "yellow": MessageLookupByLibrary.simpleMessage("Yellow")
       };
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_tts/flutter_tts.dart';
+import 'generated/l10n.dart';
 import 'theme_provider.dart';
 import 'bottom_nav_bar.dart';
 
@@ -61,7 +62,7 @@ class SupportPage extends StatelessWidget {
                   ),
                   child: Center(
                     child: Text(
-                      'SUPPORT',
+                      S.of(context).support,
                       style: TextStyle(
                         color: themeProvider.accentColor, // Use accent color from ThemeProvider
                         fontSize: screenWidth * 0.07, // Dynamic font size based on screen width
@@ -74,19 +75,19 @@ class SupportPage extends StatelessWidget {
               SizedBox(height: buttonSpacing), // Space between header and buttons
 
               // Support Options (APP, PRESETS, SETTINGS, STATUS)
-              _buildSupportOption('APP', Icons.volume_up, screenWidth, themeProvider),
+              _buildSupportOption(S.of(context).app, Icons.volume_up, screenWidth, themeProvider),
               SizedBox(height: buttonSpacing), // Space between buttons
-              _buildSupportOption('PRESETS', Icons.volume_up, screenWidth, themeProvider),
+              _buildSupportOption(S.of(context).presets, Icons.volume_up, screenWidth, themeProvider),
               SizedBox(height: buttonSpacing), // Space between buttons
-              _buildSupportOption('SETTINGS CANE', Icons.volume_up, screenWidth, themeProvider),
+              _buildSupportOption(S.of(context).settings_cane, Icons.volume_up, screenWidth, themeProvider),
               SizedBox(height: buttonSpacing), // Space between buttons
-              _buildSupportOption('SETTINGS APP', Icons.volume_up, screenWidth, themeProvider),
+              _buildSupportOption(S.of(context).settings_app, Icons.volume_up, screenWidth, themeProvider),
               SizedBox(height: buttonSpacing), // Space between buttons
-              _buildSupportOption('STATUS', Icons.volume_up, screenWidth, themeProvider),
+              _buildSupportOption(S.of(context).status, Icons.volume_up, screenWidth, themeProvider),
               SizedBox(height: buttonSpacing), // Space between buttons
 
               // Contact Option at the bottom
-              _buildContactOption('CONTACT', Icons.phone, screenWidth, themeProvider),
+              _buildContactOption(S.of(context).contact, Icons.phone, screenWidth, themeProvider),
               SizedBox(height: buttonSpacing), // Spacing before the return button
             ],
           ),

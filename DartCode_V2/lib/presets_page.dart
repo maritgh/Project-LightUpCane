@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
+import 'generated/l10n.dart';
 import 'theme_provider.dart';
 import 'notification_provider.dart';
 import 'bottom_nav_bar.dart';
@@ -60,7 +61,7 @@ class _PresetsPageState extends State<PresetsPage> {
                   ),
                   child: Center(
                     child: Text(
-                      'PRESETS',
+                      S.of(context).presets,
                       style: TextStyle(
                         color: themeProvider.accentColor,
                         fontSize: screenWidth * 0.07,
@@ -135,12 +136,12 @@ class _PresetsPageState extends State<PresetsPage> {
       double screenWidth, double maxWidth, ThemeProvider themeProvider) {
     return Column(
       children: [
-        _buildOptionButton("SELECT", screenWidth, themeProvider, onPressed: () {
+        _buildOptionButton(S.of(context).select, screenWidth, themeProvider, onPressed: () {
           _applyPresetSettings();
           setState(() => selectedPreset = null);
         }),
-        _buildOptionButton("RENAME", screenWidth, themeProvider, onPressed: _showRenameDialog),
-        _buildOptionButton("DELETE", screenWidth, themeProvider, onPressed: () {
+        _buildOptionButton(S.of(context).rename, screenWidth, themeProvider, onPressed: _showRenameDialog),
+        _buildOptionButton(S.of(context).delete, screenWidth, themeProvider, onPressed: () {
           setState(() {
             _settingsBox.delete(selectedPreset);
             presets.remove(selectedPreset);
@@ -148,7 +149,7 @@ class _PresetsPageState extends State<PresetsPage> {
             selectedPreset = null;
           });
         }),
-        _buildOptionButton("BACK", screenWidth, themeProvider,
+        _buildOptionButton(S.of(context).back, screenWidth, themeProvider,
             onPressed: () => setState(() => selectedPreset = null)),
       ],
     );
@@ -191,7 +192,7 @@ class _PresetsPageState extends State<PresetsPage> {
           minimumSize: Size(screenWidth * 0.8, 50),
         ),
         child: Text(
-          "SAVE",
+          S.of(context).save,
           style: TextStyle(
             fontSize: screenWidth * 0.045,
             fontWeight: FontWeight.bold,
@@ -263,10 +264,10 @@ class _PresetsPageState extends State<PresetsPage> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text("Save New Preset"),
+        title: Text(S.of(context).save_new_preset),
         content: TextField(
           controller: nameController,
-          decoration: InputDecoration(hintText: "Enter preset name"),
+          decoration: InputDecoration(hintText: S.of(context).enter_preset_name),
         ),
         actions: [
           TextButton(
@@ -280,11 +281,11 @@ class _PresetsPageState extends State<PresetsPage> {
               });
               Navigator.pop(context);
             },
-            child: Text("Save"),
+            child: Text(S.of(context).confirm_save),
           ),
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text("Cancel"),
+            child: Text(S.of(context).cancel),
           ),
         ],
       ),
@@ -297,7 +298,7 @@ class _PresetsPageState extends State<PresetsPage> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text("Rename Preset"),
+        title: Text(S.of(context).rename_preset),
         content: TextField(
           controller: renameController,
           decoration: InputDecoration(hintText: "Enter new name"),
@@ -317,11 +318,11 @@ class _PresetsPageState extends State<PresetsPage> {
               });
               Navigator.pop(context);
             },
-            child: Text("Rename"),
+            child: Text(S.of(context).confirm_rename),
           ),
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text("Cancel"),
+            child: Text(S.of(context).cancel),
           ),
         ],
       ),

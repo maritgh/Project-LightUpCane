@@ -22,19 +22,79 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
+        "accents": MessageLookupByLibrary.simpleMessage("ACCENTEN"),
+        "app": MessageLookupByLibrary.simpleMessage("APP"),
+        "app_description": MessageLookupByLibrary.simpleMessage(
+            "De app voor jouw LightUp Cane"),
+        "audio": MessageLookupByLibrary.simpleMessage("GELUID"),
+        "back": MessageLookupByLibrary.simpleMessage("TERUG"),
         "battery": MessageLookupByLibrary.simpleMessage("BATTERIJ"),
+        "black": MessageLookupByLibrary.simpleMessage("Zwart"),
+        "blue": MessageLookupByLibrary.simpleMessage("Blauw"),
+        "buzzer": MessageLookupByLibrary.simpleMessage("BUZZER"),
         "buzzer_intensity":
             MessageLookupByLibrary.simpleMessage("BUZZER INTENSITEIT"),
+        "cancel": MessageLookupByLibrary.simpleMessage("Annuleren"),
+        "confirm_rename": MessageLookupByLibrary.simpleMessage("Hernoemen"),
+        "confirm_save": MessageLookupByLibrary.simpleMessage("Opslaan"),
+        "connection": MessageLookupByLibrary.simpleMessage("VERBINDING"),
+        "contact": MessageLookupByLibrary.simpleMessage("CONTACT"),
+        "dark_theme": MessageLookupByLibrary.simpleMessage("Donker"),
+        "default_system":
+            MessageLookupByLibrary.simpleMessage("Standaard Systeem"),
+        "delete": MessageLookupByLibrary.simpleMessage("VERWIJDEREN"),
         "dutch": MessageLookupByLibrary.simpleMessage("NEDERLANDS"),
         "english": MessageLookupByLibrary.simpleMessage("ENGELS"),
+        "enter_preset_name":
+            MessageLookupByLibrary.simpleMessage("Naam voorinstellingen"),
+        "explanation_app": MessageLookupByLibrary.simpleMessage(""),
+        "explanation_presets": MessageLookupByLibrary.simpleMessage(""),
+        "explanation_settings_app": MessageLookupByLibrary.simpleMessage(""),
+        "explanation_settings_cane": MessageLookupByLibrary.simpleMessage(""),
+        "explanation_status": MessageLookupByLibrary.simpleMessage(""),
+        "find_my_cane": MessageLookupByLibrary.simpleMessage("Vind Mijn Stok"),
+        "green": MessageLookupByLibrary.simpleMessage("Groen"),
+        "haptic": MessageLookupByLibrary.simpleMessage("HAPTISCH"),
         "haptic_intensity":
             MessageLookupByLibrary.simpleMessage("HAPTISCHE INTENSITEIT"),
-        "hello": MessageLookupByLibrary.simpleMessage("Hallo"),
+        "language": MessageLookupByLibrary.simpleMessage("TAAL"),
+        "languages": MessageLookupByLibrary.simpleMessage("TALEN"),
         "light": MessageLookupByLibrary.simpleMessage("LICHT"),
         "light_intensity":
             MessageLookupByLibrary.simpleMessage("LICHT INTENSITEIT"),
+        "light_theme": MessageLookupByLibrary.simpleMessage("Licht"),
+        "move_on": MessageLookupByLibrary.simpleMessage("Verder gaan"),
+        "nav_presets":
+            MessageLookupByLibrary.simpleMessage("Voor\ninstellingen"),
+        "nav_settings_app":
+            MessageLookupByLibrary.simpleMessage("Instellingen\nApp"),
+        "nav_settings_cane":
+            MessageLookupByLibrary.simpleMessage("Instellingen\nStok"),
+        "nav_status": MessageLookupByLibrary.simpleMessage("Status"),
         "notifications": MessageLookupByLibrary.simpleMessage("NOTIFICATIES"),
+        "off": MessageLookupByLibrary.simpleMessage("UIT"),
+        "on": MessageLookupByLibrary.simpleMessage("AAN"),
+        "orange": MessageLookupByLibrary.simpleMessage("Oranje"),
+        "presets": MessageLookupByLibrary.simpleMessage("VOORINSTELLINGEN"),
+        "purple": MessageLookupByLibrary.simpleMessage("Paars"),
+        "red": MessageLookupByLibrary.simpleMessage("Rood"),
+        "rename": MessageLookupByLibrary.simpleMessage("HERNOEMEN"),
+        "rename_preset":
+            MessageLookupByLibrary.simpleMessage("Hernoemen Voorinstellingen"),
+        "save": MessageLookupByLibrary.simpleMessage("OPSLAAN"),
+        "save_new_preset": MessageLookupByLibrary.simpleMessage(
+            "Nieuwe Voorinstellingen Opslaan"),
+        "select": MessageLookupByLibrary.simpleMessage("SELECTEREN"),
+        "settings_app":
+            MessageLookupByLibrary.simpleMessage("INSTELLINGEN APP"),
+        "settings_cane":
+            MessageLookupByLibrary.simpleMessage("INSTELLINGEN STOK"),
         "status": MessageLookupByLibrary.simpleMessage("STATUS"),
-        "welcome": MessageLookupByLibrary.simpleMessage("Welkom")
+        "support": MessageLookupByLibrary.simpleMessage("HULP"),
+        "theme": MessageLookupByLibrary.simpleMessage("THEMA"),
+        "themes": MessageLookupByLibrary.simpleMessage("THEMA\'S"),
+        "welcome": MessageLookupByLibrary.simpleMessage("WELKOM BIJ"),
+        "white": MessageLookupByLibrary.simpleMessage("Wit"),
+        "yellow": MessageLookupByLibrary.simpleMessage("Geel")
       };
 }

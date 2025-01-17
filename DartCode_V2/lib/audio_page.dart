@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart'; // Import provider
 import 'package:http/http.dart' as http;
+import 'generated/l10n.dart';
 import 'theme_provider.dart'; // Import ThemeProvider
 import 'notification_provider.dart';
 import 'bottom_nav_bar.dart';
@@ -103,7 +104,7 @@ class _AudioPageState extends State<AudioPage> {
                         ),
                         child: Center(
                           child: Text(
-                            'AUDIO',
+                            S.of(context).audio,
                             style: TextStyle(
                               color: themeProvider.accentColor, // Use accent color from ThemeProvider
                               fontSize: screenWidth * 0.08, // Dynamic font size based on screen width
@@ -116,7 +117,7 @@ class _AudioPageState extends State<AudioPage> {
                     SizedBox(height: buttonSpacing), // Space between header and rows
 
                     // Notifications Toggle
-                    _buildSwitchRow('NOTIFICATIONS', notificationProvider.notifications, (value) {
+                    _buildSwitchRow(S.of(context).notifications, notificationProvider.notifications, (value) {
                       setState(() {
                         notificationProvider.setNotifications(value);
                         // _sendIntensityData('Find', 0);
@@ -125,7 +126,7 @@ class _AudioPageState extends State<AudioPage> {
                     SizedBox(height: buttonSpacing), // Spacing between rows
 
                     // Haptic Toggle
-                    _buildSwitchRow('HAPTIC', notificationProvider.haptic, (value) {
+                    _buildSwitchRow(S.of(context).haptic, notificationProvider.haptic, (value) {
                       setState(() {
                         notificationProvider.setHaptic(value);
                         if (notificationProvider.haptic) {
@@ -138,7 +139,7 @@ class _AudioPageState extends State<AudioPage> {
                     SizedBox(height: buttonSpacing), // Spacing between rows
 
                     // Haptic Intensity Button
-                    _buildIntensityButtonRow('HAPTIC INTENSITY', notificationProvider.hapticIntensity, () {
+                    _buildIntensityButtonRow(S.of(context).haptic_intensity, notificationProvider.hapticIntensity, () {
                       setState(() {
                         final newHapticIntensity = _cycleIntensity(notificationProvider.hapticIntensity);
                         notificationProvider.setHapticIntensity(newHapticIntensity);
@@ -152,7 +153,7 @@ class _AudioPageState extends State<AudioPage> {
                     SizedBox(height: buttonSpacing), // Spacing between rows
 
                     // Buzzer Toggle
-                    _buildSwitchRow('BUZZER', notificationProvider.buzzer, (value) {
+                    _buildSwitchRow(S.of(context).buzzer, notificationProvider.buzzer, (value) {
                       setState(() {
                         notificationProvider.setBuzzer(value);
                         if (notificationProvider.buzzer) {
@@ -165,7 +166,7 @@ class _AudioPageState extends State<AudioPage> {
                     SizedBox(height: buttonSpacing), // Spacing between rows
 
                     // Buzzer Intensity Button
-                    _buildIntensityButtonRow('BUZZER INTENSITY', notificationProvider.buzzerIntensity, () {
+                    _buildIntensityButtonRow(S.of(context).buzzer_intensity, notificationProvider.buzzerIntensity, () {
                       setState(() {
                         final newBuzzerIntensity = _cycleIntensity(notificationProvider.buzzerIntensity);
                         notificationProvider.setBuzzerIntensity(newBuzzerIntensity);

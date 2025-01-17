@@ -37,7 +37,7 @@ class LanguagePage extends StatelessWidget {
                   ),
                   child: Center(
                     child: Text(
-                      'LANGUAGE',
+                      S.of(context).language,
                       style: TextStyle(
                         color: themeProvider.accentColor, // Use accent color from ThemeProvider
                         fontSize: screenWidth * 0.07,
@@ -51,7 +51,7 @@ class LanguagePage extends StatelessWidget {
 
               // Themes Section
               Text(
-                'LANGUAGES',
+                S.of(context).languages,
                 style: TextStyle(
                   fontSize: screenWidth * 0.06,
                   fontWeight: FontWeight.bold,

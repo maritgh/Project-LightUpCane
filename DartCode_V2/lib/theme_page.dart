@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'generated/l10n.dart';
 import 'theme_provider.dart';
 import 'bottom_nav_bar.dart';
 
@@ -36,7 +37,7 @@ class ThemePage extends StatelessWidget {
                   ),
                   child: Center(
                     child: Text(
-                      'THEME',
+                      S.of(context).theme,
                       style: TextStyle(
                         color: themeProvider.accentColor, // Use accent color from ThemeProvider
                         fontSize: screenWidth * 0.07,
@@ -50,7 +51,7 @@ class ThemePage extends StatelessWidget {
 
               // Themes Section
               Text(
-                'THEMES',
+                S.of(context).themes,
                 style: TextStyle(
                   fontSize: screenWidth * 0.06,
                   fontWeight: FontWeight.bold,
@@ -58,19 +59,19 @@ class ThemePage extends StatelessWidget {
                 ),
               ),
               fullWidthButton(
-                'Default System',
+                S.of(context).default_system,
                     () => themeProvider.setThemeMode(ThemeMode.system),
                 themeProvider.themeMode == ThemeMode.system ? themeProvider.accentColor : Colors.grey,
                 screenWidth,
               ),
               fullWidthButton(
-                'Light',
+                S.of(context).light_theme,
                     () => themeProvider.setThemeMode(ThemeMode.light),
                 themeProvider.themeMode == ThemeMode.light ? themeProvider.accentColor : Colors.grey,
                 screenWidth,
               ),
               fullWidthButton(
-                'Dark',
+                S.of(context).dark_theme,
                     () => themeProvider.setThemeMode(ThemeMode.dark),
                 themeProvider.themeMode == ThemeMode.dark ? themeProvider.accentColor : Colors.grey,
                 screenWidth,
@@ -79,7 +80,7 @@ class ThemePage extends StatelessWidget {
 
               // Accents Section
               Text(
-                'ACCENTS',
+                S.of(context).accents,
                 style: TextStyle(
                   fontSize: screenWidth * 0.06,
                   fontWeight: FontWeight.bold,
@@ -94,10 +95,10 @@ class ThemePage extends StatelessWidget {
                   Expanded(
                     child: Column(
                       children: [
-                        accentButton('Red', Colors.red[400]!, themeProvider, screenWidth),
-                        accentButton('Orange', Colors.orange[400]!, themeProvider, screenWidth),
-                        accentButton('Yellow', Colors.yellow[600]!, themeProvider, screenWidth),
-                        accentButton('Green', Colors.green[400]!, themeProvider, screenWidth),
+                        accentButton(S.of(context).red, Colors.red[400]!, themeProvider, screenWidth),
+                        accentButton(S.of(context).orange, Colors.orange[400]!, themeProvider, screenWidth),
+                        accentButton(S.of(context).yellow, Colors.yellow[600]!, themeProvider, screenWidth),
+                        accentButton(S.of(context).green, Colors.green[400]!, themeProvider, screenWidth),
                       ],
                     ),
                   ),
@@ -106,10 +107,10 @@ class ThemePage extends StatelessWidget {
                   Expanded(
                     child: Column(
                       children: [
-                        accentButton('Blue', Colors.blue[400]!, themeProvider, screenWidth),
-                        accentButton('Purple', Colors.purple[400]!, themeProvider, screenWidth),
-                        accentButton('White', Colors.white, themeProvider, screenWidth),
-                        accentButton('Black', Colors.black, themeProvider, screenWidth),
+                        accentButton(S.of(context).blue, Colors.blue[400]!, themeProvider, screenWidth),
+                        accentButton(S.of(context).purple, Colors.purple[400]!, themeProvider, screenWidth),
+                        accentButton(S.of(context).white, Colors.white, themeProvider, screenWidth),
+                        accentButton(S.of(context).black, Colors.black, themeProvider, screenWidth),
                       ],
                     ),
                   ),

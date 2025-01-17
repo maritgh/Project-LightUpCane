@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
+import 'generated/l10n.dart';
 import 'custom_button.dart';
 import 'audio_page.dart';
 import 'light_page.dart';
@@ -61,7 +62,7 @@ class _SettingsCanePageState extends State<SettingsCanePage> {
                       ),
                       child: Center(
                         child: Text(
-                          'SETTINGS CANE',
+                          S.of(context).settings_cane,
                           style: TextStyle(
                             color: themeProvider.accentColor, // Use accent color from ThemeProvider
                             fontSize: screenWidth * 0.08, // Dynamic font size based on screen width
@@ -75,7 +76,7 @@ class _SettingsCanePageState extends State<SettingsCanePage> {
 
                   // Audio Button
                   CustomButton(
-                    label: 'AUDIO',
+                    label: S.of(context).audio,
                     onPressed: () {
                       Navigator.push(
                         context,
@@ -90,7 +91,7 @@ class _SettingsCanePageState extends State<SettingsCanePage> {
 
                   // Light Button
                   CustomButton(
-                    label: 'LIGHT',
+                    label: S.of(context).light,
                     onPressed: () {
                       Navigator.push(
                         context,
@@ -121,7 +122,7 @@ class _SettingsCanePageState extends State<SettingsCanePage> {
                       ),
                       child: Center(
                         child: Text(
-                          'Find My Cane',
+                          S.of(context).find_my_cane,
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             color: themeProvider.accentColor,

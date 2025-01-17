@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'generated/l10n.dart';
 import 'custom_button.dart';
 import 'theme_provider.dart';
 import 'status_page.dart'; // Import StatusPage
@@ -31,7 +32,7 @@ class WelcomePage extends StatelessWidget {
             children: <Widget>[              
               // Welcome Text
               Text(
-                'WELKOM BIJ',
+                S.of(context).welcome,
                 style: TextStyle(
                   color: themeProvider.themeMode == ThemeMode.light
                       ? Colors.black
@@ -57,7 +58,7 @@ class WelcomePage extends StatelessWidget {
 
               // Description Text
               Text(
-                'De app voor jouw Lightup Cane',
+                S.of(context).app_description,
                 style: TextStyle(
                   color: themeProvider.themeMode == ThemeMode.light
                       ? Colors.black
@@ -71,7 +72,7 @@ class WelcomePage extends StatelessWidget {
 
               // Return Button (Navigates to StatusPage)
               CustomButton(
-                label: 'Verder gaan',
+                label: S.of(context).move_on,
                 onPressed: () {
                   Navigator.push(
                     context,

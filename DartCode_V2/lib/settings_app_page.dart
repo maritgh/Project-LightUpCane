@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'generated/l10n.dart';
 import 'custom_button.dart';
 import 'theme_page.dart';
 import 'connection_page.dart';
@@ -52,7 +53,7 @@ class SettingsAppPage extends StatelessWidget {
                       ),
                       child: Center(
                         child: Text(
-                          'SETTINGS APP',
+                          S.of(context).settings_app,
                           style: TextStyle(
                             color: themeProvider.accentColor, // Use accent color from ThemeProvider
                             fontSize: screenWidth * 0.08, // Dynamic font size based on screen width
@@ -66,7 +67,7 @@ class SettingsAppPage extends StatelessWidget {
 
                   // Theme Button
                   CustomButton(
-                    label: 'THEME',
+                    label: S.of(context).theme,
                     onPressed: () {
                       Navigator.push(
                         context,
@@ -81,7 +82,7 @@ class SettingsAppPage extends StatelessWidget {
 
                   // Connection Button
                   CustomButton(
-                    label: 'CONNECTION',
+                    label: S.of(context).connection,
                     onPressed: () {
                       Navigator.push(
                         context,
@@ -96,7 +97,7 @@ class SettingsAppPage extends StatelessWidget {
 
                   // Connection Button
                   CustomButton(
-                    label: 'LANGUAGE',
+                    label: S.of(context).language,
                     onPressed: () {
                       Navigator.push(
                         context,

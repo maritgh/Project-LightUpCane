@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart'; // Import provider
 import 'package:http/http.dart' as http;
+import 'generated/l10n.dart';
 import 'theme_provider.dart'; // Import ThemeProvider
 import 'notification_provider.dart';
 import 'bottom_nav_bar.dart';
@@ -79,7 +80,7 @@ class _LightPageState extends State<LightPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  // Audio Title
+                  // Light Title
                   Center(
                     child: Container(
                       width: screenWidth * 0.8,
@@ -92,7 +93,7 @@ class _LightPageState extends State<LightPage> {
                       ),
                       child: Center(
                         child: Text(
-                          'LIGHT',
+                          S.of(context).light,
                           style: TextStyle(
                             color: themeProvider.accentColor, // Use accent color from ThemeProvider
                             fontSize: screenWidth * 0.08, // Dynamic font size based on screen width
@@ -105,7 +106,7 @@ class _LightPageState extends State<LightPage> {
                   SizedBox(height: buttonSpacing), // Space between header and rows
 
                   // Light Toggle
-                  _buildSwitchRow('LIGHT', notificationProvider.light, (value) {
+                  _buildSwitchRow(S.of(context).light, notificationProvider.light, (value) {
                     setState(() {
                       notificationProvider.setLight(value);
                       _sendIntensityData('LightSwitch', notificationProvider.light ? 1 : 0);
@@ -115,7 +116,7 @@ class _LightPageState extends State<LightPage> {
                   SizedBox(height: buttonSpacing), // Spacing between rows
 
                   // Light Intensity Toggle
-                  _buildLightIntensityRow('LIGHT INTENSITY', notificationProvider.lightIntensity, maxWidth, screenWidth, themeProvider, notificationProvider),
+                  _buildLightIntensityRow(S.of(context).light_intensity, notificationProvider.lightIntensity, maxWidth, screenWidth, themeProvider, notificationProvider),
                   SizedBox(height: buttonSpacing), // Spacing between rows
 
                   Spacer(),

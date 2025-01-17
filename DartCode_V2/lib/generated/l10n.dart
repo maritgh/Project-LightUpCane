@@ -70,21 +70,141 @@ class S {
     );
   }
 
-  /// `Hello`
-  String get hello {
+  /// `ON`
+  String get on {
     return Intl.message(
-      'Hello',
-      name: 'hello',
+      'ON',
+      name: 'on',
       desc: '',
       args: [],
     );
   }
 
-  /// `Welcome`
+  /// `OFF`
+  String get off {
+    return Intl.message(
+      'OFF',
+      name: 'off',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `WELCOME TO`
   String get welcome {
     return Intl.message(
-      'Welcome',
+      'WELCOME TO',
       name: 'welcome',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The app for your Lightup Cane`
+  String get app_description {
+    return Intl.message(
+      'The app for your Lightup Cane',
+      name: 'app_description',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Move On`
+  String get move_on {
+    return Intl.message(
+      'Move On',
+      name: 'move_on',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Status`
+  String get nav_status {
+    return Intl.message(
+      'Status',
+      name: 'nav_status',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Presets`
+  String get nav_presets {
+    return Intl.message(
+      'Presets',
+      name: 'nav_presets',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Settings\nCane`
+  String get nav_settings_cane {
+    return Intl.message(
+      'Settings\nCane',
+      name: 'nav_settings_cane',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Settings\nApp`
+  String get nav_settings_app {
+    return Intl.message(
+      'Settings\nApp',
+      name: 'nav_settings_app',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `SUPPORT`
+  String get support {
+    return Intl.message(
+      'SUPPORT',
+      name: 'support',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `APP`
+  String get app {
+    return Intl.message(
+      'APP',
+      name: 'app',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `PRESETS`
+  String get presets {
+    return Intl.message(
+      'PRESETS',
+      name: 'presets',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `SETTINGS CANE`
+  String get settings_cane {
+    return Intl.message(
+      'SETTINGS CANE',
+      name: 'settings_cane',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `SETTINGS APP`
+  String get settings_app {
+    return Intl.message(
+      'SETTINGS APP',
+      name: 'settings_app',
       desc: '',
       args: [],
     );
@@ -140,11 +260,31 @@ class S {
     );
   }
 
+  /// `HAPTIC`
+  String get haptic {
+    return Intl.message(
+      'HAPTIC',
+      name: 'haptic',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `HAPTIC INTENSITY`
   String get haptic_intensity {
     return Intl.message(
       'HAPTIC INTENSITY',
       name: 'haptic_intensity',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `BUZZER`
+  String get buzzer {
+    return Intl.message(
+      'BUZZER',
+      name: 'buzzer',
       desc: '',
       args: [],
     );
@@ -160,7 +300,365 @@ class S {
     );
   }
 
-  // skipped getter for the '' key
+  /// ``
+  String get explanation_app {
+    return Intl.message(
+      '',
+      name: 'explanation_app',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get explanation_presets {
+    return Intl.message(
+      '',
+      name: 'explanation_presets',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get explanation_settings_cane {
+    return Intl.message(
+      '',
+      name: 'explanation_settings_cane',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get explanation_settings_app {
+    return Intl.message(
+      '',
+      name: 'explanation_settings_app',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get explanation_status {
+    return Intl.message(
+      '',
+      name: 'explanation_status',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `CONTACT`
+  String get contact {
+    return Intl.message(
+      'CONTACT',
+      name: 'contact',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `SAVE`
+  String get save {
+    return Intl.message(
+      'SAVE',
+      name: 'save',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Save New Preset`
+  String get save_new_preset {
+    return Intl.message(
+      'Save New Preset',
+      name: 'save_new_preset',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter Preset Name`
+  String get enter_preset_name {
+    return Intl.message(
+      'Enter Preset Name',
+      name: 'enter_preset_name',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Save`
+  String get confirm_save {
+    return Intl.message(
+      'Save',
+      name: 'confirm_save',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cancel`
+  String get cancel {
+    return Intl.message(
+      'Cancel',
+      name: 'cancel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `SELECT`
+  String get select {
+    return Intl.message(
+      'SELECT',
+      name: 'select',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `RENAME`
+  String get rename {
+    return Intl.message(
+      'RENAME',
+      name: 'rename',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Rename Preset`
+  String get rename_preset {
+    return Intl.message(
+      'Rename Preset',
+      name: 'rename_preset',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Rename`
+  String get confirm_rename {
+    return Intl.message(
+      'Rename',
+      name: 'confirm_rename',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `DELETE`
+  String get delete {
+    return Intl.message(
+      'DELETE',
+      name: 'delete',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `BACK`
+  String get back {
+    return Intl.message(
+      'BACK',
+      name: 'back',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `AUDIO`
+  String get audio {
+    return Intl.message(
+      'AUDIO',
+      name: 'audio',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Find My Cane`
+  String get find_my_cane {
+    return Intl.message(
+      'Find My Cane',
+      name: 'find_my_cane',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `THEME`
+  String get theme {
+    return Intl.message(
+      'THEME',
+      name: 'theme',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `CONNECTION`
+  String get connection {
+    return Intl.message(
+      'CONNECTION',
+      name: 'connection',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `LANGUAGE`
+  String get language {
+    return Intl.message(
+      'LANGUAGE',
+      name: 'language',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `THEMES`
+  String get themes {
+    return Intl.message(
+      'THEMES',
+      name: 'themes',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Default System`
+  String get default_system {
+    return Intl.message(
+      'Default System',
+      name: 'default_system',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Light`
+  String get light_theme {
+    return Intl.message(
+      'Light',
+      name: 'light_theme',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Dark`
+  String get dark_theme {
+    return Intl.message(
+      'Dark',
+      name: 'dark_theme',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `ACCENTS`
+  String get accents {
+    return Intl.message(
+      'ACCENTS',
+      name: 'accents',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Red`
+  String get red {
+    return Intl.message(
+      'Red',
+      name: 'red',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Orange`
+  String get orange {
+    return Intl.message(
+      'Orange',
+      name: 'orange',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Yellow`
+  String get yellow {
+    return Intl.message(
+      'Yellow',
+      name: 'yellow',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Green`
+  String get green {
+    return Intl.message(
+      'Green',
+      name: 'green',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Blue`
+  String get blue {
+    return Intl.message(
+      'Blue',
+      name: 'blue',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Purple`
+  String get purple {
+    return Intl.message(
+      'Purple',
+      name: 'purple',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `White`
+  String get white {
+    return Intl.message(
+      'White',
+      name: 'white',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Black`
+  String get black {
+    return Intl.message(
+      'Black',
+      name: 'black',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `LANGUAGES`
+  String get languages {
+    return Intl.message(
+      'LANGUAGES',
+      name: 'languages',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
