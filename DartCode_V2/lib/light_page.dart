@@ -27,7 +27,7 @@ class _LightPageState extends State<LightPage> {
         List<String> values = response.body.split(" ");
         if (values.length >= 6) {
           final notificationProvider = Provider.of<NotificationProvider>(context, listen: false);
-          notificationProvider.setLightIntensity(values[1] == '30' ? 'LOW' : values[1] == '60' ? 'MID' : 'HIGH');
+          notificationProvider.setLightIntensity(values[1] == '30' ? S.of(context).low : values[1] == '60' ? S.of(context).medium : S.of(context).high);
           notificationProvider.setLight(values[5] == '0' ? false : true);
         }
       } else {
@@ -110,7 +110,7 @@ class _LightPageState extends State<LightPage> {
                     setState(() {
                       notificationProvider.setLight(value);
                       _sendIntensityData('LightSwitch', notificationProvider.light ? 1 : 0);
-                      _sendIntensityData('Light', notificationProvider.lightIntensity == 'LOW' ? 30 : notificationProvider.lightIntensity == 'MID' ? 60 : 100);
+                      _sendIntensityData('Light', notificationProvider.lightIntensity == S.of(context).low ? 30 : notificationProvider.lightIntensity == S.of(context).medium ? 60 : 100);
                     });
                   }, maxWidth, screenWidth, themeProvider),
                   SizedBox(height: buttonSpacing), // Spacing between rows
@@ -185,7 +185,8 @@ class _LightPageState extends State<LightPage> {
 
   // Updated Light Intensity row with cycling button
   Widget _buildLightIntensityRow(String label, String value, double maxWidth, double screenWidth, ThemeProvider themeProvider, NotificationProvider notificationProvider) {
-    List<String> intensities = ['LOW', 'MID', 'HIGH'];
+    List<String> intensities = [S.of(context).low, S.of(context).medium, S.of(context).high];
+    value = value == '30' ? S.of(context).low : value == '60' ? S.of(context).medium : S.of(context).high;
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -204,8 +205,8 @@ class _LightPageState extends State<LightPage> {
             setState(() {
               int currentIndex = intensities.indexOf(value);
               final newLightIntensity = intensities[(currentIndex + 1) % intensities.length];
-              notificationProvider.setLightIntensity(newLightIntensity);
-              _sendIntensityData('Light', newLightIntensity == 'LOW' ? 30 : newLightIntensity == 'MID' ? 60 : 100);
+              notificationProvider.setLightIntensity(newLightIntensity == S.of(context).low ? '30' : newLightIntensity == S.of(context).medium ? '60' : '100');
+              _sendIntensityData('Light', newLightIntensity == S.of(context).low ? 30 : newLightIntensity == S.of(context).medium ? 60 : 100);
             });
           },
           child: Container(

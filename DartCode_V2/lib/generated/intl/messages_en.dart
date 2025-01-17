@@ -57,18 +57,21 @@ class MessageLookup extends MessageLookupByLibrary {
         "haptic": MessageLookupByLibrary.simpleMessage("HAPTIC"),
         "haptic_intensity":
             MessageLookupByLibrary.simpleMessage("HAPTIC INTENSITY"),
+        "high": MessageLookupByLibrary.simpleMessage("HIGH"),
         "language": MessageLookupByLibrary.simpleMessage("LANGUAGE"),
         "languages": MessageLookupByLibrary.simpleMessage("LANGUAGES"),
         "light": MessageLookupByLibrary.simpleMessage("LIGHT"),
         "light_intensity":
             MessageLookupByLibrary.simpleMessage("LIGHT INTENSITY"),
         "light_theme": MessageLookupByLibrary.simpleMessage("Light"),
+        "low": MessageLookupByLibrary.simpleMessage("LOW"),
+        "medium": MessageLookupByLibrary.simpleMessage("MED"),
         "move_on": MessageLookupByLibrary.simpleMessage("Move On"),
         "nav_presets": MessageLookupByLibrary.simpleMessage("Presets"),
         "nav_settings_app":
-            MessageLookupByLibrary.simpleMessage("Settings\nApp"),
+            MessageLookupByLibrary.simpleMessage("App\nSettings"),
         "nav_settings_cane":
-            MessageLookupByLibrary.simpleMessage("Settings\nCane"),
+            MessageLookupByLibrary.simpleMessage("Cane\nSettings"),
         "nav_status": MessageLookupByLibrary.simpleMessage("Status"),
         "notifications": MessageLookupByLibrary.simpleMessage("NOTIFICATIONS"),
         "off": MessageLookupByLibrary.simpleMessage("OFF"),
@@ -83,8 +86,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "save_new_preset":
             MessageLookupByLibrary.simpleMessage("Save New Preset"),
         "select": MessageLookupByLibrary.simpleMessage("SELECT"),
-        "settings_app": MessageLookupByLibrary.simpleMessage("SETTINGS APP"),
-        "settings_cane": MessageLookupByLibrary.simpleMessage("SETTINGS CANE"),
+        "settings_app": MessageLookupByLibrary.simpleMessage("APP SETTINGS"),
+        "settings_cane": MessageLookupByLibrary.simpleMessage("CANE SETTINGS"),
         "status": MessageLookupByLibrary.simpleMessage("STATUS"),
         "support": MessageLookupByLibrary.simpleMessage("SUPPORT"),
         "theme": MessageLookupByLibrary.simpleMessage("THEME"),

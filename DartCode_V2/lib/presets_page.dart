@@ -249,8 +249,8 @@ class _PresetsPageState extends State<PresetsPage> {
     await _sendPresetData('Buzzer', presetData['buzzerEnabled'] ? presetData['buzzerIntensity'] : 0.0);
 
     // Light
-    notificationProvider.setLightIntensity(presetData['lightIntensity'] ?? 'LOW');
-    await _sendPresetData('Light', presetData['lightIntensity'] == 'LOW' ? 30 : presetData['lightIntensity'] == 'MID' ? 60 : 100);
+    notificationProvider.setLightIntensity(presetData['lightIntensity'] ?? S.of(context).low);
+    await _sendPresetData('Light', presetData['lightIntensity'] == S.of(context).low ? 30 : presetData['lightIntensity'] == S.of(context).medium ? 60 : 100);
   }
 }
 

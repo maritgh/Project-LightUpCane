@@ -90,6 +90,36 @@ class S {
     );
   }
 
+  /// `LOW`
+  String get low {
+    return Intl.message(
+      'LOW',
+      name: 'low',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `MED`
+  String get medium {
+    return Intl.message(
+      'MED',
+      name: 'medium',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `HIGH`
+  String get high {
+    return Intl.message(
+      'HIGH',
+      name: 'high',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `WELCOME TO`
   String get welcome {
     return Intl.message(
@@ -140,20 +170,20 @@ class S {
     );
   }
 
-  /// `Settings\nCane`
+  /// `Cane\nSettings`
   String get nav_settings_cane {
     return Intl.message(
-      'Settings\nCane',
+      'Cane\nSettings',
       name: 'nav_settings_cane',
       desc: '',
       args: [],
     );
   }
 
-  /// `Settings\nApp`
+  /// `App\nSettings`
   String get nav_settings_app {
     return Intl.message(
-      'Settings\nApp',
+      'App\nSettings',
       name: 'nav_settings_app',
       desc: '',
       args: [],
@@ -190,20 +220,20 @@ class S {
     );
   }
 
-  /// `SETTINGS CANE`
+  /// `CANE SETTINGS`
   String get settings_cane {
     return Intl.message(
-      'SETTINGS CANE',
+      'CANE SETTINGS',
       name: 'settings_cane',
       desc: '',
       args: [],
     );
   }
 
-  /// `SETTINGS APP`
+  /// `APP SETTINGS`
   String get settings_app {
     return Intl.message(
-      'SETTINGS APP',
+      'APP SETTINGS',
       name: 'settings_app',
       desc: '',
       args: [],

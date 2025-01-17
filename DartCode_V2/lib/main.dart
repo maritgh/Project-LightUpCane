@@ -6,6 +6,7 @@ import 'theme_provider.dart';
 import 'notification_provider.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
   await Hive.openBox('settings');
   runApp(
@@ -30,7 +31,10 @@ void main() async {
 //   flutter_tts: ^4.1.0
 //   hive: ^2.2.3
 //   hive_flutter: ^1.1.0 
-//   flutter_local_notifications: ^18.0.1
+//   flutter_localizations:
+//     sdk: flutter
+//   intl: ^0.19.0
+//   intl_utils: ^2.8.7
 
 // class MyApp extends StatelessWidget {
 //   @override

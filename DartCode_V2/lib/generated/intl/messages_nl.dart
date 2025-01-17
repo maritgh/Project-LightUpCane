@@ -54,22 +54,25 @@ class MessageLookup extends MessageLookupByLibrary {
         "explanation_status": MessageLookupByLibrary.simpleMessage(""),
         "find_my_cane": MessageLookupByLibrary.simpleMessage("Vind Mijn Stok"),
         "green": MessageLookupByLibrary.simpleMessage("Groen"),
-        "haptic": MessageLookupByLibrary.simpleMessage("HAPTISCH"),
+        "haptic": MessageLookupByLibrary.simpleMessage("TRILLING"),
         "haptic_intensity":
-            MessageLookupByLibrary.simpleMessage("HAPTISCHE INTENSITEIT"),
+            MessageLookupByLibrary.simpleMessage("TRILLING INTENSITEIT"),
+        "high": MessageLookupByLibrary.simpleMessage("HOOG"),
         "language": MessageLookupByLibrary.simpleMessage("TAAL"),
         "languages": MessageLookupByLibrary.simpleMessage("TALEN"),
         "light": MessageLookupByLibrary.simpleMessage("LICHT"),
         "light_intensity":
             MessageLookupByLibrary.simpleMessage("LICHT INTENSITEIT"),
         "light_theme": MessageLookupByLibrary.simpleMessage("Licht"),
+        "low": MessageLookupByLibrary.simpleMessage("LAAG"),
+        "medium": MessageLookupByLibrary.simpleMessage("MID"),
         "move_on": MessageLookupByLibrary.simpleMessage("Verder gaan"),
         "nav_presets":
             MessageLookupByLibrary.simpleMessage("Voor\ninstellingen"),
         "nav_settings_app":
-            MessageLookupByLibrary.simpleMessage("Instellingen\nApp"),
+            MessageLookupByLibrary.simpleMessage("App\nInstellingen"),
         "nav_settings_cane":
-            MessageLookupByLibrary.simpleMessage("Instellingen\nStok"),
+            MessageLookupByLibrary.simpleMessage("Stok\nInstellingen"),
         "nav_status": MessageLookupByLibrary.simpleMessage("Status"),
         "notifications": MessageLookupByLibrary.simpleMessage("NOTIFICATIES"),
         "off": MessageLookupByLibrary.simpleMessage("UIT"),
@@ -86,9 +89,9 @@ class MessageLookup extends MessageLookupByLibrary {
             "Nieuwe Voorinstellingen Opslaan"),
         "select": MessageLookupByLibrary.simpleMessage("SELECTEREN"),
         "settings_app":
-            MessageLookupByLibrary.simpleMessage("INSTELLINGEN APP"),
+            MessageLookupByLibrary.simpleMessage("APP INSTELLINGEN"),
         "settings_cane":
-            MessageLookupByLibrary.simpleMessage("INSTELLINGEN STOK"),
+            MessageLookupByLibrary.simpleMessage("STOK INSTELLINGEN"),
         "status": MessageLookupByLibrary.simpleMessage("STATUS"),
         "support": MessageLookupByLibrary.simpleMessage("HULP"),
         "theme": MessageLookupByLibrary.simpleMessage("THEMA"),

@@ -7,19 +7,19 @@ class NotificationProvider extends ChangeNotifier {
   double _hapticIntensity = 25.0;
   bool _buzzer = true;
   double _buzzerIntensity = 75.0;
-  String _lightIntensity = 'LOW';
+  String _lightIntensity = '30';
   bool _light = false;
 
   final Box _settingsBox = Hive.box('settings');
 
   NotificationProvider() {
     // Load notifications state from Hive
-    _notifications = _getNotificationsFromHive();
+    _notifications = _settingsBox.get('notifications', defaultValue: false);
     _haptic = _settingsBox.get('haptic', defaultValue: true);
     _hapticIntensity = _settingsBox.get('hapticIntensity', defaultValue: 25.0);
     _buzzer = _settingsBox.get('buzzer', defaultValue: true);
     _buzzerIntensity = _settingsBox.get('buzzerIntensity', defaultValue: 75.0);
-    _lightIntensity = _settingsBox.get('lightIntensity', defaultValue: 'LOW');
+    _lightIntensity = _settingsBox.get('lightIntensity', defaultValue: '30');   
     _light = _settingsBox.get('light', defaultValue: false);
   }
 
@@ -86,9 +86,4 @@ class NotificationProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
-
-  // Helper method to load notifications state from Hive
-  bool _getNotificationsFromHive() {
-    return _settingsBox.get('notifications', defaultValue: false);
-  }
-}
+}  
