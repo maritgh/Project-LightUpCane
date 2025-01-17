@@ -3,7 +3,7 @@ void init_hardware() {
   // init LEDS
   pinMode(SW_ON_BOOT, INPUT_PULLUP);
   pinMode(LED_LIGHTS, OUTPUT);
-  pinMode(A0, INPUT);
+  pinMode(BATT_SENS, INPUT);
   // init HAPTIC
   ledcAttachChannel(HAPTIC, 100000, 8, 0);
   // init BUZZER
@@ -128,25 +128,23 @@ void trig_feedback(int feedback) {
   }
 }
 
-float bat_status() {
+int bat_status() {
+  //voor 9 volt batterij
   float sum = 0.0;
-  float avg = 0.0;
-  float bat = analogRead(A0) / 226.0;
-  for (int i = 0; i < 19; i++) {
-    bat_voltages[i + 1] = bat_voltages[i];
-  }
-  bat_voltages[0] = bat;
+
   for (int i = 0; i < 20; i++) {
-    sum += bat_voltages[i];
+    sum += analogReadMilliVolts(BATT_SENS);
   }
-  avg = sum / 20;
-  return avg;
-  // uint32_t Vbatt = 0;
-  // for(int i = 0; i < 20; i++) {
-  //   Vbatt = Vbatt + analogReadMilliVolts(A0); // ADC with correction
-  // }
-  // float Vbattf = 2 * Vbatt / 20 / 100.0;
-  // return Vbattf;
+  float v_out = (sum / 20);
+  //voltage divider formula
+  float source_Voltage = (v_out * (resistor1 + resistor2) / resistor2) / 1000;
+  // Serial.print("Voltage : ");
+  // Serial.println(source_Voltage);
+  if (source_Voltage < 6.5) {
+    return 0;
+  } else {
+    return ((source_Voltage - 6.5) / 2.5 * 100);
+  }
 }
 
 void splitStringBySpace(String data) {

@@ -5,7 +5,7 @@
 #define HAPTIC 10
 #define LED_LIGHTS 3
 #define SW_ON_BOOT 9
-#define BATT_SENS 3
+#define BATT_SENS 2
 
 /* DEBUG DEFINES */
 #define Debug
@@ -23,6 +23,8 @@ bool check_battery_status = false;
 
 float bat_voltage = 0.0; // ADC batt sens
 float bat_voltages[20];  // array for battery voltages
+int resistor1 = 200;
+int resistor2 = 100;
 
 int check = 0;
 int ctr = 0;
