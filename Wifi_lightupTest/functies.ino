@@ -10,20 +10,6 @@ void init_hardware() {
   ledcAttachChannel(BUZZER, profiles.frequency, 8, 1);
 }
 
-void IRAM_ATTR onTimer() {
-  bat_voltage = bat_status();
-  imu = true;
-}
-
-void init_imu() {
-  Wire.begin(SDA_PIN, SCL_PIN);  // Gebruik GPIO8 als SDA en GPIO6 als SCL
-  mpu.initialize();
-  // init IMU timer
-  imu_timer = timerBegin(1000000);  // (timer ch, divider, countup)
-  timerAttachInterrupt(imu_timer, &onTimer);
-  timerAlarm(imu_timer, 100000, true, 1);
-}
-
 float calc_intensity(float intensity) {
   intensity = ((intensity / 100.0) * 256.0);  // 0.5 erbij als naar int
   return intensity;
@@ -56,13 +42,13 @@ void trig_feedback(int feedback) {
   int buzzer_battery = 0;
 
   if (feedback == 1) {
-    if (bat_voltage < 3.3) {  // 0%-25%
+    if (bat_status() < 25) {  // 0%-25%
       battery_status = 1;
-    } else if (bat_voltage >= 3.3 && bat_voltage < 3.6) {  // 25%-50%
+    } else if (bat_status() >= 25 && bat_status() < 50) {  // 25%-50%
       battery_status = 2;
-    } else if (bat_voltage >= 3.6 && bat_voltage < 3.9) {  // 50%-75%
+    } else if (bat_status()>= 50 && bat_status() < 75) {  // 50%-75%
       battery_status = 3;
-    } else if (bat_voltage > 3.9) {  // 75%-100%
+    } else if (bat_status() >= 75) {  // 75%-100%
       battery_status = 4;
     }
     haptic_battery = battery_status;
