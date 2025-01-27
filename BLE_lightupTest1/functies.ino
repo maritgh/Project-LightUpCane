@@ -9,15 +9,6 @@ void init_hardware(){
   ledcAttachChannel(BUZZER ,profiles.frequency, 8 ,1);
 }
 
-void init_imu(){
-  Wire.begin(SDA_PIN, SCL_PIN); // Gebruik GPIO8 als SDA en GPIO6 als SCL
-  mpu.initialize();
-  // init IMU timer
-  imu_timer = timerBegin(1000000); // (timer ch, divider, countup)
-  timerAttachInterrupt(imu_timer, &onTimer);
-  timerAlarm(imu_timer, 100000, true, 1);
-}
-
 int calc_intensity(float intensity){
   intensity = ((intensity / 100.0)*256.0)+0.5;   
   return intensity;
@@ -56,13 +47,13 @@ void trig_feedback(int feedback) {
   int haptic_battery = 0;
   int buzzer_battery = 0;
  if (feedback == 1) {
-    if (bat_voltage < 3.3) {  // 0%-25%
+    if (bat_status() < 25) {  // 0%-25%
       battery_status = 1;
-    } else if (bat_voltage >= 3.3 && bat_voltage < 3.6) {  // 25%-50%
+    } else if (bat_status() >= 25 && bat_status() < 50) {  // 25%-50%
       battery_status = 2;
-    } else if (bat_voltage >= 3.6 && bat_voltage < 3.9) {  // 50%-75%
+    } else if (bat_status()>= 50 && bat_status() < 75) {  // 50%-75%
       battery_status = 3;
-    } else if (bat_voltage > 3.9) {  // 75%-100%
+    } else if (bat_status() >= 75) {  // 75%-100%
       battery_status = 4;
     }
     haptic_battery = battery_status;
@@ -146,57 +137,6 @@ int bat_status() {
   }
 }
 
-// Function to process and handle "set" commands
-void splitStringBySpace(String data) {
-  // Log the received command for debugging
-  Serial.print("Received command: ");
-  Serial.println(data);
-
-  // Find the first space in the command
-  int spaceIndex = data.indexOf(' ');
-
-  String command = data.substring(0, spaceIndex);
-  command.trim();
-
-  String valueString = data.substring(spaceIndex + 1);
-  valueString.trim();  // Remove any leading or trailing spaces
-  int value = valueString.toInt();
-
-  // Process the command with a value
-  if (command == "Battery") {
-    profiles.time_battery_status = value;
-    saveProfileSettings();
-    Serial.print("Battery status interval changed to: ");
-    Serial.println(profiles.time_battery_status);
-
-  } else if (command == "Haptic") {
-    profiles.intensity_haptic = int(calc_intensity(value));
-    saveProfileSettings();
-    Serial.print("Haptic intensity changed to: ");
-    Serial.println(profiles.intensity_haptic);
-
-  } else if (command == "Light") {
-    profiles.intensity_led = int(calc_intensity(value));
-    saveProfileSettings();
-    if (power == 1) {
-      analogWrite(LED_LIGHTS, profiles.intensity_led);
-    }
-    Serial.print("LED intensity changed to: ");
-    Serial.println(profiles.intensity_led);
-
-  } else if (command == "Buzzer") {
-    profiles.intensity_buzzer = int(calc_intensity(value));
-    saveProfileSettings();
-    Serial.print("Buzzer intensity changed to: ");
-    Serial.println(profiles.intensity_buzzer);
-
-  } else if (command == "LightSwitch"){
-    toggle_power();
-    Serial.println("Light toggled");
-  } else {
-    Serial.println("Unknown command type. Please use Battery, Haptic, Light, Buzzer, or LightSwitch.");
-  }
-}
 void saveProfileSettings() {
   preferences.begin("profile", false); // Open the preferences with namespace "profile"
   preferences.clear();

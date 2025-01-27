@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <iostream>
-#include <MPU6050.h>
 #include "variables.h"
 #include <BLEDevice.h>
 #include <BLEServer.h>
@@ -16,18 +15,61 @@ Preferences preferences;
 #define SET_CHARACTERISTIC_UUID "beb5483e-36e1-4688-b7f5-ea07361b26a8"
 #define GET_CHARACTERISTIC_UUID "6d140001-bcb0-4c43-a293-b21a53dbf9f5"
 
+void splitStringBySpace(String data) {
+  // Log the received command for debugging
+  Serial.print("Received command: ");
+  Serial.println(data);
+
+  // Find the first space in the command
+  int spaceIndex = data.indexOf(' ');
+
+  String command = data.substring(0, spaceIndex);
+  command.trim();
+
+  String valueString = data.substring(spaceIndex + 1);
+  valueString.trim();  // Remove any leading or trailing spaces
+  int value = valueString.toInt();
+
+  // Process the command with a value
+  if (command == "Battery") {
+    profiles.time_battery_status = value;
+    saveProfileSettings();
+    Serial.print("Battery status interval changed to: ");
+    Serial.println(profiles.time_battery_status);
+
+  } else if (command == "Haptic") {
+    profiles.intensity_haptic = int(calc_intensity(value));
+    saveProfileSettings();
+    Serial.print("Haptic intensity changed to: ");
+    Serial.println(profiles.intensity_haptic);
+
+  } else if (command == "Light") {
+    profiles.intensity_led = int(calc_intensity(value));
+    saveProfileSettings();
+    if (power == 1) {
+      analogWrite(LED_LIGHTS, profiles.intensity_led);
+    }
+    Serial.print("LED intensity changed to: ");
+    Serial.println(profiles.intensity_led);
+
+  } else if (command == "Buzzer") {
+    profiles.intensity_buzzer = int(calc_intensity(value));
+    saveProfileSettings();
+    Serial.print("Buzzer intensity changed to: ");
+    Serial.println(profiles.intensity_buzzer);
+
+  } else if (command == "LightSwitch"){
+    toggle_power();
+    Serial.println("Light toggled");
+  } else {
+    Serial.println("Unknown command type. Please use Battery, Haptic, Light, Buzzer, or LightSwitch.");
+  }
+}
+
 BLEServer* pServer = NULL;
 BLECharacteristic* setCharacteristic;
 BLECharacteristic* getCharacteristic;
 
-// Flags for BLE connection
-bool deviceConnected = false;
-
-
-void IRAM_ATTR onTimer() {
-  bat_voltage = bat_status();
-  imu = true;
-}
 
 // Callback for BLE Server connection events
 class ServerCallbacks : public BLEServerCallbacks {
@@ -61,7 +103,6 @@ class SetCallbacks : public BLECharacteristicCallbacks {
 // Initialize BLE
 void setup() {
   init_hardware();
-  init_imu();
   loadProfileSettings();
   Serial.println("\nESP32 Initialized"); // print al the start values
   profiles.intensity_haptic = int(calc_intensity(profiles.intensity_haptic));
@@ -111,7 +152,8 @@ void setup() {
 void loop() {
   if (deviceConnected) {
     // Send battery and profile data periodically
-    String data = String(bat_status()) + " " + String(revers_calc_intensity(profiles.intensity_led)) + " " + String(revers_calc_intensity(profiles.intensity_buzzer)) + " " + String(profiles.frequency) + " " + String(revers_calc_intensity(profiles.intensity_haptic)) + " " + String(power);
+    float batteryLevel = bat_status();
+    String data = String(batteryLevel) + " " + String(revers_calc_intensity(profiles.intensity_led)) + " " + String(revers_calc_intensity(profiles.intensity_buzzer)) + " " + String(profiles.frequency) + " " + String(revers_calc_intensity(profiles.intensity_haptic)) + " " + String(power);
     getCharacteristic->setValue(data.c_str());
     getCharacteristic->notify();
   }
@@ -140,8 +182,8 @@ void loop() {
 #ifdef Debug
     Serial.println("Check battery status");
     Serial.print("Battery is: ");
-    Serial.print(bat_voltage);
-    Serial.println("V");
+    Serial.print(bat_status());
+    Serial.println("%");
 #endif
     trig_feedback(battery_filter);
   }
