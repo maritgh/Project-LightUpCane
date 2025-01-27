@@ -111,8 +111,7 @@ void setup() {
 void loop() {
   if (deviceConnected) {
     // Send battery and profile data periodically
-    float batteryLevel = bat_status();
-    String data = String(batteryLevel) + " " + String(revers_calc_intensity(profiles.intensity_led)) + " " + String(revers_calc_intensity(profiles.intensity_buzzer)) + " " + String(profiles.frequency) + " " + String(revers_calc_intensity(profiles.intensity_haptic)) + " " + String(power);
+    String data = String(bat_status()) + " " + String(revers_calc_intensity(profiles.intensity_led)) + " " + String(revers_calc_intensity(profiles.intensity_buzzer)) + " " + String(profiles.frequency) + " " + String(revers_calc_intensity(profiles.intensity_haptic)) + " " + String(power);
     getCharacteristic->setValue(data.c_str());
     getCharacteristic->notify();
   }
