@@ -157,7 +157,7 @@ void loop() {
     getCharacteristic->notify();
   }
 
-  // Additional handling for button presses or other state changes
+  // check if the button is pressed and for how long
   currentState = digitalRead(SW_ON_BOOT);
   if (lastState == HIGH && currentState == LOW) {
     pressedTime = millis();
@@ -174,6 +174,7 @@ void loop() {
   }
 
   lastState = currentState;
+  // if the button is pressed what to do
   if (short_press) {
     short_press = false;
     toggle_power();
