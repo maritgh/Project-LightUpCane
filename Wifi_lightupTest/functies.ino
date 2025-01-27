@@ -1,25 +1,24 @@
+// initialize all the hardware
 void init_hardware() {
   Serial.begin(9600);
-  // init LEDS
   pinMode(SW_ON_BOOT, INPUT_PULLUP);
   pinMode(LED_LIGHTS, OUTPUT);
   pinMode(BATT_SENS, INPUT);
-  // init HAPTIC
   ledcAttachChannel(HAPTIC, 100000, 8, 0);
-  // init BUZZER
   ledcAttachChannel(BUZZER, profiles.frequency, 8, 1);
 }
 
+// calculations to covert the percenteges input to workable numbers for buzzer, haptic and led
 float calc_intensity(float intensity) {
   intensity = ((intensity / 100.0) * 256.0);  // 0.5 erbij als naar int
   return intensity;
 }
-
+// convert the work numbers to percentages
 float revers_calc_intensity(float intens) {
   intens = ((intens / 256) * 100) + 0.5;
   return intens;
 }
-
+// function to turn the led on and off
 void toggle_power() {
   power = !power;
   if (power == 1) {
@@ -32,7 +31,7 @@ void toggle_power() {
   delay(200);
   trig_feedback(power_filter);
 }
-
+// haptic and buzzer feedback and how many times
 void trig_feedback(int feedback) {
   int haptic_on = 0;
   int haptic_off = 0;
@@ -40,7 +39,7 @@ void trig_feedback(int feedback) {
   int buzzer_off = 0;
   int haptic_battery = 0;
   int buzzer_battery = 0;
-
+  // if battery status has to be checked
   if (feedback == 1) {
     if (bat_status() < 25) {  // 0%-25%
       battery_status = 1;
@@ -76,6 +75,7 @@ void trig_feedback(int feedback) {
     haptic_off = haptic_off_times;
     buzzer_on = buzzer_on_times;
     buzzer_off = buzzer_off_times;
+    //when led is turned on
     if (power) {
       while ((buzzer_on > 0) || (haptic_on > 0)) {
 
@@ -93,6 +93,7 @@ void trig_feedback(int feedback) {
         ledcWrite(BUZZER, 0);  // turn off buzzer
         delay(100);
       }
+      //when led is turned off
     } else if (!power) {
       while (buzzer_off > 0 || haptic_off > 0) {
 
@@ -113,9 +114,9 @@ void trig_feedback(int feedback) {
     }
   }
 }
-
+// calculate the battery percentage
 int bat_status() {
-  //voor 9 volt batterij
+  //for 9 volt battery
   float sum = 0.0;
 
   for (int i = 0; i < 20; i++) {
@@ -130,7 +131,7 @@ int bat_status() {
     return ((source_Voltage - 6.5) / 2.5 * 100);
   }
 }
-
+// to convert the incomming data from the app to workable executables
 void splitStringBySpace(String data) {
   int firstSpaceIndex = data.indexOf('$');
   int secondSpaceIndex = data.indexOf('$', firstSpaceIndex + 1);
@@ -188,7 +189,7 @@ void splitStringBySpace(String data) {
     }
   }
 }
-
+// to save profile settings in the preferences library
 void saveProfileSettings() {
   preferences.begin("profile", false);  // Open the preferences with namespace "profile"
   preferences.clear();
@@ -205,7 +206,7 @@ void saveProfileSettings() {
 
   preferences.end();  // Close the preferences
 }
-
+// to load the profile settings from the prefences library
 void loadProfileSettings() {
   preferences.begin("profile", false);  // Open the preferences with namespace "profile"
 

@@ -22,14 +22,14 @@ void setup() {
   Serial.print("Intensity led: ");
   Serial.println(profiles.intensity_led);
 #endif
-
+  // hotspot configuration for the connection
   Serial.println("\n\nConfiguring access point...");  //starting the hotspot
   WiFi.softAP(ssid, password);
   IPAddress myIP = WiFi.softAPIP();
   Serial.print("AP IP address: ");
   Serial.println(myIP);
 
-
+  //communication with the app
   server.on("/set", HTTP_POST, []() {  // to put the data send in the right spot
     if (server.hasArg("data")) {
       String data = server.arg("data");
@@ -51,12 +51,13 @@ void setup() {
 
 void loop() {
   server.handleClient();
-
+  // check if the button is pressed and for how long
   currentState = digitalRead(SW_ON_BOOT);
   if (lastState == HIGH && currentState == LOW) {
     pressedTime = millis();
     delay(100);
-  } else if (lastState == LOW && currentState == HIGH) {  // button is released
+  } else if (lastState == LOW && currentState == HIGH) { 
+   // button is released
     releasedTime = millis();
     pressDuration = releasedTime - pressedTime;
 
@@ -68,6 +69,7 @@ void loop() {
     delay(100);
   }
   lastState = currentState;
+  // if the button is pressed what to do
   if (short_press) {
     short_press = false;
     toggle_power();

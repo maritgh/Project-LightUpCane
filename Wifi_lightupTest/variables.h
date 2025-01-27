@@ -18,6 +18,7 @@ bool power = false;           // the current state of LED
 bool short_press = false;
 bool check_battery_status = false;
 
+// which resistors are used for the voltage divider
 int resistor1 = 200;
 int resistor2 = 100;
 
