@@ -138,8 +138,6 @@ int bat_status() {
   float v_out = (sum / 20);
   //voltage divider formula
   float source_Voltage = (v_out * (resistor1 + resistor2) / resistor2) / 1000;
-  // Serial.print("Voltage : ");
-  // Serial.println(source_Voltage);
   if (source_Voltage < 6.5) {
     return 0;
   } else {
