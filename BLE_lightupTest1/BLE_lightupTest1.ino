@@ -15,6 +15,11 @@ Preferences preferences;
 #define SET_CHARACTERISTIC_UUID "beb5483e-36e1-4688-b7f5-ea07361b26a8"
 #define GET_CHARACTERISTIC_UUID "6d140001-bcb0-4c43-a293-b21a53dbf9f5"
 
+BLEServer* pServer = NULL;
+BLECharacteristic* setCharacteristic;
+BLECharacteristic* getCharacteristic;
+
+// fuction to convert the incomming data from the app to workable executables
 void splitStringBySpace(String data) {
   // Log the received command for debugging
   Serial.print("Received command: ");
@@ -65,11 +70,6 @@ void splitStringBySpace(String data) {
     Serial.println("Unknown command type. Please use Battery, Haptic, Light, Buzzer, or LightSwitch.");
   }
 }
-
-BLEServer* pServer = NULL;
-BLECharacteristic* setCharacteristic;
-BLECharacteristic* getCharacteristic;
-
 
 // Callback for BLE Server connection events
 class ServerCallbacks : public BLEServerCallbacks {

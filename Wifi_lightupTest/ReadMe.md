@@ -1,5 +1,4 @@
 This code is to use the light up cane through Wifi
-The battery status is not fully correct yet
 
 To use this code download the next libraries:
 stdio.h
@@ -8,7 +7,7 @@ WebServer.h
 Preferences.h
 
 and the next board:
-esp32 by Espressif Systems (it works with version 3.0.7 all other versions might not work because of changes in the API)
+esp32 by Espressif Systems (it was tested with version 3.1.1 all other versions might not work because of changes in the API)
 
 To upload the code follow the next steps:
 1. go to Tools > Board > esp32 > XIAO_ESP32C3
