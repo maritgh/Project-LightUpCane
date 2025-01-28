@@ -35,6 +35,7 @@ void main() async {
 //     sdk: flutter
 //   intl: ^0.19.0
 //   intl_utils: ^2.8.7
+//   permission_handler: ^11.3.1
 
 // class MyApp extends StatelessWidget {
 //   @override

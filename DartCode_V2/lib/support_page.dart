@@ -6,28 +6,49 @@ import 'theme_provider.dart';
 import 'bottom_nav_bar.dart';
 
 class SupportPage extends StatelessWidget {
-  SupportPage({Key? key}) : super(key: key) {
-    _initializeTts(); // Initialize TTS before speaking
-  }
+  SupportPage({Key? key}) : super(key: key);
 
   final FlutterTts flutterTts = FlutterTts();
 
   // Method to initialize TTS
-  Future<void> _initializeTts() async {
-    await flutterTts.awaitSpeakCompletion(true); // Wait until completion of each utterance
-    await flutterTts.setLanguage("en-US"); // Set language
+  Future<void> _initializeTts(BuildContext context) async {
+    await flutterTts.awaitSpeakCompletion(true); // Wait for completion of each utterance
+
+    // Get the current locale
+    Locale currentLocale = Localizations.localeOf(context);
+    String languageCode = currentLocale.languageCode;
+    String countryCode = currentLocale.countryCode ?? '';
+
+    // Combine language code and country code (e.g., en-US)
+    String ttsLanguage = '$languageCode${countryCode.isNotEmpty ? '-$countryCode' : ''}';
+
+    // Set the language for TTS
+    var isLanguageAvailable = await flutterTts.isLanguageAvailable(ttsLanguage);
+    if (isLanguageAvailable) {
+      await flutterTts.setLanguage(ttsLanguage);
+    } else {
+      // Fallback to default language
+      await flutterTts.setLanguage("en-US");
+    }
+
+    // Set additional TTS properties
     await flutterTts.setSpeechRate(0.5); // Set speech rate
     await flutterTts.setVolume(1.0); // Set volume
     await flutterTts.setPitch(1.0); // Set pitch
   }
 
+
   // Method to speak a given text
-  Future<void> _speak(String text) async {
-    await flutterTts.speak(text);
+  Future<void> _speak(BuildContext context, String text) async {
+    await _initializeTts(context); // Ensure the TTS language matches the current locale
+    await flutterTts.speak(text); // Speak the provided text
   }
+
 
   @override
   Widget build(BuildContext context) {
+     _initializeTts(context);
+
     // Access ThemeProvider
     final themeProvider = Provider.of<ThemeProvider>(context);
 
@@ -75,15 +96,15 @@ class SupportPage extends StatelessWidget {
               SizedBox(height: buttonSpacing), // Space between header and buttons
 
               // Support Options (APP, PRESETS, SETTINGS, STATUS)
-              _buildSupportOption(S.of(context).app, Icons.volume_up, screenWidth, themeProvider),
+              _buildSupportOption(context, S.of(context).app, Icons.volume_up, screenWidth, themeProvider),
               SizedBox(height: buttonSpacing), // Space between buttons
-              _buildSupportOption(S.of(context).presets, Icons.volume_up, screenWidth, themeProvider),
+              _buildSupportOption(context, S.of(context).presets, Icons.volume_up, screenWidth, themeProvider),
               SizedBox(height: buttonSpacing), // Space between buttons
-              _buildSupportOption(S.of(context).settings_cane, Icons.volume_up, screenWidth, themeProvider),
+              _buildSupportOption(context, S.of(context).settings_cane, Icons.volume_up, screenWidth, themeProvider),
               SizedBox(height: buttonSpacing), // Space between buttons
-              _buildSupportOption(S.of(context).settings_app, Icons.volume_up, screenWidth, themeProvider),
+              _buildSupportOption(context, S.of(context).settings_app, Icons.volume_up, screenWidth, themeProvider),
               SizedBox(height: buttonSpacing), // Space between buttons
-              _buildSupportOption(S.of(context).status, Icons.volume_up, screenWidth, themeProvider),
+              _buildSupportOption(context, S.of(context).status, Icons.volume_up, screenWidth, themeProvider),
               SizedBox(height: buttonSpacing), // Space between buttons
 
               // Contact Option at the bottom
@@ -98,69 +119,84 @@ class SupportPage extends StatelessWidget {
   }
 
   // Method to build each support option row (App, Presets, etc.)
-  Widget _buildSupportOption(String label, IconData icon, double screenWidth, ThemeProvider themeProvider) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Expanded(
-          child: Text(
-            label,
-            style: TextStyle(
-              color: themeProvider.accentColor,
-              fontSize: screenWidth * 0.045, // Increased font size for better visibility
-              fontWeight: FontWeight.bold,
+  Widget _buildSupportOption(BuildContext context, String label, IconData icon, double screenWidth, ThemeProvider themeProvider) {
+    String iconText = S.of(context).support;
+    return Semantics(
+      label: "$label: $iconText",
+      excludeSemantics: true,
+      onTap: () async {
+        String textToSay = _getTextToSay(context, label);
+        await _speak(context, textToSay);
+      },
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Expanded(
+            child: Text(
+              label,
+              style: TextStyle(
+                color: themeProvider.accentColor,
+                fontSize: screenWidth * 0.045,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
-        ),
-        GestureDetector(
-          onTap: () async {
-            String textToSay = '';
-            switch (label) {
-              case 'APP':
-                textToSay = 'The Light Up Cane app is an app in which the user can manage the settings of their connected cane. These settings are divided into the pages presets settings cane settings app and status. From every page you have the possibility to go to the previously listed pages.';
-              case 'PRESETS':
-                textToSay = 'The presets page shows the currently saved presets of your app and a save button that allows you to give a name and save all of your current settings under that name. When a preset is selected you get the options to select the settings of that preset delete the preset rename the preset or go back to the preset list.';
-              case 'SETTINGS CANE':
-                textToSay = 'The settings cane page has two subpages, audio and light. On the audio page you can select if you want to receive notifications and you can turn on or off and select the intensities of the haptic and buzzer that are located in the cane. On the light page you can turn the light of the cane on or off and select the intensity of the light.';
-              case 'SETTINGS APP':
-                textToSay = 'The settings app page has two subpages, theme and connection. On the theme page you can select themes and accents that will be used throughout the app. On the connection, if your bluetooth is turned on, you can select a cane that you want to connect with.';
-              case 'STATUS':
-                textToSay = 'The status page shows the current status of your connected cane, including battery level, light and notifications status, light haptic and buzzer intensities. The information updates every few seconds to keep you up-to-date. Only through the status page can you get to the support page.';
-            }
-            print("TTS Speaking: $textToSay"); // Debugging output
-            await _speak(textToSay); // Ensure the method is awaited
-          },
-          child: Icon(
+          Icon(
             icon,
             color: Colors.black,
             size: screenWidth * 0.07,
           ),
-        ),
-      ],
+        ],
+      ),
     );
+  }
+
+  String _getTextToSay(BuildContext context, String label) {
+    switch (label) {
+      case 'APP':
+        return S.of(context).explanation_app;
+      case 'PRESETS':
+        return S.of(context).explanation_presets;
+      case 'SETTINGS CANE':
+        return S.of(context).explanation_settings_cane;
+      case 'SETTINGS APP':
+        return S.of(context).explanation_settings_app;
+      case 'STATUS':
+        return S.of(context).explanation_status;
+      default:
+        return 'No information available.';
+    }
   }
 
   // Method to build the contact row at the bottom
   Widget _buildContactOption(String label, IconData icon, double screenWidth, ThemeProvider themeProvider) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Expanded(
-          child: Text(
-            label,
-            style: TextStyle(
-              color: themeProvider.accentColor,
-              fontSize: screenWidth * 0.045, // Increased font size for better visibility
-              fontWeight: FontWeight.bold,
+    return Semantics(
+      label: label,
+      excludeSemantics: true,
+      onTap: () {
+        // Example contact action
+        print("Contacting Support...");
+      },
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Expanded(
+            child: Text(
+              label,
+              style: TextStyle(
+                color: themeProvider.accentColor,
+                fontSize: screenWidth * 0.045,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
-        ),
-        Icon(
-          icon,
-          color: Colors.black,
-          size: screenWidth * 0.07, // Increased icon size for better visibility
-        ),
-      ],
+          Icon(
+            icon,
+            color: Colors.black,
+            size: screenWidth * 0.07,
+          ),
+        ],
+      ),
     );
   }
 }

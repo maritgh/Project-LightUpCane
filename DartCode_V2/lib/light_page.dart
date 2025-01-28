@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/semantics.dart';
 import 'package:provider/provider.dart'; // Import provider
 import 'package:http/http.dart' as http;
 import 'generated/l10n.dart';
@@ -93,7 +94,7 @@ class _LightPageState extends State<LightPage> {
                       ),
                       child: Center(
                         child: Text(
-                          S.of(context).light,
+                          S.of(context).light_settings,
                           style: TextStyle(
                             color: themeProvider.accentColor, // Use accent color from ThemeProvider
                             fontSize: screenWidth * 0.08, // Dynamic font size based on screen width
@@ -153,74 +154,75 @@ class _LightPageState extends State<LightPage> {
 
   // Method to build each row with a label and a switch
   Widget _buildSwitchRow(String label, bool switchValue, Function(bool) onChanged, double maxWidth, double screenWidth, ThemeProvider themeProvider) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        // Label part of the row
-        Expanded(
-          child: Text(
-            label,
-            style: TextStyle(
-              color: themeProvider.accentColor, // Use accent color for label
-              fontSize: screenWidth * 0.045, // Dynamic font size for labels
-              fontWeight: FontWeight.bold,
+    String switchText = switchValue ? S.of(context).on : S.of(context).off;
+    return Semantics(
+      label: "$label: $switchText",
+      excludeSemantics: true,
+      child: GestureDetector(
+        onTap: () {
+          bool newValue = !switchValue;
+          onChanged(newValue);
+
+          SemanticsService.announce("$label: ${newValue ? S.of(context).on : S.of(context).off}", TextDirection.ltr);
+        },  
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            // Label part of the row
+            Expanded(
+              child: Text(
+                label,
+                style: TextStyle(
+                  color: themeProvider.accentColor, // Use accent color for label
+                  fontSize: screenWidth * 0.045, // Dynamic font size for labels
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ),
-          ),
-        ),
-        // Switch part of the row
-        Container(
-          width: maxWidth / 3, // Ensures each grey box has the same width
-          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-          child: Center(
-            child: Switch(
-              value: switchValue,
-              onChanged: onChanged,
-              activeColor: themeProvider.accentColor, // Color for the active switch
+            // Switch part of the row
+            Container(
+              width: maxWidth / 3, // Ensures each grey box has the same width
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              child: Center(
+                child: Switch(
+                  value: switchValue,
+                  onChanged: onChanged,
+                  activeColor: themeProvider.accentColor, // Color for the active switch
+                ),
+              ),
             ),
-          ),
+          ],
         ),
-      ],
-    );
+      ),
+    );    
   }
 
   // Updated Light Intensity row with cycling button
   Widget _buildLightIntensityRow(String label, String value, double maxWidth, double screenWidth, ThemeProvider themeProvider, NotificationProvider notificationProvider) {
     List<String> intensities = [S.of(context).low, S.of(context).medium, S.of(context).high];
     value = value == '30' ? S.of(context).low : value == '60' ? S.of(context).medium : S.of(context).high;
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Expanded(
-          child: Text(
-            label,
-            style: TextStyle(
-              color: themeProvider.accentColor,
-              fontSize: screenWidth * 0.045,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
-        GestureDetector(
-          onTap: () {
-            setState(() {
-              int currentIndex = intensities.indexOf(value);
-              final newLightIntensity = intensities[(currentIndex + 1) % intensities.length];
-              notificationProvider.setLightIntensity(newLightIntensity == S.of(context).low ? '30' : newLightIntensity == S.of(context).medium ? '60' : '100');
-              _sendIntensityData('Light', newLightIntensity == S.of(context).low ? 30 : newLightIntensity == S.of(context).medium ? 60 : 100);
-            });
-          },
-          child: Container(
-            width: maxWidth / 3,
-            padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-            decoration: BoxDecoration(
-              color: themeProvider.themeMode == ThemeMode.dark
-                  ? Colors.grey[850]
-                  : Colors.grey[400],
-              borderRadius: BorderRadius.circular(5),
-            ),
-            child: Center(
+
+    return Semantics(
+      label: "$label: $value",
+      excludeSemantics: true,
+      child: GestureDetector(
+        onTap: () {
+          setState(() {
+            int currentIndex = intensities.indexOf(value);
+            final newLightIntensity = intensities[(currentIndex + 1) % intensities.length];
+            notificationProvider.setLightIntensity(newLightIntensity == S.of(context).low ? '30' : newLightIntensity == S.of(context).medium ? '60' : '100');
+            _sendIntensityData('Light', newLightIntensity == S.of(context).low ? 30 : newLightIntensity == S.of(context).medium ? 60 : 100);
+
+            // Announce the new intensity using SemanticsService
+            SemanticsService.announce("$label: $newLightIntensity", TextDirection.ltr);
+          });
+        },
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
               child: Text(
-                value,
+                label,
                 style: TextStyle(
                   color: themeProvider.accentColor,
                   fontSize: screenWidth * 0.045,
@@ -228,9 +230,29 @@ class _LightPageState extends State<LightPage> {
                 ),
               ),
             ),
-          ),
+            Container(
+              width: maxWidth / 3,
+              padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              decoration: BoxDecoration(
+                color: themeProvider.themeMode == ThemeMode.dark
+                    ? Colors.grey[850]
+                    : Colors.grey[400],
+                borderRadius: BorderRadius.circular(5),
+              ),
+              child: Center(
+                child: Text(
+                  value,
+                  style: TextStyle(
+                    color: themeProvider.accentColor,
+                    fontSize: screenWidth * 0.045,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
-      ],
-    );
+      ),
+    );  
   }
 }

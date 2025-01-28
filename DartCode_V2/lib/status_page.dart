@@ -155,31 +155,15 @@ class _StatusPageState extends State<StatusPage> {
   }
 
   Widget _buildDisplayRow(String label, String value, double maxWidth, double screenWidth, ThemeProvider themeProvider) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Expanded(
-          child: Text(
-            label,
-            style: TextStyle(
-              color: themeProvider.accentColor,
-              fontSize: screenWidth * 0.045,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
-        Container(
-          width: maxWidth / 3,
-          padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-          decoration: BoxDecoration(
-            color: themeProvider.themeMode == ThemeMode.dark
-                ? Colors.grey[850]
-                : Colors.grey[400],
-            borderRadius: BorderRadius.circular(5),
-          ),
-          child: Center(
+    return Semantics(
+      label: "$label: $value", // Combine label and value for TalkBack to read as one.
+      excludeSemantics: true, // Prevent child widgets from being read separately.
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Expanded(
             child: Text(
-              value,
+              label,
               style: TextStyle(
                 color: themeProvider.accentColor,
                 fontSize: screenWidth * 0.045,
@@ -187,8 +171,28 @@ class _StatusPageState extends State<StatusPage> {
               ),
             ),
           ),
-        ),
-      ],
+          Container(
+            width: maxWidth / 3,
+            padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            decoration: BoxDecoration(
+              color: themeProvider.themeMode == ThemeMode.dark
+                  ? Colors.grey[850]
+                  : Colors.grey[400],
+              borderRadius: BorderRadius.circular(5),
+            ),
+            child: Center(
+              child: Text(
+                value,
+                style: TextStyle(
+                  color: themeProvider.accentColor,
+                  fontSize: screenWidth * 0.045,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

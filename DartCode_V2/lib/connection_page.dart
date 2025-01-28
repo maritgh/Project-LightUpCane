@@ -3,12 +3,13 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
-import 'custom_button.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'generated/l10n.dart';
 import 'theme_provider.dart';
 import 'bottom_nav_bar.dart';
 
 class ConnectionPage extends StatefulWidget {
-  const ConnectionPage({Key? key}) : super(key: key);
+  const ConnectionPage({super.key});
 
   @override
   _ConnectionPageState createState() => _ConnectionPageState();
@@ -16,19 +17,17 @@ class ConnectionPage extends StatefulWidget {
 
 class _ConnectionPageState extends State<ConnectionPage> {
   bool isBluetoothOn = false;
-  String pairedDevices = 'Paired devices';
-  String cane1 = 'Cane 1';
-  String cane2 = 'Cane 2';
-  String connected = 'Connected';
+  List<ScanResult> scanResults = [];
+  List<BluetoothDevice> connectedDevices = [];
   late StreamSubscription<BluetoothAdapterState> bluetoothSubscription;
 
   @override
   void initState() {
     super.initState();
-    // Initialize Bluetooth state check if the platform is Android or iOS
     if (Platform.isAndroid || Platform.isIOS) {
       checkBluetoothSupport();
     }
+    fetchConnectedDevices(); // Retrieve previously connected devices
   }
 
   @override
@@ -38,6 +37,7 @@ class _ConnectionPageState extends State<ConnectionPage> {
   }
 
   Future<void> checkBluetoothSupport() async {
+    await _checkPermissions();
     bool supported = await FlutterBluePlus.isSupported;
     if (!supported) {
       setState(() {
@@ -49,19 +49,75 @@ class _ConnectionPageState extends State<ConnectionPage> {
     handleBluetoothState();
   }
 
+  Future<void> _checkPermissions() async {
+    Map<Permission, PermissionStatus> statuses = await [
+      Permission.location,
+      Permission.bluetoothScan,
+      Permission.bluetoothConnect,
+    ].request();
+
+    bool allGranted = statuses.values.every((status) => status.isGranted);
+    if (!allGranted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Bluetooth permissions are required for scanning")),
+      );
+    }
+  }
+
   void handleBluetoothState() {
-    // Listen to Bluetooth adapter state changes
     bluetoothSubscription = FlutterBluePlus.adapterState.listen((BluetoothAdapterState state) {
       setState(() {
         isBluetoothOn = state == BluetoothAdapterState.on;
+        if (isBluetoothOn) {
+          startScanForDevices();
+        }
       });
     });
 
-    // Get the initial Bluetooth state
     FlutterBluePlus.adapterState.first.then((BluetoothAdapterState initialState) {
       setState(() {
         isBluetoothOn = initialState == BluetoothAdapterState.on;
+        if (isBluetoothOn) {
+          startScanForDevices();
+        }
       });
+    });
+  }
+
+  void startScanForDevices() {
+    scanResults.clear();
+    setState(() {});
+
+    FlutterBluePlus.startScan(timeout: const Duration(seconds: 4));
+
+    FlutterBluePlus.scanResults.listen((results) {
+      setState(() {
+        scanResults = results
+            .where((result) => result.advertisementData.localName.isNotEmpty)
+            .toList();
+      });
+    });
+  }
+
+  void connectToDevice(BluetoothDevice device) async {
+    try {
+      await device.connect(autoConnect: false);
+      setState(() {
+        connectedDevices.add(device); // Add the device to the list
+      });
+      print('Connected to ${device.name}');
+    } catch (e) {
+      print("Error connecting to device: $e");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Error connecting to device: $e")),
+      );
+    }
+  }
+
+  void fetchConnectedDevices() async {
+    List<BluetoothDevice> devices = FlutterBluePlus.connectedDevices;
+    setState(() {
+      connectedDevices = devices;
     });
   }
 
@@ -71,165 +127,156 @@ class _ConnectionPageState extends State<ConnectionPage> {
     var screenWidth = MediaQuery.of(context).size.width;
     var screenHeight = MediaQuery.of(context).size.height;
 
-    double horizontalPadding = screenWidth * 0.1;
-    double buttonSpacing = screenHeight * 0.05;
-
     return Scaffold(
       backgroundColor: themeProvider.themeMode == ThemeMode.dark
           ? Colors.grey[800]
           : Colors.grey[300],
       body: SafeArea(
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
-          child: LayoutBuilder(
-            builder: (context, constraints) {
-              double maxWidth = constraints.maxWidth - 40;
-
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Center(
-                    child: Container(
-                      width: screenWidth * 0.8,
-                      padding: EdgeInsets.symmetric(vertical: screenHeight * 0.005),
-                      decoration: BoxDecoration(
-                        color: themeProvider.accentColor,
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Center(
-                        child: Text(
-                          'CONNECTION',
-                          style: TextStyle(
-                            color: themeProvider.accentColor == Colors.white ? Colors.black : Colors.white, // adjusts the text color only if the accent color is white
-                            fontSize: screenWidth * 0.08,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ),
+          padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.1),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              // Header
+              Center(
+                child: Container(
+                  width: screenWidth * 0.8,
+                  padding: EdgeInsets.symmetric(vertical: screenHeight * 0.01),
+                  decoration: BoxDecoration(
+                    color: themeProvider.themeMode == ThemeMode.dark
+                        ? Colors.grey[850]
+                        : Colors.grey[400],
+                    borderRadius: BorderRadius.circular(20),
                   ),
-                  SizedBox(height: buttonSpacing),
-                  _buildBluetoothStatusIndicator(maxWidth, screenWidth, themeProvider),
-                  SizedBox(height: buttonSpacing),
-                  if (!isBluetoothOn)
-                    Center(
-                      child: Text(
-                        'Please turn on Bluetooth to connect your device to the LightUp Cane',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: themeProvider.accentColor,
-                          fontSize: screenWidth * 0.045,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    )
-                  else ...[
-                    SizedBox(height: buttonSpacing),
-                    Text(
-                      pairedDevices,
+                  child: Center(
+                    child: Text(
+                      S.of(context).connection,
                       style: TextStyle(
                         color: themeProvider.accentColor,
-                        fontSize: screenWidth * 0.045,
+                        fontSize: screenWidth * 0.08,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    SizedBox(height: screenHeight * 0.02),
-                    _buildDeviceRow(cane1, connected, maxWidth, screenWidth, themeProvider),
-                    SizedBox(height: screenHeight * 0.02),
-                    _buildDeviceRow(cane2, '', maxWidth, screenWidth, themeProvider),
-                    SizedBox(height: buttonSpacing),
-                    Center(
-                      child: CustomButton(
-                        label: 'Connect to Cane',
-                        onPressed: () {
-                          // Add connection functionality here
-                        },
-                        screenWidth: screenWidth,
-                        screenHeight: screenHeight,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+
+              // Bluetooth Status
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: themeProvider.themeMode == ThemeMode.dark
+                      ? Colors.grey[850]
+                      : Colors.grey[400],
+                  borderRadius: BorderRadius.circular(5),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Icon(Icons.bluetooth, color: themeProvider.accentColor),
+                    SizedBox(width: screenWidth * 0.05),
+                    Text(
+                      isBluetoothOn ? S.of(context).bluetooth_on : S.of(context).bluetooth_off,
+                      style: TextStyle(
                         color: themeProvider.accentColor,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
                   ],
-                  SizedBox(height: buttonSpacing),
+                ),
+              ),
+              SizedBox(height: screenHeight * 0.03),
 
-                  Spacer(),
-                  
-                  SizedBox(height: buttonSpacing),
-                ],
-              );
-            },
+              // Connected Devices
+              Text(
+                S.of(context).connected_devices,
+                style: TextStyle(
+                  color: themeProvider.accentColor,
+                  fontSize: screenWidth * 0.06,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              SizedBox(height: screenHeight * 0.03),
+              Expanded(
+                child: ListView(
+                  children: connectedDevices.map((device) {
+                    return Container(
+                      padding: const EdgeInsets.all(16),
+                      margin: const EdgeInsets.only(bottom: 10),
+                      decoration: BoxDecoration(
+                        color: themeProvider.themeMode == ThemeMode.dark
+                            ? Colors.grey[850]
+                            : Colors.grey[400],
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      child: Text(
+                        device.name.isNotEmpty ? device.name : 'Unnamed Device',
+                        style: TextStyle(
+                          color: themeProvider.accentColor,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    );
+                  }).toList(),
+                ),
+              ),
+              SizedBox(height: screenHeight * 0.03),
+
+              // Available Devices
+              Text(
+                S.of(context).available_devices,
+                style: TextStyle(
+                  color: themeProvider.accentColor,
+                  fontSize: screenWidth * 0.06,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              SizedBox(height: screenHeight * 0.03),
+              Expanded(
+                child: ListView(
+                  children: scanResults.map((result) {
+                    return Container(
+                      padding: const EdgeInsets.all(16),
+                      margin: const EdgeInsets.only(bottom: 10),
+                      decoration: BoxDecoration(
+                        color: themeProvider.themeMode == ThemeMode.dark
+                            ? Colors.grey[850]
+                            : Colors.grey[400],
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            result.device.name.isNotEmpty
+                                ? result.device.name
+                                : 'Unnamed Device',
+                            style: TextStyle(
+                              color: themeProvider.accentColor,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          ElevatedButton(
+                            onPressed: () => connectToDevice(result.device),
+                            style: ElevatedButton.styleFrom(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(15),
+                              ),
+                            ),
+                            child: const Text('Connect'),
+                          ),
+                        ],
+                      ),
+                    );
+                  }).toList(),
+                ),
+              ),
+            ],
           ),
         ),
       ),
       bottomNavigationBar: BottomNavBar(currentPage: "Connection"),
     );
   }
-
-  // Updated Bluetooth status indicator without interaction
-  Widget _buildBluetoothStatusIndicator(double maxWidth, double screenWidth, ThemeProvider themeProvider) {
-    return Container(
-      width: maxWidth,
-      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-      decoration: BoxDecoration(
-        color: themeProvider.themeMode == ThemeMode.dark
-              ? Colors.grey[850]
-              : Colors.grey[400],
-        borderRadius: BorderRadius.circular(5),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.bluetooth, color: themeProvider.accentColor),
-          SizedBox(width: 10),
-          Text(
-            isBluetoothOn ? 'Bluetooth on' : 'Bluetooth off',
-            style: TextStyle(
-              color: themeProvider.accentColor,
-              fontSize: screenWidth * 0.045,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildDeviceRow(String deviceName, String connectionStatus, double maxWidth, double screenWidth, ThemeProvider themeProvider) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-      decoration: BoxDecoration(
-        color: themeProvider.themeMode == ThemeMode.dark
-              ? Colors.grey[850]
-              : Colors.grey[400],
-        borderRadius: BorderRadius.circular(5),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            deviceName,
-            style: TextStyle(
-              color: themeProvider.accentColor,
-              fontSize: screenWidth * 0.045,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          Text(
-            connectionStatus,
-            style: TextStyle(
-              color: connectionStatus.isNotEmpty ? themeProvider.accentColor : Colors.transparent,
-              fontSize: screenWidth * 0.045,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 }
-
-//in pubspec.yaml change dependecies into below to make it work
-//dependencies:
-//  flutter:
-//    sdk: flutter
-//  flutter_blue_plus: ^1.34.4

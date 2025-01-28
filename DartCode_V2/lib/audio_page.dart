@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/semantics.dart';
 import 'package:provider/provider.dart'; // Import provider
 import 'package:http/http.dart' as http;
 import 'generated/l10n.dart';
@@ -104,10 +105,10 @@ class _AudioPageState extends State<AudioPage> {
                         ),
                         child: Center(
                           child: Text(
-                            S.of(context).audio,
+                            S.of(context).audio_settings,
                             style: TextStyle(
                               color: themeProvider.accentColor, // Use accent color from ThemeProvider
-                              fontSize: screenWidth * 0.08, // Dynamic font size based on screen width
+                              fontSize: screenWidth * 0.070, // Dynamic font size based on screen width
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -120,7 +121,6 @@ class _AudioPageState extends State<AudioPage> {
                     _buildSwitchRow(S.of(context).notifications, notificationProvider.notifications, (value) {
                       setState(() {
                         notificationProvider.setNotifications(value);
-                        // _sendIntensityData('Find', 0);
                       });
                     }, maxWidth, screenWidth, themeProvider),
                     SizedBox(height: buttonSpacing), // Spacing between rows
@@ -214,79 +214,106 @@ class _AudioPageState extends State<AudioPage> {
 
   // Method to build each row with a label and a switch
   Widget _buildSwitchRow(String label, bool switchValue, Function(bool) onChanged, double maxWidth, double screenWidth, ThemeProvider themeProvider) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        // Label part of the row
-        Expanded(
-          child: Text(
-            label,
-            style: TextStyle(
-              color: themeProvider.accentColor, // Use accent color for label
-              fontSize: screenWidth * 0.045, // Dynamic font size for labels
-              fontWeight: FontWeight.bold,
+    String switchText = switchValue ? S.of(context).on : S.of(context).off;
+    return Semantics(
+      label: "$label: $switchText",
+      excludeSemantics: true,
+      child: GestureDetector(
+        onTap: () {
+          // Allow toggling by tapping the entire row for convenience
+          bool newValue = !switchValue;
+          onChanged(newValue);
+
+          SemanticsService.announce("$label: ${newValue ? S.of(context).on : S.of(context).off}", TextDirection.ltr);
+        },
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            // Label part of the row
+            Expanded(
+              child: Text(
+                label,
+                style: TextStyle(
+                  color: themeProvider.accentColor, // Use accent color for label
+                  fontSize: screenWidth * 0.045, // Dynamic font size for labels
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ),
-          ),
-        ),
-        // Switch part of the row
-        Container(
-          width: maxWidth / 3, // Ensures each grey box has the same width
-          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-          child: Center(
-            child: Switch(
-              value: switchValue,
-              onChanged: onChanged,
-              activeColor: themeProvider.accentColor, // Color for the active switch
+            // Switch part of the row
+            Container(
+              width: maxWidth / 3, // Ensures each grey box has the same width
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              child: Switch(
+                value: switchValue,
+                onChanged: onChanged,
+                activeColor: themeProvider.accentColor, // Color for the active switch
+              ),
             ),
-          ),
+          ],
         ),
-      ],
+      ),
     );
   }
 
   // Method to build each row with a label and a button for intensity
   Widget _buildIntensityButtonRow(String label, double intensityValue, Function() onPressed, double maxWidth, double screenWidth, ThemeProvider themeProvider) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        // Label part of the row
-        Expanded(
-          child: Text(
-            label,
-            style: TextStyle(
-              color: themeProvider.accentColor, // Use accent color for label
-              fontSize: screenWidth * 0.045, // Dynamic font size for labels
-              fontWeight: FontWeight.bold,
+  return Semantics(
+    label: "$label: ${intensityValue.toInt()}%",
+    excludeSemantics: true,
+    child: GestureDetector(
+      onTap: () {
+        // Cycle intensity on double-tap
+        final newIntensityValue = _cycleIntensity(intensityValue);
+        onPressed(); // Trigger the provided onPressed function (change intensity)
+
+        // Announce the updated intensity value
+        SemanticsService.announce("$label: ${newIntensityValue.toInt()}%", TextDirection.ltr);
+      },
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          // Label part of the row
+          Expanded(
+            child: Text(
+              label,
+              style: TextStyle(
+                color: themeProvider.accentColor, // Use accent color for label
+                fontSize: screenWidth * 0.045, // Dynamic font size for labels
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
-        ),
-        // Button part of the row to display the current intensity and change it
-        Container(
-          width: maxWidth / 3, // Ensures each grey box has the same width
-          padding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-          decoration: BoxDecoration(
-            color: themeProvider.themeMode == ThemeMode.dark
-                ? Colors.grey[850]
-                : Colors.grey[400],
-            borderRadius: BorderRadius.circular(5),
-          ),
-          child: Center(
-            child: TextButton(
-              onPressed: onPressed, // Change the intensity when pressed
-              child: Text(
-                '${intensityValue.toInt()}%', // Display the current intensity as an integer
-                style: TextStyle(
-                  color: themeProvider.accentColor, // Use accent color for intensity value
-                  fontSize: screenWidth * 0.045, // Dynamic font size for intensity values
-                  fontWeight: FontWeight.bold,
+          // Button part of the row to display the current intensity and change it
+          Container(
+            width: maxWidth / 3, // Ensures each grey box has the same width
+            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+            decoration: BoxDecoration(
+              color: themeProvider.themeMode == ThemeMode.dark
+                  ? Colors.grey[850]
+                  : Colors.grey[400],
+              borderRadius: BorderRadius.circular(5),
+            ),
+            child: Center(
+              child: TextButton(
+                onPressed: onPressed, // Change the intensity when pressed
+                child: Text(
+                  '${intensityValue.toInt()}%', // Display the current intensity as an integer
+                  style: TextStyle(
+                    color: themeProvider.accentColor, // Use accent color for intensity value
+                    fontSize: screenWidth * 0.045, // Dynamic font size for intensity values
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ),
           ),
-        ),
-      ],
-    );
-  }
+        ],
+      ),
+    ),
+  );
+}
+
 
   // Function to cycle through the intensity values (25.0, 50.0, 75.0, 100.0)
   double _cycleIntensity(double currentValue) {
