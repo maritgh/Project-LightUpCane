@@ -40,7 +40,7 @@ void setup() {
   });
 
   server.on("/get", HTTP_GET, []() {  // to send data to the app
-    String data = String(bat_status()) + " " + String(revers_calc_intensity(profiles.intensity_led)) + " " + String(revers_calc_intensity(profiles.intensity_buzzer)) + " " + String(profiles.frequency) + " " + String(revers_calc_intensity(profiles.intensity_haptic)) + " " + String(power);
+    String data = String(bat_status()) + " " + String((String)revers_calc_intensity(profiles.intensity_led)) + " " + String(revers_calc_intensity(profiles.intensity_buzzer)) + " " + String(profiles.frequency) + " " + String(revers_calc_intensity(profiles.intensity_haptic)) + " " + String(power);
     server.send(200, "text/plain", data);
   });
 

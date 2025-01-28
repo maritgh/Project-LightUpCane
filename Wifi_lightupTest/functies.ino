@@ -14,7 +14,7 @@ float calc_intensity(float intensity) {
   return intensity;
 }
 // convert the work numbers to percentages
-float revers_calc_intensity(float intens) {
+int revers_calc_intensity(float intens) {
   intens = ((intens / 256) * 100) + 0.5;
   return intens;
 }
