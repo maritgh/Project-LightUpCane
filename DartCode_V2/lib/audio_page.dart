@@ -258,61 +258,61 @@ class _AudioPageState extends State<AudioPage> {
 
   // Method to build each row with a label and a button for intensity
   Widget _buildIntensityButtonRow(String label, double intensityValue, Function() onPressed, double maxWidth, double screenWidth, ThemeProvider themeProvider) {
-  return Semantics(
-    label: "$label: ${intensityValue.toInt()}%",
-    excludeSemantics: true,
-    child: GestureDetector(
-      onTap: () {
-        // Cycle intensity on double-tap
-        final newIntensityValue = _cycleIntensity(intensityValue);
-        onPressed(); // Trigger the provided onPressed function (change intensity)
+    return Semantics(
+      label: "$label: ${intensityValue.toInt()}%",
+      excludeSemantics: true,
+      child: GestureDetector(
+        onTap: () {
+          // Cycle intensity on double-tap
+          final newIntensityValue = _cycleIntensity(intensityValue);
+          onPressed(); // Trigger the provided onPressed function (change intensity)
 
-        // Announce the updated intensity value
-        SemanticsService.announce("$label: ${newIntensityValue.toInt()}%", TextDirection.ltr);
-      },
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          // Label part of the row
-          Expanded(
-            child: Text(
-              label,
-              style: TextStyle(
-                color: themeProvider.accentColor, // Use accent color for label
-                fontSize: screenWidth * 0.045, // Dynamic font size for labels
-                fontWeight: FontWeight.bold,
+          // Announce the updated intensity value
+          SemanticsService.announce("$label: ${newIntensityValue.toInt()}%", TextDirection.ltr);
+        },
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            // Label part of the row
+            Expanded(
+              child: Text(
+                label,
+                style: TextStyle(
+                  color: themeProvider.accentColor, // Use accent color for label
+                  fontSize: screenWidth * 0.045, // Dynamic font size for labels
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
-          ),
-          // Button part of the row to display the current intensity and change it
-          Container(
-            width: maxWidth / 3, // Ensures each grey box has the same width
-            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-            decoration: BoxDecoration(
-              color: themeProvider.themeMode == ThemeMode.dark
-                  ? Colors.grey[850]
-                  : Colors.grey[400],
-              borderRadius: BorderRadius.circular(5),
-            ),
-            child: Center(
-              child: TextButton(
-                onPressed: onPressed, // Change the intensity when pressed
-                child: Text(
-                  '${intensityValue.toInt()}%', // Display the current intensity as an integer
-                  style: TextStyle(
-                    color: themeProvider.accentColor, // Use accent color for intensity value
-                    fontSize: screenWidth * 0.045, // Dynamic font size for intensity values
-                    fontWeight: FontWeight.bold,
+            // Button part of the row to display the current intensity and change it
+            Container(
+              width: maxWidth / 3, // Ensures each grey box has the same width
+              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+              decoration: BoxDecoration(
+                color: themeProvider.themeMode == ThemeMode.dark
+                    ? Colors.grey[850]
+                    : Colors.grey[400],
+                borderRadius: BorderRadius.circular(5),
+              ),
+              child: Center(
+                child: TextButton(
+                  onPressed: onPressed, // Change the intensity when pressed
+                  child: Text(
+                    '${intensityValue.toInt()}%', // Display the current intensity as an integer
+                    style: TextStyle(
+                      color: themeProvider.accentColor, // Use accent color for intensity value
+                      fontSize: screenWidth * 0.045, // Dynamic font size for intensity values
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
-    ),
-  );
-}
+    );
+  }
 
 
   // Function to cycle through the intensity values (25.0, 50.0, 75.0, 100.0)

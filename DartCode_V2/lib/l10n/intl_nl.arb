@@ -55,6 +55,7 @@
   "language": "TAAL",
   
   "connection": "VERBINDING",
+  "connect": "Verbind",
   "bluetooth_on": "Bluetooth aan",
   "bluetooth_off": "Bluetooth uit",
   "connected_devices": "Verbonden Apparaten",

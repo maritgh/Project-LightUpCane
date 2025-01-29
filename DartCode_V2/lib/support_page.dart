@@ -141,10 +141,16 @@ class SupportPage extends StatelessWidget {
               ),
             ),
           ),
-          Icon(
-            icon,
-            color: Colors.black,
-            size: screenWidth * 0.07,
+          GestureDetector(
+            onTap: () async {
+              String textToSay = _getTextToSay(context, label);
+              await _speak(context, textToSay);
+            },
+            child: Icon(
+              icon,
+              color: Colors.black,
+              size: screenWidth * 0.07,
+            ),
           ),
         ],
       ),
@@ -190,10 +196,16 @@ class SupportPage extends StatelessWidget {
               ),
             ),
           ),
-          Icon(
-            icon,
-            color: Colors.black,
-            size: screenWidth * 0.07,
+          GestureDetector(
+            onTap: () async {
+              // Example contact action
+              print("Contacting Support...");
+            },
+            child: Icon(
+              icon,
+              color: Colors.black,
+              size: screenWidth * 0.07,
+            ),
           ),
         ],
       ),

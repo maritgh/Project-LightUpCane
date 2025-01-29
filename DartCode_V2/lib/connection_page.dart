@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/semantics.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -106,6 +107,7 @@ class _ConnectionPageState extends State<ConnectionPage> {
         connectedDevices.add(device); // Add the device to the list
       });
       print('Connected to ${device.name}');
+      SemanticsService.announce('${device.name.isNotEmpty ? device.name : "Unnamed Device"} connected successfully.', TextDirection.ltr);
     } catch (e) {
       print("Error connecting to device: $e");
       ScaffoldMessenger.of(context).showSnackBar(
@@ -237,7 +239,6 @@ class _ConnectionPageState extends State<ConnectionPage> {
                 child: ListView(
                   children: scanResults.map((result) {
                     return Container(
-                      padding: const EdgeInsets.all(16),
                       margin: const EdgeInsets.only(bottom: 10),
                       decoration: BoxDecoration(
                         color: themeProvider.themeMode == ThemeMode.dark
@@ -245,28 +246,39 @@ class _ConnectionPageState extends State<ConnectionPage> {
                             : Colors.grey[400],
                         borderRadius: BorderRadius.circular(5),
                       ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            result.device.name.isNotEmpty
-                                ? result.device.name
-                                : 'Unnamed Device',
-                            style: TextStyle(
-                              color: themeProvider.accentColor,
-                              fontWeight: FontWeight.bold,
+                      child: Semantics(
+                        label: "${result.device.name.isNotEmpty ? result.device.name : 'Unnamed Device'}, ${S.of(context).connect}",
+                        excludeSemantics: true,
+                        button: true,
+                        child: InkWell(
+                          onTap: () => connectToDevice(result.device),
+                          child: Padding(
+                            padding: const EdgeInsets.all(16),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  result.device.name.isNotEmpty
+                                      ? result.device.name
+                                      : 'Unnamed Device',
+                                  style: TextStyle(
+                                    color: themeProvider.accentColor,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                ElevatedButton(
+                                  onPressed: () => connectToDevice(result.device),
+                                  style: ElevatedButton.styleFrom(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(15),
+                                    ),
+                                  ),
+                                  child: Text(S.of(context).connect),
+                                ),
+                              ],
                             ),
                           ),
-                          ElevatedButton(
-                            onPressed: () => connectToDevice(result.device),
-                            style: ElevatedButton.styleFrom(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(15),
-                              ),
-                            ),
-                            child: const Text('Connect'),
-                          ),
-                        ],
+                        ),
                       ),
                     );
                   }).toList(),

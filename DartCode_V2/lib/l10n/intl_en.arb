@@ -55,6 +55,7 @@
   "language": "LANGUAGE",
 
   "connection": "CONNECTION",
+  "connect": "Connect",
   "bluetooth_on": "Bluetooth on",
   "bluetooth_off": "Bluetooth off",
   "connected_devices": "Connected Devices",
