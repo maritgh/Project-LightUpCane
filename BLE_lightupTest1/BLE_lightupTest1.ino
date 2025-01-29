@@ -29,9 +29,7 @@ void splitStringBySpace(String data) {
   int spaceIndex = data.indexOf(' ');
 
   String command = data.substring(0, spaceIndex);
-  Serial.println(command);
   command.trim();
-  Serial.println(command);
 
   String valueString = data.substring(spaceIndex + 1);
   valueString.trim();  // Remove any leading or trailing spaces
