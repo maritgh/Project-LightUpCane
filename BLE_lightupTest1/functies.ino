@@ -157,8 +157,8 @@ void saveProfileSettings() {
   preferences.putInt("buzzOn", buzzer_on_times);
   preferences.putInt("buzzOff", buzzer_off_times);
   // Add more lines to save additional settings as needed...
-  Serial.println("dit is een test");
-  Serial.println(profiles.intensity_haptic);
+  // Serial.println("dit is een test");
+  // Serial.println(profiles.intensity_haptic);
 
   preferences.end();  // Close the preferences
 }
@@ -178,8 +178,8 @@ void loadProfileSettings() {
   buzzer_off_times = preferences.getInt("buzzOff", buzzer_off_times);
   // Add more lines to load additional settings as needed...
 
-  Serial.println(haptic_on_times);
-  Serial.println(haptic_off_times);
+  // Serial.println(haptic_on_times);
+  // Serial.println(haptic_off_times);
 
   preferences.end();  // Close the preferences
 }
