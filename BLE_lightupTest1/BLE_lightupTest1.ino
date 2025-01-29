@@ -29,7 +29,9 @@ void splitStringBySpace(String data) {
   int spaceIndex = data.indexOf(' ');
 
   String command = data.substring(0, spaceIndex);
+  Serial.println(command);
   command.trim();
+  Serial.println(command);
 
   String valueString = data.substring(spaceIndex + 1);
   valueString.trim();  // Remove any leading or trailing spaces
@@ -66,6 +68,17 @@ void splitStringBySpace(String data) {
   } else if (command == "LightSwitch"){
     toggle_power();
     Serial.println("Light toggled");
+
+   } else if (strcmp(command.c_str(), "Find") == 0) {  // Use 'command' instead of 'part1'
+      profiles.intensity_buzzer = int(calc_intensity(value));
+      saveProfileSettings();
+     for (int i = 0; i <= 10; i++) {
+      ledcWrite(BUZZER, 250.0);
+      delay(200);
+      ledcWrite(BUZZER, 0);  // turn off buzzer
+      delay(100);
+     }
+     Serial.println("Find my cane.");
   } else {
     Serial.println("Unknown command type. Please use Battery, Haptic, Light, Buzzer, or LightSwitch.");
   }
@@ -105,9 +118,9 @@ void setup() {
   init_hardware();
   loadProfileSettings();
   Serial.println("\nESP32 Initialized"); // print al the start values
-  profiles.intensity_haptic = int(calc_intensity(profiles.intensity_haptic));
-  profiles.intensity_buzzer = int(calc_intensity(profiles.intensity_buzzer));
-  profiles.intensity_led = int(calc_intensity(profiles.intensity_led));
+  // profiles.intensity_haptic = int(calc_intensity(profiles.intensity_haptic));
+  // profiles.intensity_buzzer = int(calc_intensity(profiles.intensity_buzzer));
+  // profiles.intensity_led = int(calc_intensity(profiles.intensity_led));
 
   // Setup BLE server
   BLEDevice::init("light_up_cane");
