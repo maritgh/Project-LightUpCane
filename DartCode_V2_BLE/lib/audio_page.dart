@@ -68,10 +68,11 @@ class _AudioPageState extends State<AudioPage> {
   void _handleReceivedData(String data) {
     List<String> values = data.split(" ");
     if (values.length >= 6) {
-      final notificationProvider =
-          Provider.of<NotificationProvider>(context, listen: false);
-      notificationProvider.setHapticIntensity(values[4] == '0' ? 0 : values[4] == '70' ? 25: values[4] == '80'? 50: values[4] == '90'? 75: 100);
-      notificationProvider.setBuzzer(notificationProvider.buzzerIntensity > 0);
+       final notificationProvider = Provider.of<NotificationProvider>(context, listen: false);
+          notificationProvider.setHapticIntensity(values[4] == '0' ? 0 : values[4] == '70' ? 25 : values[4] == '80' ? 50 : values[4] == '90' ? 75 : 100);  
+          notificationProvider.setHaptic(notificationProvider.hapticIntensity > 0);
+          notificationProvider.setBuzzerIntensity(values[2] == '0' ? 0 : values[2] == '1' ? 25 : values[2] == '3' ? 50 : values[2] == '5' ? 75 : 100);
+  	      notificationProvider.setBuzzer(notificationProvider.buzzerIntensity > 0);
     }
   }
 
