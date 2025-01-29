@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:http/http.dart' as http;
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import '../generated/l10n.dart';
 import 'custom_button.dart';
@@ -25,6 +24,58 @@ class _SettingsCanePageState extends State<SettingsCanePage> {
   final String serviceUuid = "4fafc201-1fb5-459e-8fcc-c5c9c331914b";
   final String setCharacteristicUuid = "beb5483e-36e1-4688-b7f5-ea07361b26a8";
   final String getCharacteristicUuid = "6d140001-bcb0-4c43-a293-b21a53dbf9f5";
+
+  Future<void> connectToDevice() async {
+    try {
+      List<BluetoothDevice> devices = FlutterBluePlus.connectedDevices;
+      for (BluetoothDevice device in devices) {
+        if (device.name == 'light_up_cane') {
+          connectedDevice = device;
+
+          // Services en characteristics ontdekken
+          List<BluetoothService> services =
+              await connectedDevice!.discoverServices();
+          for (BluetoothService service in services) {
+            if (service.uuid.toString() == serviceUuid) {
+              for (BluetoothCharacteristic characteristic
+                  in service.characteristics) {
+                if (characteristic.uuid.toString() == setCharacteristicUuid) {
+                  setCharacteristic = characteristic;
+                }
+              }
+            }
+          }
+        }
+      }
+    } catch (e) {
+      print("Error connecting to device: $e");
+    }
+  }
+
+
+   @override
+  void initState() {
+    super.initState();
+    connectToDevice();
+    // _timer = Timer.periodic(Duration(seconds: 5), (timer) => fetchStatusData());
+  }
+
+   void _disconnectFromDevice() {
+    if (connectedDevice != null) {
+      try {
+        connectedDevice!.disconnect();
+      } catch (e) {
+        print("Error disconnecting device: $e");
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    _disconnectFromDevice();
+    //   _timer?.cancel(); // Annuleer de timer bij het sluiten van de widget
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -165,7 +216,6 @@ class _SettingsCanePageState extends State<SettingsCanePage> {
   }
 
   Future<void> _sendIntensityData(String type, double intensityValue) async {
-    // final url = Uri.parse("http://192.168.4.1/set");
     try {
       if (setCharacteristic != null) {
         // Gebruik BLE om gegevens te verzenden
@@ -173,6 +223,7 @@ class _SettingsCanePageState extends State<SettingsCanePage> {
         await setCharacteristic!
             .write(dataString.codeUnits, withoutResponse: false);
       }
+      print('data sent');
     } catch (e) {
       print("Error sending data: $e");
     }
