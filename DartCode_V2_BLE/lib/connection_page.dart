@@ -1,9 +1,11 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/semantics.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'generated/l10n.dart';
 import 'theme_provider.dart';
 import 'bottom_nav_bar.dart';
 
@@ -58,15 +60,13 @@ class _ConnectionPageState extends State<ConnectionPage> {
     bool allGranted = statuses.values.every((status) => status.isGranted);
     if (!allGranted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-            content: Text("Bluetooth permissions are required for scanning")),
+        const SnackBar(content: Text("Bluetooth permissions are required for scanning")),
       );
     }
   }
 
   void handleBluetoothState() {
-    bluetoothSubscription =
-        FlutterBluePlus.adapterState.listen((BluetoothAdapterState state) {
+    bluetoothSubscription = FlutterBluePlus.adapterState.listen((BluetoothAdapterState state) {
       setState(() {
         isBluetoothOn = state == BluetoothAdapterState.on;
         if (isBluetoothOn) {
@@ -75,8 +75,7 @@ class _ConnectionPageState extends State<ConnectionPage> {
       });
     });
 
-    FlutterBluePlus.adapterState.first
-        .then((BluetoothAdapterState initialState) {
+    FlutterBluePlus.adapterState.first.then((BluetoothAdapterState initialState) {
       setState(() {
         isBluetoothOn = initialState == BluetoothAdapterState.on;
         if (isBluetoothOn) {
@@ -108,6 +107,7 @@ class _ConnectionPageState extends State<ConnectionPage> {
         connectedDevices.add(device); // Add the device to the list
       });
       print('Connected to ${device.name}');
+      SemanticsService.announce('${device.name.isNotEmpty ? device.name : "Unnamed Device"} connected successfully.', TextDirection.ltr);
     } catch (e) {
       print("Error connecting to device: $e");
       ScaffoldMessenger.of(context).showSnackBar(
@@ -145,16 +145,16 @@ class _ConnectionPageState extends State<ConnectionPage> {
                   width: screenWidth * 0.8,
                   padding: EdgeInsets.symmetric(vertical: screenHeight * 0.01),
                   decoration: BoxDecoration(
-                    color: themeProvider.accentColor,
+                    color: themeProvider.themeMode == ThemeMode.dark
+                        ? Colors.grey[850]
+                        : Colors.grey[400],
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Center(
                     child: Text(
-                      'CONNECTION',
+                      S.of(context).connection,
                       style: TextStyle(
-                        color: themeProvider.accentColor == Colors.white
-                            ? Colors.black
-                            : Colors.white,
+                        color: themeProvider.accentColor,
                         fontSize: screenWidth * 0.08,
                         fontWeight: FontWeight.bold,
                       ),
@@ -177,9 +177,9 @@ class _ConnectionPageState extends State<ConnectionPage> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Icon(Icons.bluetooth, color: themeProvider.accentColor),
-                    const SizedBox(width: 16),
+                    SizedBox(width: screenWidth * 0.05),
                     Text(
-                      isBluetoothOn ? 'Bluetooth on' : 'Bluetooth off',
+                      isBluetoothOn ? S.of(context).bluetooth_on : S.of(context).bluetooth_off,
                       style: TextStyle(
                         color: themeProvider.accentColor,
                         fontWeight: FontWeight.bold,
@@ -188,18 +188,18 @@ class _ConnectionPageState extends State<ConnectionPage> {
                   ],
                 ),
               ),
-              const SizedBox(height: 20),
+              SizedBox(height: screenHeight * 0.03),
 
               // Connected Devices
               Text(
-                'Connected devices',
+                S.of(context).connected_devices,
                 style: TextStyle(
                   color: themeProvider.accentColor,
-                  fontSize: 18,
+                  fontSize: screenWidth * 0.06,
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              const SizedBox(height: 10),
+              SizedBox(height: screenHeight * 0.03),
               Expanded(
                 child: ListView(
                   children: connectedDevices.map((device) {
@@ -223,23 +223,22 @@ class _ConnectionPageState extends State<ConnectionPage> {
                   }).toList(),
                 ),
               ),
-              const SizedBox(height: 10),
+              SizedBox(height: screenHeight * 0.03),
 
               // Available Devices
               Text(
-                'Available devices',
+                S.of(context).available_devices,
                 style: TextStyle(
                   color: themeProvider.accentColor,
-                  fontSize: 18,
+                  fontSize: screenWidth * 0.06,
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              const SizedBox(height: 10),
+              SizedBox(height: screenHeight * 0.03),
               Expanded(
                 child: ListView(
                   children: scanResults.map((result) {
                     return Container(
-                      padding: const EdgeInsets.all(16),
                       margin: const EdgeInsets.only(bottom: 10),
                       decoration: BoxDecoration(
                         color: themeProvider.themeMode == ThemeMode.dark
@@ -247,28 +246,39 @@ class _ConnectionPageState extends State<ConnectionPage> {
                             : Colors.grey[400],
                         borderRadius: BorderRadius.circular(5),
                       ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            result.device.name.isNotEmpty
-                                ? result.device.name
-                                : 'Unnamed Device',
-                            style: TextStyle(
-                              color: themeProvider.accentColor,
-                              fontWeight: FontWeight.bold,
+                      child: Semantics(
+                        label: "${result.device.name.isNotEmpty ? result.device.name : 'Unnamed Device'}, ${S.of(context).connect}",
+                        excludeSemantics: true,
+                        button: true,
+                        child: InkWell(
+                          onTap: () => connectToDevice(result.device),
+                          child: Padding(
+                            padding: const EdgeInsets.all(16),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  result.device.name.isNotEmpty
+                                      ? result.device.name
+                                      : 'Unnamed Device',
+                                  style: TextStyle(
+                                    color: themeProvider.accentColor,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                ElevatedButton(
+                                  onPressed: () => connectToDevice(result.device),
+                                  style: ElevatedButton.styleFrom(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(15),
+                                    ),
+                                  ),
+                                  child: Text(S.of(context).connect),
+                                ),
+                              ],
                             ),
                           ),
-                          ElevatedButton(
-                            onPressed: () => connectToDevice(result.device),
-                            style: ElevatedButton.styleFrom(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(15),
-                              ),
-                            ),
-                            child: const Text('Connect'),
-                          ),
-                        ],
+                        ),
                       ),
                     );
                   }).toList(),

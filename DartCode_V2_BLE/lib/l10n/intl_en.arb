@@ -20,6 +20,7 @@
   "settings_app": "APP SETTINGS",
   "status": "STATUS",
   "battery": "BATTERY",
+  "light_settings": "LIGHT SETTINGS",
   "light": "LIGHT",
   "light_intensity": "LIGHT INTENSITY",
   "notifications": "NOTIFICATIONS",
@@ -28,11 +29,11 @@
   "buzzer": "BUZZER",
   "buzzer_intensity": "BUZZER INTENSITY",
   
-  "explanation_app": "",
-  "explanation_presets": "",
-  "explanation_settings_cane": "",
-  "explanation_settings_app": "",
-  "explanation_status": "",
+  "explanation_app": "The Light Up Cane app is an app in which the user can manage the settings of their connected cane. These settings are divided into the pages presets settings cane settings app and status. From every page you have the possibility to go to the previously listed pages.",
+  "explanation_presets": "The presets page shows the currently saved presets of your app and a save button that allows you to give a name and save all of your current settings under that name. When a preset is selected you get the options to select the settings of that preset delete the preset rename the preset or go back to the preset list.",
+  "explanation_settings_cane": "The settings cane page has two subpages and one button, audio light and Find My Cane. On the audio page you can select if you want to receive notifications and you can turn on or off and select the intensities of the haptic and buzzer that are located in the cane. On the light page you can turn the light of the cane on or off and select the intensity of the light. The Find My Cane button can be used to make the cane vibrate and play loud noises in order to easily locate it.",
+  "explanation_settings_app": "The settings app page has three subpages, theme connection and language. On the theme page you can select themes and accents that will be used throughout the app. On the connection, if your bluetooth is turned on, you can select a cane that you want to connect with. On the language page you can select a language that will be used throught the app.",
+  "explanation_status": "The status page shows the current status of your connected cane, including battery level, light and notifications status, light haptic and buzzer intensities. The information updates every few seconds to keep you up-to-date. Only through the status page can you get to the support page.",
   "contact": "CONTACT",
  
   "save": "SAVE",
@@ -48,11 +49,19 @@
   "back": "BACK",
   
   "audio": "AUDIO",
+  "audio_settings": "AUDIO SETTINGS",
   "find_my_cane": "Find My Cane",
 
-  "theme": "THEME",
-  "connection": "CONNECTION",
   "language": "LANGUAGE",
+
+  "connection": "CONNECTION",
+  "connect": "Connect",
+  "bluetooth_on": "Bluetooth on",
+  "bluetooth_off": "Bluetooth off",
+  "connected_devices": "Connected Devices",
+  "available_devices": "Available Devices",
+
+  "theme": "THEME",
   "themes": "THEMES",
   "default_system": "Default System",
   "light_theme": "Light",

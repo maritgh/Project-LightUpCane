@@ -410,6 +410,11 @@ class S {
     return Intl.message('CONNECTION', name: 'connection', desc: '', args: []);
   }
 
+  /// `Connect`
+  String get connect {
+    return Intl.message('Connect', name: 'connect', desc: '', args: []);
+  }
+
   /// `Bluetooth on`
   String get bluetooth_on {
     return Intl.message(

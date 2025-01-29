@@ -68,11 +68,11 @@ class _AudioPageState extends State<AudioPage> {
   void _handleReceivedData(String data) {
     List<String> values = data.split(" ");
     if (values.length >= 6) {
-       final notificationProvider = Provider.of<NotificationProvider>(context, listen: false);
-          notificationProvider.setHapticIntensity(values[4] == '0' ? 0 : values[4] == '70' ? 25 : values[4] == '80' ? 50 : values[4] == '90' ? 75 : 100);  
-          notificationProvider.setHaptic(notificationProvider.hapticIntensity > 0);
-          notificationProvider.setBuzzerIntensity(values[2] == '0' ? 0 : values[2] == '1' ? 25 : values[2] == '3' ? 50 : values[2] == '5' ? 75 : 100);
-  	      notificationProvider.setBuzzer(notificationProvider.buzzerIntensity > 0);
+      final notificationProvider = Provider.of<NotificationProvider>(context, listen: false);
+        notificationProvider.setHapticIntensity(values[4] == '0' ? 0 : values[4] == '70' ? 25 : values[4] == '80' ? 50 : values[4] == '90' ? 75 : 100);  
+        notificationProvider.setHaptic(notificationProvider.hapticIntensity > 0);
+        notificationProvider.setBuzzerIntensity(values[2] == '0' ? 0 : values[2] == '1' ? 25 : values[2] == '3' ? 50 : values[2] == '5' ? 75 : 100);
+  	    notificationProvider.setBuzzer(notificationProvider.buzzerIntensity > 0);
     }
   }
 
@@ -302,93 +302,104 @@ class _AudioPageState extends State<AudioPage> {
   }
 
   // Method to build each row with a label and a switch
-  Widget _buildSwitchRow(
-      String label,
-      bool switchValue,
-      Function(bool) onChanged,
-      double maxWidth,
-      double screenWidth,
-      ThemeProvider themeProvider) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        // Label part of the row
-        Expanded(
-          child: Text(
-            label,
-            style: TextStyle(
-              color: themeProvider.accentColor, // Use accent color for label
-              fontSize: screenWidth * 0.045, // Dynamic font size for labels
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
-        // Switch part of the row
-        Container(
-          width: maxWidth / 3, // Ensures each grey box has the same width
-          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-          child: Center(
-            child: Switch(
-              value: switchValue,
-              onChanged: onChanged,
-              activeColor:
-                  themeProvider.accentColor, // Color for the active switch
-            ),
-          ),
-        ),
-      ],
-    );
-  }
+  Widget _buildSwitchRow(String label, bool switchValue, Function(bool) onChanged, double maxWidth, double screenWidth, ThemeProvider themeProvider) {
+    String switchText = switchValue ? S.of(context).on : S.of(context).off;
+    return Semantics(
+      label: "$label: $switchText",
+      excludeSemantics: true,
+      child: GestureDetector(
+        onTap: () {
+          // Allow toggling by tapping the entire row for convenience
+          bool newValue = !switchValue;
+          onChanged(newValue);
 
-  // Method to build each row with a label and a button for intensity
-  Widget _buildIntensityButtonRow(
-      String label,
-      double intensityValue,
-      Function() onPressed,
-      double maxWidth,
-      double screenWidth,
-      ThemeProvider themeProvider) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        // Label part of the row
-        Expanded(
-          child: Text(
-            label,
-            style: TextStyle(
-              color: themeProvider.accentColor, // Use accent color for label
-              fontSize: screenWidth * 0.045, // Dynamic font size for labels
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
-        // Button part of the row to display the current intensity and change it
-        Container(
-          width: maxWidth / 3, // Ensures each grey box has the same width
-          padding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-          decoration: BoxDecoration(
-            color: themeProvider.themeMode == ThemeMode.dark
-                ? Colors.grey[850]
-                : Colors.grey[400],
-            borderRadius: BorderRadius.circular(5),
-          ),
-          child: Center(
-            child: TextButton(
-              onPressed: onPressed, // Change the intensity when pressed
+          SemanticsService.announce("$label: ${newValue ? S.of(context).on : S.of(context).off}", TextDirection.ltr);
+        },
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            // Label part of the row
+            Expanded(
               child: Text(
-                '${intensityValue.toInt()}%', // Display the current intensity as an integer
+                label,
                 style: TextStyle(
-                  color: themeProvider
-                      .accentColor, // Use accent color for intensity value
-                  fontSize: screenWidth *
-                      0.045, // Dynamic font size for intensity values
+                  color: themeProvider.accentColor, // Use accent color for label
+                  fontSize: screenWidth * 0.045, // Dynamic font size for labels
                   fontWeight: FontWeight.bold,
                 ),
               ),
             ),
-          ),
+            // Switch part of the row
+            Container(
+              width: maxWidth / 3, // Ensures each grey box has the same width
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              child: Switch(
+                value: switchValue,
+                onChanged: onChanged,
+                activeColor: themeProvider.accentColor, // Color for the active switch
+              ),
+            ),
+          ],
         ),
-      ],
+      ),
+    );
+  }
+
+  // Method to build each row with a label and a button for intensity
+  Widget _buildIntensityButtonRow(String label, double intensityValue, Function() onPressed, double maxWidth, double screenWidth, ThemeProvider themeProvider) {
+    return Semantics(
+      label: "$label: ${intensityValue.toInt()}%",
+      excludeSemantics: true,
+      child: GestureDetector(
+        onTap: () {
+          // Cycle intensity on double-tap
+          final newIntensityValue = _cycleIntensity(intensityValue);
+          onPressed(); // Trigger the provided onPressed function (change intensity)
+
+          // Announce the updated intensity value
+          SemanticsService.announce("$label: ${newIntensityValue.toInt()}%", TextDirection.ltr);
+        },
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            // Label part of the row
+            Expanded(
+              child: Text(
+                label,
+                style: TextStyle(
+                  color: themeProvider.accentColor, // Use accent color for label
+                  fontSize: screenWidth * 0.045, // Dynamic font size for labels
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            // Button part of the row to display the current intensity and change it
+            Container(
+              width: maxWidth / 3, // Ensures each grey box has the same width
+              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+              decoration: BoxDecoration(
+                color: themeProvider.themeMode == ThemeMode.dark
+                    ? Colors.grey[850]
+                    : Colors.grey[400],
+                borderRadius: BorderRadius.circular(5),
+              ),
+              child: Center(
+                child: TextButton(
+                  onPressed: onPressed, // Change the intensity when pressed
+                  child: Text(
+                    '${intensityValue.toInt()}%', // Display the current intensity as an integer
+                    style: TextStyle(
+                      color: themeProvider.accentColor, // Use accent color for intensity value
+                      fontSize: screenWidth * 0.045, // Dynamic font size for intensity values
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 

@@ -47,6 +47,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "cancel": MessageLookupByLibrary.simpleMessage("Annuleren"),
     "confirm_rename": MessageLookupByLibrary.simpleMessage("Hernoemen"),
     "confirm_save": MessageLookupByLibrary.simpleMessage("Opslaan"),
+    "connect": MessageLookupByLibrary.simpleMessage("Verbind"),
     "connected_devices": MessageLookupByLibrary.simpleMessage(
       "Verbonden Apparaten",
     ),
