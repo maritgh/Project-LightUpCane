@@ -28,7 +28,7 @@ class _LightPageState extends State<LightPage> {
         List<String> values = response.body.split(" ");
         if (values.length >= 6) {
           final notificationProvider = Provider.of<NotificationProvider>(context, listen: false);
-          notificationProvider.setLightIntensity(values[1] == '30' ? S.of(context).low : values[1] == '60' ? S.of(context).medium : S.of(context).high);
+          notificationProvider.setLightIntensity(values[1] == '30' ? '30' : values[1] == '60' ? '60' : '100');
           notificationProvider.setLight(values[5] == '0' ? false : true);
         }
       } else {
@@ -111,7 +111,7 @@ class _LightPageState extends State<LightPage> {
                     setState(() {
                       notificationProvider.setLight(value);
                       _sendIntensityData('LightSwitch', notificationProvider.light ? 1 : 0);
-                      _sendIntensityData('Light', notificationProvider.lightIntensity == S.of(context).low ? 30 : notificationProvider.lightIntensity == S.of(context).medium ? 60 : 100);
+                      _sendIntensityData('Light', notificationProvider.lightIntensity == '30' ? 30 : notificationProvider.lightIntensity == '60' ? 60 : 100);
                     });
                   }, maxWidth, screenWidth, themeProvider),
                   SizedBox(height: buttonSpacing), // Spacing between rows
