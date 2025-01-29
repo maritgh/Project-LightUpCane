@@ -68,11 +68,7 @@ class _LightPageState extends State<LightPage> {
     if (values.length >= 6) {
       final notificationProvider =
           Provider.of<NotificationProvider>(context, listen: false);
-      notificationProvider.setLightIntensity(values[1] == '30'
-          ? S.of(context).low
-          : values[1] == '60'
-              ? S.of(context).medium
-              : S.of(context).high);
+       notificationProvider.setLightIntensity(values[1] == '30' ? '30' : values[1] == '60' ? '60' : '100');
       notificationProvider.setLight(values[5] == '0' ? false : true);
     }
     ;
