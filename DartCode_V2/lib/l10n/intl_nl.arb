@@ -56,6 +56,7 @@
   
   "connection": "VERBINDING",
   "connect": "Verbind",
+  "connected_successfully": "correct verbonden",
   "bluetooth_on": "Bluetooth aan",
   "bluetooth_off": "Bluetooth uit",
   "connected_devices": "Verbonden Apparaten",

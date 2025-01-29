@@ -107,7 +107,8 @@ class _ConnectionPageState extends State<ConnectionPage> {
         connectedDevices.add(device); // Add the device to the list
       });
       print('Connected to ${device.name}');
-      SemanticsService.announce('${device.name.isNotEmpty ? device.name : "Unnamed Device"} connected successfully.', TextDirection.ltr);
+      String connectSuccess = S.of(context).connected_successfully;
+      SemanticsService.announce('${device.name.isNotEmpty ? device.name : "Unnamed Device"} $connectSuccess', TextDirection.ltr);
     } catch (e) {
       print("Error connecting to device: $e");
       ScaffoldMessenger.of(context).showSnackBar(

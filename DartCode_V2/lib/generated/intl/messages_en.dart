@@ -49,6 +49,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "connected_devices": MessageLookupByLibrary.simpleMessage(
       "Connected Devices",
     ),
+    "connected_successfully": MessageLookupByLibrary.simpleMessage(
+      "connected successfully",
+    ),
     "connection": MessageLookupByLibrary.simpleMessage("CONNECTION"),
     "contact": MessageLookupByLibrary.simpleMessage("CONTACT"),
     "dark_theme": MessageLookupByLibrary.simpleMessage("Dark"),
