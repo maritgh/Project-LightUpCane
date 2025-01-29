@@ -31,7 +31,6 @@ class _SettingsCanePageState extends State<SettingsCanePage> {
       for (BluetoothDevice device in devices) {
         if (device.name == 'light_up_cane') {
           connectedDevice = device;
-
           // Services en characteristics ontdekken
           List<BluetoothService> services =
               await connectedDevice!.discoverServices();
@@ -52,15 +51,14 @@ class _SettingsCanePageState extends State<SettingsCanePage> {
     }
   }
 
-
-   @override
+  @override
   void initState() {
     super.initState();
     connectToDevice();
     // _timer = Timer.periodic(Duration(seconds: 5), (timer) => fetchStatusData());
   }
 
-   void _disconnectFromDevice() {
+  void _disconnectFromDevice() {
     if (connectedDevice != null) {
       try {
         connectedDevice!.disconnect();
@@ -223,7 +221,6 @@ class _SettingsCanePageState extends State<SettingsCanePage> {
         await setCharacteristic!
             .write(dataString.codeUnits, withoutResponse: false);
       }
-      print('data sent');
     } catch (e) {
       print("Error sending data: $e");
     }

@@ -415,6 +415,16 @@ class S {
     return Intl.message('Connect', name: 'connect', desc: '', args: []);
   }
 
+  /// `connected successfully`
+  String get connected_successfully {
+    return Intl.message(
+      'connected successfully',
+      name: 'connected_successfully',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Bluetooth on`
   String get bluetooth_on {
     return Intl.message(
