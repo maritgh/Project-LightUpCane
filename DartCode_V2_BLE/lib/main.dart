@@ -35,32 +35,3 @@ void main() async {
 //   flutter_localizations: 
 //     sdk: flutter
 //   intl_utils: ^2.8.7
-
-// class MyApp extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return Consumer<ThemeProvider>(
-//       builder: (context, themeProvider, child) {
-//         return MaterialApp(
-//           themeMode: themeProvider.themeMode,
-//           theme: ThemeData(
-//             brightness: Brightness.light,
-//             colorScheme: ColorScheme.fromSeed(
-//               seedColor: themeProvider.accentColor,
-//               brightness: Brightness.light,
-//             ),
-//           ),
-//           darkTheme: ThemeData(
-//             brightness: Brightness.dark,
-//             colorScheme: ColorScheme.fromSeed(
-//               seedColor: themeProvider.accentColor,
-//               brightness: Brightness.dark,
-//             ),
-//           ),
-//           debugShowCheckedModeBanner: false,
-//           home: HomePage(),
-//         );
-//       },
-//     );
-//   }
-// }
