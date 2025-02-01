@@ -212,9 +212,3 @@ class SupportPage extends StatelessWidget {
     );
   }
 }
-
-//in pubspec.yaml change dependecies into below to make it work
-//dependencies:
-//  flutter:
-//    sdk: flutter
-//  flutter_tts: ^4.1.0
