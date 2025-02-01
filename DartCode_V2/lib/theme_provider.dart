@@ -62,11 +62,3 @@ class ThemeProvider extends ChangeNotifier {
     return Locale(languageCode);
   }
 }
-
-
-
-//in pubspec.yaml change dependecies into below to make it work
-//dependencies:
-//  flutter:
-//    sdk: flutter
-//  provider: ^6.0.0 
