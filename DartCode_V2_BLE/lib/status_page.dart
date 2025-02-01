@@ -241,9 +241,3 @@ class _StatusPageState extends State<StatusPage> {
     );
   }
 }
-
-//in pubspec.yaml change dependecies into below to make it work
-//dependencies:
-//  flutter:
-//    sdk: flutter
-//  http: ^1.2.2
