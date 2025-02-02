@@ -22,17 +22,18 @@ void main() async {
 
 
 // in pubspec.yaml change dependecies into below to make it work
-// dependencies:
+//dependencies:
 //  flutter:
 //    sdk: flutter
-//   provider: ^6.0.0
-//   flutter_blue_plus: ^1.34.4
-//   http: ^1.2.2
-//   flutter_tts: ^4.1.0
-//   hive: ^2.2.3
-//   hive_flutter: ^1.1.0 
-//   flutter_localizations:
-//     sdk: flutter
-//   intl: ^0.19.0
-//   intl_utils: ^2.8.7
-//   permission_handler: ^11.3.1
+//  provider: ^6.0.0
+//  flutter_blue_plus: ^1.35.2
+//  http: ^1.2.2
+//  flutter_tts: ^4.1.0
+//  hive: ^2.2.3
+//  hive_flutter: ^1.1.0
+//  flutter_local_notifications: ^18.0.1
+//  flutter_localizations:
+//    sdk: flutter
+//  intl: ^0.19.0
+//  intl_utils: ^2.8.7
+//  permission_handler: ^11.1.1
