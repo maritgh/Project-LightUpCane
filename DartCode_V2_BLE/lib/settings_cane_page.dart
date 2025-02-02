@@ -7,7 +7,7 @@ import 'custom_button.dart';
 import 'audio_page.dart';
 import 'light_page.dart';
 import 'theme_provider.dart';
-import 'bottom_nav_bar.dart'; // Import your BottomNavBar
+import 'bottom_nav_bar.dart';
 
 class SettingsCanePage extends StatefulWidget {
   const SettingsCanePage({Key? key}) : super(key: key);
@@ -31,7 +31,7 @@ class _SettingsCanePageState extends State<SettingsCanePage> {
       for (BluetoothDevice device in devices) {
         if (device.name == 'light_up_cane') {
           connectedDevice = device;
-          // Services en characteristics ontdekken
+          // Discover services and characteristics
           List<BluetoothService> services =
               await connectedDevice!.discoverServices();
           for (BluetoothService service in services) {
@@ -55,7 +55,6 @@ class _SettingsCanePageState extends State<SettingsCanePage> {
   void initState() {
     super.initState();
     connectToDevice();
-    // _timer = Timer.periodic(Duration(seconds: 5), (timer) => fetchStatusData());
   }
 
   void _disconnectFromDevice() {
@@ -71,7 +70,6 @@ class _SettingsCanePageState extends State<SettingsCanePage> {
   @override
   void dispose() {
     _disconnectFromDevice();
-    //   _timer?.cancel(); // Annuleer de timer bij het sluiten van de widget
     super.dispose();
   }
 
@@ -116,26 +114,21 @@ class _SettingsCanePageState extends State<SettingsCanePage> {
                         color: themeProvider.themeMode == ThemeMode.dark
                             ? Colors.grey[850]
                             : Colors.grey[400],
-                        borderRadius: BorderRadius.circular(
-                            20), // Rounded corners for the header
+                        borderRadius: BorderRadius.circular(20), // Rounded corners for the header
                       ),
                       child: Center(
                         child: Text(
                           S.of(context).settings_cane,
                           style: TextStyle(
-                            color: themeProvider
-                                .accentColor, // Use accent color from ThemeProvider
-                            fontSize: screenWidth *
-                                0.08, // Dynamic font size based on screen width
+                            color: themeProvider.accentColor, // Use accent color from ThemeProvider
+                            fontSize: screenWidth * 0.08, // Dynamic font size based on screen width
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                       ),
                     ),
                   ),
-                  SizedBox(
-                      height:
-                          buttonSpacing * 3), // Space between title and buttons
+                  SizedBox(height: buttonSpacing * 3), // Space between title and buttons
 
                   // Audio Button
                   CustomButton(
@@ -146,8 +139,7 @@ class _SettingsCanePageState extends State<SettingsCanePage> {
                         MaterialPageRoute(builder: (context) => AudioPage()),
                       );
                     },
-                    screenWidth:
-                        screenWidth, // Pass screen dimensions for dynamic sizing
+                    screenWidth: screenWidth, // Pass screen dimensions for dynamic sizing
                     screenHeight: screenHeight,
                     color: dynamicColor, // Use accent color from ThemeProvider
                   ),
@@ -162,8 +154,7 @@ class _SettingsCanePageState extends State<SettingsCanePage> {
                         MaterialPageRoute(builder: (context) => LightPage()),
                       );
                     },
-                    screenWidth:
-                        screenWidth, // Pass screen dimensions for dynamic sizing
+                    screenWidth: screenWidth, // Pass screen dimensions for dynamic sizing
                     screenHeight: screenHeight,
                     color: dynamicColor, // Use accent color from ThemeProvider
                   ),
@@ -172,12 +163,7 @@ class _SettingsCanePageState extends State<SettingsCanePage> {
                   // Find My Cane Button
                   GestureDetector(
                     onTap: () {
-                      _sendIntensityData('Find', 0);
-                      // Add your "Find My Cane" action here
-                      print('Find My Cane button pressed');
-                      // ScaffoldMessenger.of(context).showSnackBar(
-                      // const SnackBar(content: Text('Finding your cane...')),
-                      // );
+                      _sendData('Find', 0);
                     },
                     child: Container(
                       height: screenHeight * 0.25,
@@ -213,10 +199,10 @@ class _SettingsCanePageState extends State<SettingsCanePage> {
     );
   }
 
-  Future<void> _sendIntensityData(String type, double intensityValue) async {
+  Future<void> _sendData(String type, double intensityValue) async {
     try {
       if (setCharacteristic != null) {
-        // Gebruik BLE om gegevens te verzenden
+        // Send data via Bluetooth
         String dataString = "$type $intensityValue";
         await setCharacteristic!
             .write(dataString.codeUnits, withoutResponse: false);

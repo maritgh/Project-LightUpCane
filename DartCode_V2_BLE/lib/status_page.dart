@@ -24,6 +24,7 @@ class _StatusPageState extends State<StatusPage> {
   final String serviceUuid = "4fafc201-1fb5-459e-8fcc-c5c9c331914b";
   final String setCharacteristicUuid = "beb5483e-36e1-4688-b7f5-ea07361b26a8";
   final String getCharacteristicUuid = "6d140001-bcb0-4c43-a293-b21a53dbf9f5";
+  
   // Variables to hold the status information
   String battery = '';
   String light = '';
@@ -40,7 +41,7 @@ class _StatusPageState extends State<StatusPage> {
         if (device.name == 'light_up_cane') {
           connectedDevice = device;
 
-          // Services en characteristics ontdekken
+           // Discover services and characteristics
           List<BluetoothService> services =
               await connectedDevice!.discoverServices();
           for (BluetoothService service in services) {
@@ -54,7 +55,7 @@ class _StatusPageState extends State<StatusPage> {
                   getCharacteristic = characteristic;
                   await getCharacteristic!.setNotifyValue(true);
                   getCharacteristic!.value.listen((value) {
-                    // Ontvang gegevens van het apparaat
+                    // Listen for incoming data from the device
                     String data = String.fromCharCodes(value);
                     _handleReceivedData(data);
                   });
@@ -80,7 +81,6 @@ class _StatusPageState extends State<StatusPage> {
             hapticIntensity = "${values[4] == '0' ? 0 : values[4] == '70' ? 25 : values[4] == '80' ? 50 : values[4] == '90' ? 75 : 100}%";
             buzzerIntensity = "${values[2] == '0' ? 0 : values[2] == '1' ? 25 : values[2] == '3' ? 50 : values[2] == '5' ? 75 : 100}%";
             buzzerFrequency = "${values[3]}%";
-        // errorMessage = ''; // Clear any previous error message
       });
     }
   }
@@ -95,7 +95,6 @@ class _StatusPageState extends State<StatusPage> {
   @override
   void dispose() {
     _disconnectFromDevice();
-    //_timer?.cancel(); // Annuleer de timer bij het sluiten van de widget
     super.dispose();
   }
 
@@ -175,7 +174,7 @@ class _StatusPageState extends State<StatusPage> {
               ),
             ),
 
-            // Help Icon in the center under buzzer intensity, with controlled size
+            // Help Icon in the center under buzzer intensity
             Center(
               child: IconButton(
                 icon: Icon(

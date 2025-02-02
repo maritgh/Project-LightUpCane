@@ -13,7 +13,7 @@ class NotificationProvider extends ChangeNotifier {
   final Box _settingsBox = Hive.box('settings');
 
   NotificationProvider() {
-    // Load notifications state from Hive
+    // Load states from Hive
     _notifications = _settingsBox.get('notifications', defaultValue: false);
     _haptic = _settingsBox.get('haptic', defaultValue: true);
     _hapticIntensity = _settingsBox.get('hapticIntensity', defaultValue: 25.0);

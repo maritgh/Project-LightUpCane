@@ -27,55 +27,18 @@ class BottomNavBar extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          _buildNavButton(
-              context,
-              S.of(context).nav_status,
-              currentPage == "Status",
-              themeProvider,
-              screenWidth,
-              screenHeight,
-              "Status"),
-          _buildNavButton(
-              context,
-              S.of(context).nav_presets,
-              currentPage == "Presets",
-              themeProvider,
-              screenWidth,
-              screenHeight,
-              "Presets"),
-          _buildNavButton(
-              context,
-              S.of(context).nav_settings_cane,
-              currentPage == "SettingsCane",
-              themeProvider,
-              screenWidth,
-              screenHeight,
-              "Settings\nCane"),
-          _buildNavButton(
-              context,
-              S.of(context).nav_settings_app,
-              currentPage == "SettingsApp",
-              themeProvider,
-              screenWidth,
-              screenHeight,
-              "Settings\nApp"),
+          _buildNavButton(context, S.of(context).nav_status, currentPage == "Status", themeProvider, screenWidth, screenHeight, "Status"),
+          _buildNavButton(context,S.of(context).nav_presets, currentPage == "Presets", themeProvider, screenWidth, screenHeight, "Presets"),
+          _buildNavButton(context, S.of(context).nav_settings_cane, currentPage == "SettingsCane", themeProvider, screenWidth, screenHeight, "Settings\nCane"),
+          _buildNavButton(context, S.of(context).nav_settings_app, currentPage == "SettingsApp", themeProvider, screenWidth, screenHeight, "Settings\nApp"),
         ],
       ),
     );
   }
 
-  Widget _buildNavButton(
-      BuildContext context,
-      String label,
-      bool isSelected,
-      ThemeProvider themeProvider,
-      double screenWidth,
-      double screenHeight,
-      String switchLabel) {
-    final buttonWidth =
-        screenWidth * 0.2; // Set each button to 20% of the screen width
-    final buttonHeight =
-        screenHeight * 0.07; // Set each button to 15% of the screen height
+  Widget _buildNavButton(BuildContext context, String label, bool isSelected, ThemeProvider themeProvider, double screenWidth, double screenHeight, String switchLabel) {
+    final buttonWidth = screenWidth * 0.2; // Set each button to 20% of the screen width
+    final buttonHeight = screenHeight * 0.07; // Set each button to 15% of the screen height
 
     return GestureDetector(
       onTap: () {
@@ -83,19 +46,19 @@ class BottomNavBar extends StatelessWidget {
         Widget page;
         switch (switchLabel) {
           case "Status":
-            page = StatusPage(); // Replace with your actual Status page widget
+            page = StatusPage();
             break;
           case "Presets":
             page =
-                PresetsPage(); // Replace with your actual Presets page widget
+                PresetsPage();
             break;
           case "Settings\nCane":
             page =
-                SettingsCanePage(); // Replace with your actual Settings Cane page widget
+                SettingsCanePage();
             break;
           case "Settings\nApp":
             page =
-                SettingsAppPage(); // Replace with your actual Settings App page widget
+                SettingsAppPage();
             break;
           default:
             return; // If label doesn't match, do nothing
@@ -120,8 +83,7 @@ class BottomNavBar extends StatelessWidget {
             style: TextStyle(
               color: themeProvider.accentColor == Colors.white
                   ? Colors.black
-                  : Colors
-                      .white, // adjusts the text color only if the accent color is white
+                  : Colors .white, // adjusts the text color only if the accent color is white
               fontSize: 14,
               fontWeight: FontWeight.bold,
             ),

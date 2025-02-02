@@ -18,27 +18,28 @@ class ConnectionPage extends StatefulWidget {
 
 class _ConnectionPageState extends State<ConnectionPage> {
   bool isBluetoothOn = false;
-  List<ScanResult> scanResults = [];
-  List<BluetoothDevice> connectedDevices = [];
-  late StreamSubscription<BluetoothAdapterState> bluetoothSubscription;
+  List<ScanResult> scanResults = []; // List to store scanned Bluetooth devices
+  List<BluetoothDevice> connectedDevices = []; // List to store connected devices
+  late StreamSubscription<BluetoothAdapterState> bluetoothSubscription; // Subscription for Bluetooth state changes
 
   @override
   void initState() {
     super.initState();
     if (Platform.isAndroid || Platform.isIOS) {
-      checkBluetoothSupport();
+      checkBluetoothSupport(); // Check if Bluetooth is supported
     }
     fetchConnectedDevices(); // Retrieve previously connected devices
   }
 
   @override
   void dispose() {
-    bluetoothSubscription.cancel();
+    bluetoothSubscription.cancel(); // Cancel the subscription to avoid memory leaks
     super.dispose();
   }
 
+  // Checks if Bluetooth is supported on the device
   Future<void> checkBluetoothSupport() async {
-    await _checkPermissions();
+    await _checkPermissions(); // Ensure required permissions are granted
     bool supported = await FlutterBluePlus.isSupported;
     if (!supported) {
       setState(() {
@@ -47,9 +48,10 @@ class _ConnectionPageState extends State<ConnectionPage> {
       print("Bluetooth not supported by this device");
       return;
     }
-    handleBluetoothState();
+    handleBluetoothState(); // Handle Bluetooth state updates
   }
 
+  // Requests necessary permissions for Bluetooth operations
   Future<void> _checkPermissions() async {
     Map<Permission, PermissionStatus> statuses = await [
       Permission.location,
@@ -65,16 +67,18 @@ class _ConnectionPageState extends State<ConnectionPage> {
     }
   }
 
+  // Handles Bluetooth adapter state changes
   void handleBluetoothState() {
     bluetoothSubscription = FlutterBluePlus.adapterState.listen((BluetoothAdapterState state) {
       setState(() {
         isBluetoothOn = state == BluetoothAdapterState.on;
         if (isBluetoothOn) {
-          startScanForDevices();
+          startScanForDevices(); // Start scanning when Bluetooth is on
         }
       });
     });
 
+    // Check initial Bluetooth state
     FlutterBluePlus.adapterState.first.then((BluetoothAdapterState initialState) {
       setState(() {
         isBluetoothOn = initialState == BluetoothAdapterState.on;
@@ -85,14 +89,16 @@ class _ConnectionPageState extends State<ConnectionPage> {
     });
   }
 
+  // Starts scanning for nearby Bluetooth devices
   void startScanForDevices() {
-    scanResults.clear();
+    scanResults.clear(); // Clear previous scan results
     setState(() {});
 
-    FlutterBluePlus.startScan(timeout: const Duration(seconds: 4));
+    FlutterBluePlus.startScan(timeout: const Duration(seconds: 4)); // Start scanning for 4 seconds
 
     FlutterBluePlus.scanResults.listen((results) {
       setState(() {
+        // Filter out devices that do not have a local name
         scanResults = results
             .where((result) => result.advertisementData.localName.isNotEmpty)
             .toList();
@@ -100,15 +106,21 @@ class _ConnectionPageState extends State<ConnectionPage> {
     });
   }
 
+  // Connects to a selected Bluetooth device
   void connectToDevice(BluetoothDevice device) async {
     try {
-      await device.connect(autoConnect: false);
+      await device.connect(autoConnect: false); // Attempt to connect
       setState(() {
-        connectedDevices.add(device); // Add the device to the list
+        connectedDevices.add(device); // Add the device to the connected list
       });
       print('Connected to ${device.name}');
+
+      // Announce successful connection for accessibility support
       String connectSuccess = S.of(context).connected_successfully;
-      SemanticsService.announce('${device.name.isNotEmpty ? device.name : "Unnamed Device"} $connectSuccess', TextDirection.ltr);
+      SemanticsService.announce(
+        '${device.name.isNotEmpty ? device.name : "Unnamed Device"} $connectSuccess',
+        TextDirection.ltr,
+      );
     } catch (e) {
       print("Error connecting to device: $e");
       ScaffoldMessenger.of(context).showSnackBar(
@@ -117,6 +129,7 @@ class _ConnectionPageState extends State<ConnectionPage> {
     }
   }
 
+  // Fetches the list of currently connected Bluetooth devices
   void fetchConnectedDevices() async {
     List<BluetoothDevice> devices = FlutterBluePlus.connectedDevices;
     setState(() {

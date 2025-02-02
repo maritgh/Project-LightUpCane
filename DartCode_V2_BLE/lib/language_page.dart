@@ -24,7 +24,7 @@ class LanguagePage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // Theme Title
+              // Language Title
               Center(
                 child: Container(
                   width: screenWidth * 0.8,
@@ -48,11 +48,9 @@ class LanguagePage extends StatelessWidget {
                   ),
                 ),
               ),
-              SizedBox(
-                  height:
-                      screenHeight * 0.03), // Space between title and content
+              SizedBox(height: screenHeight * 0.03), // Space between title and content
 
-              // Themes Section
+              // Languages Section
               Text(
                 S.of(context).languages,
                 style: TextStyle(

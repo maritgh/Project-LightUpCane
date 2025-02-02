@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../generated/l10n.dart';
+import 'generated/l10n.dart';
 import 'theme_provider.dart';
 import 'bottom_nav_bar.dart';
 
@@ -39,8 +39,7 @@ class ThemePage extends StatelessWidget {
                     child: Text(
                       S.of(context).theme,
                       style: TextStyle(
-                        color: themeProvider
-                            .accentColor, // Use accent color from ThemeProvider
+                        color: themeProvider.accentColor, // Use accent color from ThemeProvider
                         fontSize: screenWidth * 0.07,
                         fontWeight: FontWeight.bold,
                       ),
@@ -48,9 +47,7 @@ class ThemePage extends StatelessWidget {
                   ),
                 ),
               ),
-              SizedBox(
-                  height:
-                      screenHeight * 0.03), // Space between title and content
+              SizedBox(height: screenHeight * 0.03), // Space between title and content
 
               // Themes Section
               Text(
@@ -142,8 +139,7 @@ class ThemePage extends StatelessWidget {
   }
 
   // Helper method to generate accent color buttons
-  Widget accentButton(String label, Color color, ThemeProvider themeProvider,
-      double screenWidth) {
+  Widget accentButton(String label, Color color, ThemeProvider themeProvider, double screenWidth) {
     return fullWidthButton(
       label,
       () => themeProvider.setAccentColor(color),
@@ -155,8 +151,7 @@ class ThemePage extends StatelessWidget {
   }
 
   // Helper method to create full-width buttons
-  Widget fullWidthButton(String label, VoidCallback onPressed, Color textColor,
-      double screenWidth) {
+  Widget fullWidthButton(String label, VoidCallback onPressed, Color textColor, double screenWidth) {
     return SizedBox(
       width: double.infinity,
       child: TextButton(

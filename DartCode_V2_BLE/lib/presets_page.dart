@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:hive/hive.dart';
-import 'package:http/http.dart' as http;
 import 'generated/l10n.dart';
 import 'theme_provider.dart';
 import 'notification_provider.dart';
@@ -16,10 +15,10 @@ class PresetsPage extends StatefulWidget {
 }
 
 class _PresetsPageState extends State<PresetsPage> {
-  late Box _settingsBox;
-  List<String> presets = [];
-  String? selectedPreset;
-  bool notificationsEnabled = false;
+  late Box _settingsBox; // Hive storage box
+  List<String> presets = []; // List of saved presets
+  String? selectedPreset; // Currently selected preset
+  bool notificationsEnabled = false; // Notification toggle
 
   @override
   void initState() {
@@ -27,11 +26,11 @@ class _PresetsPageState extends State<PresetsPage> {
     _initializeMemory();
   }
 
+  // Initializes the Hive storage box and loads saved presets
   Future<void> _initializeMemory() async {
     _settingsBox = await Hive.openBox('presetsBox');
     setState(() {
-      presets =
-          List<String>.from(_settingsBox.get('presets', defaultValue: []));
+      presets = List<String>.from(_settingsBox.get('presets', defaultValue: []));
     });
   }
 
@@ -48,6 +47,7 @@ class _PresetsPageState extends State<PresetsPage> {
       body: SafeArea(
         child: Column(
           children: [
+            // Presets title container
             Padding(
               padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.1),
               child: Center(
@@ -91,8 +91,7 @@ class _PresetsPageState extends State<PresetsPage> {
                                     ))
                                 .toList(),
                           )
-                        : _buildPresetOptions(
-                            screenWidth, maxWidth, themeProvider);
+                        : _buildPresetOptions(screenWidth, maxWidth, themeProvider);
                   },
                 ),
               ),
@@ -106,8 +105,8 @@ class _PresetsPageState extends State<PresetsPage> {
     );
   }
 
-  Widget _buildPresetTile(String preset, double maxWidth, double screenWidth,
-      ThemeProvider themeProvider) {
+  // Builds a tile for each preset in the list
+  Widget _buildPresetTile(String preset, double maxWidth, double screenWidth, ThemeProvider themeProvider) {
     return GestureDetector(
       onTap: () => setState(() {
         selectedPreset = preset;
@@ -136,19 +135,15 @@ class _PresetsPageState extends State<PresetsPage> {
     );
   }
 
-  Widget _buildPresetOptions(
-      double screenWidth, double maxWidth, ThemeProvider themeProvider) {
+  Widget _buildPresetOptions(double screenWidth, double maxWidth, ThemeProvider themeProvider) {
     return Column(
       children: [
-        _buildOptionButton(S.of(context).select, screenWidth, themeProvider,
-            onPressed: () {
+        _buildOptionButton(S.of(context).select, screenWidth, themeProvider, onPressed: () {
           _applyPresetSettings();
           setState(() => selectedPreset = null);
         }),
-        _buildOptionButton(S.of(context).rename, screenWidth, themeProvider,
-            onPressed: _showRenameDialog),
-        _buildOptionButton(S.of(context).delete, screenWidth, themeProvider,
-            onPressed: () {
+        _buildOptionButton(S.of(context).rename, screenWidth, themeProvider, onPressed: _showRenameDialog),
+        _buildOptionButton(S.of(context).delete, screenWidth, themeProvider, onPressed: () {
           setState(() {
             _settingsBox.delete(selectedPreset);
             presets.remove(selectedPreset);
@@ -156,15 +151,12 @@ class _PresetsPageState extends State<PresetsPage> {
             selectedPreset = null;
           });
         }),
-        _buildOptionButton(S.of(context).back, screenWidth, themeProvider,
-            onPressed: () => setState(() => selectedPreset = null)),
+        _buildOptionButton(S.of(context).back, screenWidth, themeProvider, onPressed: () => setState(() => selectedPreset = null)),
       ],
     );
   }
 
-  Widget _buildOptionButton(
-      String label, double screenWidth, ThemeProvider themeProvider,
-      {VoidCallback? onPressed}) {
+  Widget _buildOptionButton(String label, double screenWidth, ThemeProvider themeProvider, {VoidCallback? onPressed}) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 5),
       child: ElevatedButton(
@@ -186,8 +178,7 @@ class _PresetsPageState extends State<PresetsPage> {
     );
   }
 
-  Widget _buildSaveButton(
-      double screenWidth, double screenHeight, ThemeProvider themeProvider) {
+  Widget _buildSaveButton(double screenWidth, double screenHeight, ThemeProvider themeProvider) {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: screenHeight * 0.02),
       child: ElevatedButton(
@@ -210,10 +201,10 @@ class _PresetsPageState extends State<PresetsPage> {
     );
   }
 
+  // Saves the preset settings into Hive storage
   void _savePreset(String presetName) {
     final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
-    final notificationProvider =
-        Provider.of<NotificationProvider>(context, listen: false);
+    final notificationProvider = Provider.of<NotificationProvider>(context, listen: false);
     _settingsBox.put(presetName, {
       'themeMode': themeProvider.themeMode.toString(),
       'accentColor': themeProvider.accentColor.value,
@@ -226,6 +217,7 @@ class _PresetsPageState extends State<PresetsPage> {
     });
   }
 
+  // Loads selected preset settings into temporary storage
   void _loadPresetIntoTempStorage(String presetName) {
     final presetData = _settingsBox.get(presetName, defaultValue: {});
     if (presetData.isNotEmpty) {
@@ -235,8 +227,7 @@ class _PresetsPageState extends State<PresetsPage> {
 
   void _applyPresetSettings() async {
     final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
-    final notificationProvider =
-        Provider.of<NotificationProvider>(context, listen: false);
+    final notificationProvider = Provider.of<NotificationProvider>(context, listen: false);
     final presetData = _settingsBox.get(selectedPreset, defaultValue: {});
 
     if (presetData.isNotEmpty) {
@@ -248,33 +239,18 @@ class _PresetsPageState extends State<PresetsPage> {
       themeProvider.setAccentColor(Color(presetData['accentColor']));
 
       // Notifications
-      notificationProvider
-          .setNotifications(presetData['notificationsEnabled'] ?? false);
+      notificationProvider.setNotifications(presetData['notificationsEnabled'] ?? false);
 
       // Haptic
       notificationProvider.setHaptic(presetData['hapticEnabled'] ?? false);
-      notificationProvider
-          .setHapticIntensity(presetData['hapticIntensity'] ?? 0.0);
-      await _sendPresetData('Haptic',
-          presetData['hapticEnabled'] ? presetData['hapticIntensity'] : 0.0);
+      notificationProvider.setHapticIntensity(presetData['hapticIntensity'] ?? 0.0);
 
       // Buzzer
       notificationProvider.setBuzzer(presetData['buzzerEnabled'] ?? false);
-      notificationProvider
-          .setBuzzerIntensity(presetData['buzzerIntensity'] ?? 0.0);
-      await _sendPresetData('Buzzer',
-          presetData['buzzerEnabled'] ? presetData['buzzerIntensity'] : 0.0);
+      notificationProvider.setBuzzerIntensity(presetData['buzzerIntensity'] ?? 0.0);
 
       // Light
-      notificationProvider
-          .setLightIntensity(presetData['lightIntensity'] ?? S.of(context).low);
-      await _sendPresetData(
-          'Light',
-          presetData['lightIntensity'] == S.of(context).low
-              ? 30
-              : presetData['lightIntensity'] == S.of(context).medium
-                  ? 60
-                  : 100);
+      notificationProvider.setLightIntensity(presetData['lightIntensity'] ?? S.of(context).low);
     }
   }
 
@@ -290,8 +266,7 @@ class _PresetsPageState extends State<PresetsPage> {
         title: Text(S.of(context).save_new_preset),
         content: TextField(
           controller: nameController,
-          decoration:
-              InputDecoration(hintText: S.of(context).enter_preset_name),
+          decoration: InputDecoration(hintText: S.of(context).enter_preset_name),
         ),
         actions: [
           TextButton(
@@ -317,8 +292,7 @@ class _PresetsPageState extends State<PresetsPage> {
   }
 
   void _showRenameDialog() {
-    TextEditingController renameController =
-        TextEditingController(text: selectedPreset);
+    TextEditingController renameController = TextEditingController(text: selectedPreset);
 
     showDialog(
       context: context,
@@ -352,24 +326,5 @@ class _PresetsPageState extends State<PresetsPage> {
         ],
       ),
     );
-  }
-
-  // Method to send the haptic and buzzer intensity values to the server
-  Future<void> _sendPresetData(String type, double intensityValue) async {
-    final url = Uri.parse("http://192.168.4.1/set");
-    try {
-      String dataString = "$type\$$intensityValue\$";
-
-      final response = await http.post(url, body: {
-        'data': dataString,
-      });
-      if (response.statusCode == 200) {
-        print("Data send succesfully");
-      } else {
-        print("Failed to send data: ${response.statusCode}");
-      }
-    } catch (e) {
-      print("Error sending data: $e");
-    }
   }
 }

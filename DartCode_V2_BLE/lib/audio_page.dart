@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart'; // Import provider
+import 'package:provider/provider.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import '../generated/l10n.dart';
-import 'theme_provider.dart'; // Import ThemeProvider
+import 'theme_provider.dart';
 import 'notification_provider.dart';
 import 'bottom_nav_bar.dart';
 import 'package:flutter/semantics.dart';
@@ -14,13 +14,6 @@ class AudioPage extends StatefulWidget {
 }
 
 class _AudioPageState extends State<AudioPage> {
-  // Variables to hold the state of the toggles and intensity buttons
-  // bool notifications = false;
-  // bool haptic = true;
-  // double hapticIntensity = 25.0; // Use double for Haptic Intensity (initial value)
-  // bool buzzer = true;
-  // double buzzerIntensity = 75.0; // Use double for Buzzer Intensity (initial value)
-
   BluetoothDevice? connectedDevice;
   BluetoothCharacteristic? setCharacteristic;
   BluetoothCharacteristic? getCharacteristic;
@@ -36,7 +29,7 @@ class _AudioPageState extends State<AudioPage> {
         if (device.name == 'light_up_cane') {
           connectedDevice = device;
 
-          // Services en characteristics ontdekken
+          // Discover services and characteristics
           List<BluetoothService> services =
               await connectedDevice!.discoverServices();
           for (BluetoothService service in services) {
@@ -50,7 +43,7 @@ class _AudioPageState extends State<AudioPage> {
                   getCharacteristic = characteristic;
                   await getCharacteristic!.setNotifyValue(true);
                   getCharacteristic!.value.listen((value) {
-                    // Ontvang gegevens van het apparaat
+                    // Listen for incoming data from the device
                     String data = String.fromCharCodes(value);
                     _handleReceivedData(data);
                   });
@@ -69,6 +62,7 @@ class _AudioPageState extends State<AudioPage> {
     List<String> values = data.split(" ");
     if (values.length >= 6) {
       final notificationProvider = Provider.of<NotificationProvider>(context, listen: false);
+        // Update haptic intensity and buzzer intensity based on received values
         notificationProvider.setHapticIntensity(values[4] == '0' ? 0 : values[4] == '70' ? 25 : values[4] == '80' ? 50 : values[4] == '90' ? 75 : 100);  
         notificationProvider.setHaptic(notificationProvider.hapticIntensity > 0);
         notificationProvider.setBuzzerIntensity(values[2] == '0' ? 0 : values[2] == '1' ? 25 : values[2] == '3' ? 50 : values[2] == '5' ? 75 : 100);
@@ -79,7 +73,7 @@ class _AudioPageState extends State<AudioPage> {
   Future<void> _sendIntensityData(String type, double intensityValue) async {
     try {
       if (setCharacteristic != null) {
-        // Gebruik BLE om gegevens te verzenden
+        // Send intensity data via Bluetooth
         String dataString = "$type $intensityValue";
         await setCharacteristic!
             .write(dataString.codeUnits, withoutResponse: false);
@@ -131,11 +125,7 @@ class _AudioPageState extends State<AudioPage> {
           : Colors.grey[300], // Light background for light theme
       body: SafeArea(
         child: Container(
-          // // Apply a gray filter using a semi-transparent color overlay
-          // decoration: BoxDecoration(
-          //   color: Colors.grey[300], // Base color for the background
-          //   backgroundBlendMode: BlendMode.overlay, // Blend mode for the gray filter
-          // ),
+
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
             child: LayoutBuilder(
@@ -157,53 +147,36 @@ class _AudioPageState extends State<AudioPage> {
                           color: themeProvider.themeMode == ThemeMode.dark
                               ? Colors.grey[850]
                               : Colors.grey[400],
-                          borderRadius: BorderRadius.circular(
-                              20), // Rounded corners for the status header
+                          borderRadius: BorderRadius.circular(20),
                         ),
                         child: Center(
                           child: Text(
                            S.of(context).audio_settings,
                             style: TextStyle(
-                              color: themeProvider
-                                  .accentColor, // Use accent color from ThemeProvider
-                              fontSize: screenWidth *
-                                  0.070, // Dynamic font size based on screen width
+                              color: themeProvider.accentColor, // Use accent color from ThemeProvider
+                              fontSize: screenWidth * 0.070, // Dynamic font size based on screen width
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                         ),
                       ),
                     ),
-                    SizedBox(
-                        height: buttonSpacing), // Space between header and rows
+                    SizedBox(height: buttonSpacing), // Space between header and rows
 
                     // Notifications Toggle
-                    _buildSwitchRow(S.of(context).notifications,
-                        notificationProvider.notifications, (value) {
+                    _buildSwitchRow(S.of(context).notifications, notificationProvider.notifications, (value) {
                       setState(() {
                         notificationProvider.setNotifications(value);
-                       
                       });
                     }, maxWidth, screenWidth, themeProvider),
                     SizedBox(height: buttonSpacing), // Spacing between rows
 
                     // Haptic Toggle
-                    _buildSwitchRow(
-                        S.of(context).haptic, notificationProvider.haptic,
-                        (value) {
+                    _buildSwitchRow(S.of(context).haptic, notificationProvider.haptic, (value) {
                       setState(() {
                         notificationProvider.setHaptic(value);
                         if (notificationProvider.haptic) {
-                          _sendIntensityData(
-                              'Haptic',
-                              notificationProvider.hapticIntensity == 25
-                                  ? 70
-                                  : notificationProvider.hapticIntensity == 50
-                                      ? 80
-                                      : notificationProvider.hapticIntensity ==
-                                              75
-                                          ? 90
-                                          : 100);
+                          _sendIntensityData('Haptic', notificationProvider.hapticIntensity == 25 ? 70 : notificationProvider.hapticIntensity == 50 ? 80 : notificationProvider.hapticIntensity == 75 ? 90 : 100);
                         } else {
                           _sendIntensityData('Haptic', 0.0);
                         }
@@ -212,23 +185,12 @@ class _AudioPageState extends State<AudioPage> {
                     SizedBox(height: buttonSpacing), // Spacing between rows
 
                     // Haptic Intensity Button
-                    _buildIntensityButtonRow(S.of(context).haptic_intensity,
-                        notificationProvider.hapticIntensity, () {
+                    _buildIntensityButtonRow(S.of(context).haptic_intensity, notificationProvider.hapticIntensity, () {
                       setState(() {
-                        final newHapticIntensity = _cycleIntensity(
-                            notificationProvider.hapticIntensity);
-                        notificationProvider
-                            .setHapticIntensity(newHapticIntensity);
+                        final newHapticIntensity = _cycleIntensity(notificationProvider.hapticIntensity);
+                        notificationProvider.setHapticIntensity(newHapticIntensity);
                         if (notificationProvider.haptic) {
-                          _sendIntensityData(
-                              'Haptic',
-                              newHapticIntensity == 25
-                                  ? 70
-                                  : newHapticIntensity == 50
-                                      ? 80
-                                      : newHapticIntensity == 75
-                                          ? 90
-                                          : 100);
+                          _sendIntensityData('Haptic', newHapticIntensity == 25 ? 70 : newHapticIntensity == 50 ? 80 : newHapticIntensity == 75 ? 90 : 100);
                         } else {
                           _sendIntensityData('Haptic', 0.0);
                         }
@@ -237,22 +199,11 @@ class _AudioPageState extends State<AudioPage> {
                     SizedBox(height: buttonSpacing), // Spacing between rows
 
                     // Buzzer Toggle
-                    _buildSwitchRow(
-                        S.of(context).buzzer, notificationProvider.buzzer,
-                        (value) {
+                    _buildSwitchRow(S.of(context).buzzer, notificationProvider.buzzer, (value) {
                       setState(() {
                         notificationProvider.setBuzzer(value);
                         if (notificationProvider.buzzer) {
-                          _sendIntensityData(
-                              'Buzzer',
-                              notificationProvider.buzzerIntensity == 25
-                                  ? 1
-                                  : notificationProvider.buzzerIntensity == 50
-                                      ? 3
-                                      : notificationProvider.buzzerIntensity ==
-                                              75
-                                          ? 5
-                                          : 10);
+                          _sendIntensityData('Buzzer', notificationProvider.buzzerIntensity == 25 ? 1 : notificationProvider.buzzerIntensity == 50 ? 3 : notificationProvider.buzzerIntensity == 75 ? 5 : 10);
                         } else {
                           _sendIntensityData('Buzzer', 0.0);
                         }
@@ -261,31 +212,18 @@ class _AudioPageState extends State<AudioPage> {
                     SizedBox(height: buttonSpacing), // Spacing between rows
 
                     // Buzzer Intensity Button
-                    _buildIntensityButtonRow(S.of(context).buzzer_intensity,
-                        notificationProvider.buzzerIntensity, () {
+                    _buildIntensityButtonRow(S.of(context).buzzer_intensity, notificationProvider.buzzerIntensity, () {
                       setState(() {
-                        final newBuzzerIntensity = _cycleIntensity(
-                            notificationProvider.buzzerIntensity);
-                        notificationProvider
-                            .setBuzzerIntensity(newBuzzerIntensity);
+                        final newBuzzerIntensity = _cycleIntensity(notificationProvider.buzzerIntensity);
+                        notificationProvider.setBuzzerIntensity(newBuzzerIntensity);
                         if (notificationProvider.buzzer) {
-                          _sendIntensityData(
-                              'Buzzer',
-                              newBuzzerIntensity == 25
-                                  ? 1
-                                  : newBuzzerIntensity == 50
-                                      ? 3
-                                      : newBuzzerIntensity == 75
-                                          ? 5
-                                          : 10);
+                          _sendIntensityData('Buzzer', newBuzzerIntensity == 25 ? 1 : newBuzzerIntensity == 50 ? 3 : newBuzzerIntensity == 75 ? 5 : 10);
                         } else {
                           _sendIntensityData('Buzzer', 0.0);
                         }
                       });
                     }, maxWidth, screenWidth, themeProvider),
-                    SizedBox(
-                        height:
-                            buttonSpacing), // Larger space before the return button
+                    SizedBox(height: buttonSpacing),
 
                     Spacer(),
 
@@ -403,7 +341,7 @@ class _AudioPageState extends State<AudioPage> {
     );
   }
 
-  // Function to cycle through the intensity values (25.0, 50.0, 75.0, 100.0)
+  // Function to cycle through the intensity values
   double _cycleIntensity(double currentValue) {
     // Ensure all values are within the range and wrap around the values
     switch (currentValue) {

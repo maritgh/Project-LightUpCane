@@ -6,7 +6,7 @@ import 'theme_page.dart';
 import 'connection_page.dart';
 import 'language_page.dart';
 import 'theme_provider.dart';
-import 'bottom_nav_bar.dart'; // Import your BottomNavBar
+import 'bottom_nav_bar.dart';
 
 class SettingsAppPage extends StatelessWidget {
   @override
@@ -44,32 +44,26 @@ class SettingsAppPage extends StatelessWidget {
                   Center(
                     child: Container(
                       width: screenWidth * 0.8,
-                      padding:
-                          EdgeInsets.symmetric(vertical: screenHeight * 0.005),
+                      padding: EdgeInsets.symmetric(vertical: screenHeight * 0.005),
                       decoration: BoxDecoration(
                         color: themeProvider.themeMode == ThemeMode.dark
                             ? Colors.grey[850]
                             : Colors.grey[400],
-                        borderRadius: BorderRadius.circular(
-                            20), // Rounded corners for the header
+                        borderRadius: BorderRadius.circular(20), // Rounded corners for the header
                       ),
                       child: Center(
                         child: Text(
                           S.of(context).settings_app,
                           style: TextStyle(
-                            color: themeProvider
-                                .accentColor, // Use accent color from ThemeProvider
-                            fontSize: screenWidth *
-                                0.08, // Dynamic font size based on screen width
+                            color: themeProvider.accentColor, // Use accent color from ThemeProvider
+                            fontSize: screenWidth * 0.08, // Dynamic font size based on screen width
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                       ),
                     ),
                   ),
-                  SizedBox(
-                      height:
-                          buttonSpacing * 3), // Space between title and buttons
+                  SizedBox(height: buttonSpacing * 3), // Space between title and buttons
 
                   // Theme Button
                   CustomButton(
@@ -80,8 +74,7 @@ class SettingsAppPage extends StatelessWidget {
                         MaterialPageRoute(builder: (context) => ThemePage()),
                       );
                     },
-                    screenWidth:
-                        screenWidth, // Pass screen dimensions for dynamic sizing
+                    screenWidth: screenWidth, // Pass screen dimensions for dynamic sizing
                     screenHeight: screenHeight,
                     color: dynamicColor, // Use accent color from ThemeProvider
                   ),
@@ -94,11 +87,10 @@ class SettingsAppPage extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => ConnectionPage()),
+                          builder: (context) => ConnectionPage()),
                       );
                     },
-                    screenWidth:
-                        screenWidth, // Pass screen dimensions for dynamic sizing
+                    screenWidth: screenWidth, // Pass screen dimensions for dynamic sizing
                     screenHeight: screenHeight,
                     color: dynamicColor, // Use accent color from ThemeProvider
                   ),
@@ -113,8 +105,7 @@ class SettingsAppPage extends StatelessWidget {
                         MaterialPageRoute(builder: (context) => LanguagePage()),
                       );
                     },
-                    screenWidth:
-                        screenWidth, // Pass screen dimensions for dynamic sizing
+                    screenWidth: screenWidth, // Pass screen dimensions for dynamic sizing
                     screenHeight: screenHeight,
                     color: dynamicColor, // Use accent color from ThemeProvider
                   ),

@@ -1,10 +1,10 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
-import 'package:provider/provider.dart'; // Import provider
+import 'package:provider/provider.dart'; 
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'generated/l10n.dart';
-import 'theme_provider.dart'; // Import ThemeProvider
+import 'theme_provider.dart';
 import 'notification_provider.dart';
 import 'bottom_nav_bar.dart';
 
@@ -14,10 +14,6 @@ class LightPage extends StatefulWidget {
 }
 
 class _LightPageState extends State<LightPage> {
-  // Variables to hold the state of the toggles and intensity buttons
-  // bool light = false;
-  // String lightIntensity = 'LOW';
-
   BluetoothDevice? connectedDevice;
   BluetoothCharacteristic? setCharacteristic;
   BluetoothCharacteristic? getCharacteristic;
@@ -34,7 +30,7 @@ class _LightPageState extends State<LightPage> {
         if (device.name == 'light_up_cane') {
           connectedDevice = device;
 
-          // Services en characteristics ontdekken
+          // Discover services and characteristics
           List<BluetoothService> services =
               await connectedDevice!.discoverServices();
           for (BluetoothService service in services) {
@@ -48,7 +44,7 @@ class _LightPageState extends State<LightPage> {
                   getCharacteristic = characteristic;
                   await getCharacteristic!.setNotifyValue(true);
                   getCharacteristic!.value.listen((value) {
-                    // Ontvang gegevens van het apparaat
+                    // Listen for incoming data from the device
                     String data = String.fromCharCodes(value);
                     _handleReceivedData(data);
                   });
@@ -66,19 +62,17 @@ class _LightPageState extends State<LightPage> {
    void _handleReceivedData(String data) {
     List<String> values = data.split(" ");
     if (values.length >= 6) {
-      final notificationProvider =
-          Provider.of<NotificationProvider>(context, listen: false);
+      final notificationProvider = Provider.of<NotificationProvider>(context, listen: false);
+      // Update light intensity based on received values
        notificationProvider.setLightIntensity(values[1] == '30' ? '30' : values[1] == '60' ? '60' : '100');
-      notificationProvider.setLight(values[5] == '0' ? false : true);
+       notificationProvider.setLight(values[5] == '0' ? false : true);
     }
-    ;
   }
 
  @override
   void initState() {
     super.initState();
     connectToDevice();
-    // _timer = Timer.periodic(Duration(seconds: 5), (timer) => fetchStatusData());
   }
 
    void _disconnectFromDevice() {
@@ -94,13 +88,12 @@ class _LightPageState extends State<LightPage> {
   @override
   void dispose() {
     _disconnectFromDevice();
-    //   _timer?.cancel(); // Annuleer de timer bij het sluiten van de widget
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    // Access ThemeProvider
+    // Access ThemeProvider and NotificationProvider
     final themeProvider = Provider.of<ThemeProvider>(context);
     final notificationProvider = Provider.of<NotificationProvider>(context);
 
@@ -179,11 +172,10 @@ class _LightPageState extends State<LightPage> {
     );
   }
 
-  // Method to send the haptic and buzzer intensity values to the server
   Future<void> _sendIntensityData(String type, int intensityValue) async {
     try {
       if (setCharacteristic != null) {
-        // Gebruik BLE om gegevens te verzenden
+        // Send intensity data via Bluetooth
         String dataString = "$type $intensityValue";
         await setCharacteristic!
             .write(dataString.codeUnits, withoutResponse: false);
