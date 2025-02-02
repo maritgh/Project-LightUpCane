@@ -24,7 +24,7 @@ class LanguagePage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // Theme Title
+              // Language Title
               Center(
                 child: Container(
                   width: screenWidth * 0.8,
@@ -49,7 +49,7 @@ class LanguagePage extends StatelessWidget {
               ),
               SizedBox(height: screenHeight * 0.03), // Space between title and content
 
-              // Themes Section
+              // Languages Section
               Text(
                 S.of(context).languages,
                 style: TextStyle(
@@ -82,7 +82,7 @@ class LanguagePage extends StatelessWidget {
   Widget accentButton(String label, Color color, ThemeProvider themeProvider, double screenWidth) {
     return fullWidthButton(
       label,
-          () => themeProvider.setAccentColor(color),
+      () => themeProvider.setAccentColor(color),
       themeProvider.accentColor == color ? themeProvider.accentColor : Colors.grey,
       screenWidth,
     );

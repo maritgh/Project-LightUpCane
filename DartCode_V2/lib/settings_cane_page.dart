@@ -7,7 +7,7 @@ import 'custom_button.dart';
 import 'audio_page.dart';
 import 'light_page.dart';
 import 'theme_provider.dart';
-import 'bottom_nav_bar.dart'; // Import your BottomNavBar
+import 'bottom_nav_bar.dart';
 
 class SettingsCanePage extends StatefulWidget {
   const SettingsCanePage({Key? key}) : super(key: key);
@@ -108,11 +108,6 @@ class _SettingsCanePageState extends State<SettingsCanePage> {
                   GestureDetector(
                     onTap: () {
                       _sendIntensityData('Find', 0);
-                      // Add your "Find My Cane" action here
-                      print('Find My Cane button pressed');
-                      // ScaffoldMessenger.of(context).showSnackBar(
-                      // const SnackBar(content: Text('Finding your cane...')),
-                      // );
                     },
                     child: Container(
                       height: screenHeight * 0.25,

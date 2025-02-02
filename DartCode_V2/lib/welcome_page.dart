@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'generated/l10n.dart';
 import 'custom_button.dart';
 import 'theme_provider.dart';
-import 'status_page.dart'; // Import StatusPage
+import 'status_page.dart';
 
 class WelcomePage extends StatelessWidget {
   
@@ -15,7 +15,7 @@ class WelcomePage extends StatelessWidget {
     // Access ThemeProvider
     final themeProvider = Provider.of<ThemeProvider>(context);
 
-    // Define the dynamic color based on the theme, required for Verder gaan to adjust theme
+    // Define the dynamic color based on the theme
     Color dynamicColor = themeProvider.themeMode == ThemeMode.dark
         ? Colors.grey[850]!
         : Colors.grey[400]!;
@@ -70,7 +70,7 @@ class WelcomePage extends StatelessWidget {
               SizedBox(height: screenHeight * 0.2),
 
 
-              // Return Button (Navigates to StatusPage)
+              // Continue Button
               CustomButton(
                 label: S.of(context).move_on,
                 onPressed: () {

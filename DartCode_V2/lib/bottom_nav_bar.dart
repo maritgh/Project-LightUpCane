@@ -15,7 +15,7 @@ class BottomNavBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
-    // Get screen width
+
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
@@ -42,20 +42,20 @@ class BottomNavBar extends StatelessWidget {
 
     return GestureDetector(
       onTap: () {
-        // Navigate to corresponding page using MaterialPageRoute
+        // Navigate to corresponding page
         Widget page;
         switch (switchLabel) {
           case "Status":
-            page = StatusPage(); // Replace with your actual Status page widget
+            page = StatusPage();
             break;
           case "Presets":
-            page = PresetsPage(); // Replace with your actual Presets page widget
+            page = PresetsPage();
             break;
           case "Settings\nCane":
-            page = SettingsCanePage(); // Replace with your actual Settings Cane page widget
+            page = SettingsCanePage();
             break;
           case "Settings\nApp":
-            page = SettingsAppPage(); // Replace with your actual Settings App page widget
+            page = SettingsAppPage();
             break;
           default:
             return; // If label doesn't match, do nothing

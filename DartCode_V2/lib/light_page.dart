@@ -1,10 +1,10 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
-import 'package:provider/provider.dart'; // Import provider
+import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 import 'generated/l10n.dart';
-import 'theme_provider.dart'; // Import ThemeProvider
+import 'theme_provider.dart';
 import 'notification_provider.dart';
 import 'bottom_nav_bar.dart';
 
@@ -14,10 +14,6 @@ class LightPage extends StatefulWidget {
 }
 
 class _LightPageState extends State<LightPage> {
-  // Variables to hold the state of the toggles and intensity buttons
-  // bool light = false;
-  // String lightIntensity = 'LOW';
-
   Timer? _timer;
 
   Future<void> fetchStatusData() async {
@@ -48,7 +44,7 @@ class _LightPageState extends State<LightPage> {
 
   @override
   void dispose() {
-    _timer?.cancel(); // Annuleer de timer bij het sluiten van de widget
+    _timer?.cancel();
     super.dispose();
   }
 

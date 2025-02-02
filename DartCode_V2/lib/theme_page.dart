@@ -128,7 +128,7 @@ class ThemePage extends StatelessWidget {
   Widget accentButton(String label, Color color, ThemeProvider themeProvider, double screenWidth) {
     return fullWidthButton(
       label,
-          () => themeProvider.setAccentColor(color),
+      () => themeProvider.setAccentColor(color),
       themeProvider.accentColor == color ? themeProvider.accentColor : Colors.grey,
       screenWidth,
     );

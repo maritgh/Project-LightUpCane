@@ -4,7 +4,7 @@ import 'package:hive/hive.dart';
 class ThemeProvider extends ChangeNotifier {
   ThemeMode _themeMode = ThemeMode.system;
   Color _accentColor = Colors.purple;
-  Locale _locale = Locale('nl'); // Default to English
+  Locale _locale = Locale('nl'); // Default to Dutch
 
   // Hive box for storing settings
   final Box _settingsBox = Hive.box('settings');

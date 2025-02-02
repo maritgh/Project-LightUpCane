@@ -6,7 +6,7 @@ import 'theme_page.dart';
 import 'connection_page.dart';
 import 'language_page.dart';
 import 'theme_provider.dart';
-import 'bottom_nav_bar.dart'; // Import your BottomNavBar
+import 'bottom_nav_bar.dart';
 
 class SettingsAppPage extends StatelessWidget {
   @override

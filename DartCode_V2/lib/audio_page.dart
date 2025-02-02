@@ -1,10 +1,10 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
-import 'package:provider/provider.dart'; // Import provider
+import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 import 'generated/l10n.dart';
-import 'theme_provider.dart'; // Import ThemeProvider
+import 'theme_provider.dart';
 import 'notification_provider.dart';
 import 'bottom_nav_bar.dart';
 
@@ -14,13 +14,6 @@ class AudioPage extends StatefulWidget {
 }
 
 class _AudioPageState extends State<AudioPage> {
-  // Variables to hold the state of the toggles and intensity buttons
-  // bool notifications = false;
-  // bool haptic = true;
-  // double hapticIntensity = 25.0; // Use double for Haptic Intensity (initial value)
-  // bool buzzer = true;
-  // double buzzerIntensity = 75.0; // Use double for Buzzer Intensity (initial value)
-
   Timer? _timer;
 
   Future<void> fetchStatusData() async {
@@ -53,7 +46,7 @@ class _AudioPageState extends State<AudioPage> {
 
   @override
   void dispose() {
-    _timer?.cancel(); // Annuleer de timer bij het sluiten van de widget
+    _timer?.cancel();
     super.dispose();
   }
 
@@ -77,11 +70,6 @@ class _AudioPageState extends State<AudioPage> {
           : Colors.grey[300], // Light background for light theme
       body: SafeArea(
         child: Container(
-          // // Apply a gray filter using a semi-transparent color overlay
-          // decoration: BoxDecoration(
-          //   color: Colors.grey[300], // Base color for the background
-          //   backgroundBlendMode: BlendMode.overlay, // Blend mode for the gray filter
-          // ),
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
             child: LayoutBuilder(
@@ -177,7 +165,7 @@ class _AudioPageState extends State<AudioPage> {
                         }
                       });
                     }, maxWidth, screenWidth, themeProvider),
-                    SizedBox(height: buttonSpacing), // Larger space before the return button
+                    SizedBox(height: buttonSpacing),
 
                     Spacer(),
 
@@ -265,7 +253,7 @@ class _AudioPageState extends State<AudioPage> {
         onTap: () {
           // Cycle intensity on double-tap
           final newIntensityValue = _cycleIntensity(intensityValue);
-          onPressed(); // Trigger the provided onPressed function (change intensity)
+          onPressed(); // Trigger the provided onPressed function
 
           // Announce the updated intensity value
           SemanticsService.announce("$label: ${newIntensityValue.toInt()}%", TextDirection.ltr);
@@ -315,9 +303,8 @@ class _AudioPageState extends State<AudioPage> {
   }
 
 
-  // Function to cycle through the intensity values (25.0, 50.0, 75.0, 100.0)
+  // Function to cycle through the intensity values
   double _cycleIntensity(double currentValue) {
-    // Ensure all values are within the range and wrap around the values
     switch (currentValue) {
       case 25.0:
         return 50.0;

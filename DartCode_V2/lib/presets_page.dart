@@ -16,10 +16,10 @@ class PresetsPage extends StatefulWidget {
 }
 
 class _PresetsPageState extends State<PresetsPage> {
-  late Box _settingsBox;
-  List<String> presets = [];
-  String? selectedPreset;
-  bool notificationsEnabled = false;
+  late Box _settingsBox; // Hive storage box
+  List<String> presets = []; // List of saved presets
+  String? selectedPreset; // Currently selected preset
+  bool notificationsEnabled = false; // Notification toggle
 
   @override
   void initState() {
@@ -27,6 +27,7 @@ class _PresetsPageState extends State<PresetsPage> {
     _initializeMemory();
   }
 
+  // Initializes the Hive storage box and loads saved presets
   Future<void> _initializeMemory() async {
     _settingsBox = await Hive.openBox('presetsBox');
     setState(() {
@@ -47,6 +48,7 @@ class _PresetsPageState extends State<PresetsPage> {
       body: SafeArea(
         child: Column(
           children: [
+            // Presets title container
             Padding(
               padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.1),
               child: Center(
@@ -83,9 +85,10 @@ class _PresetsPageState extends State<PresetsPage> {
                         ? ListView(
                             children: presets
                                 .map((preset) => Padding(
-                                      padding: const EdgeInsets.symmetric(vertical: 8),
-                                      child: _buildPresetTile(
-                                          preset, maxWidth, screenWidth, themeProvider),
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 8),
+                                      child: _buildPresetTile(preset, maxWidth,
+                                          screenWidth, themeProvider),
                                     ))
                                 .toList(),
                           )
@@ -94,7 +97,8 @@ class _PresetsPageState extends State<PresetsPage> {
                 ),
               ),
             ),
-            if (selectedPreset == null) _buildSaveButton(screenWidth, screenHeight, themeProvider),
+            if (selectedPreset == null)
+              _buildSaveButton(screenWidth, screenHeight, themeProvider),
           ],
         ),
       ),
@@ -102,8 +106,8 @@ class _PresetsPageState extends State<PresetsPage> {
     );
   }
 
-  Widget _buildPresetTile(
-      String preset, double maxWidth, double screenWidth, ThemeProvider themeProvider) {
+  // Builds a tile for each preset in the list
+  Widget _buildPresetTile(String preset, double maxWidth, double screenWidth, ThemeProvider themeProvider) {
     return GestureDetector(
       onTap: () => setState(() {
         selectedPreset = preset;
@@ -132,8 +136,7 @@ class _PresetsPageState extends State<PresetsPage> {
     );
   }
 
-  Widget _buildPresetOptions(
-      double screenWidth, double maxWidth, ThemeProvider themeProvider) {
+  Widget _buildPresetOptions(double screenWidth, double maxWidth, ThemeProvider themeProvider) {
     return Column(
       children: [
         _buildOptionButton(S.of(context).select, screenWidth, themeProvider, onPressed: () {
@@ -149,14 +152,12 @@ class _PresetsPageState extends State<PresetsPage> {
             selectedPreset = null;
           });
         }),
-        _buildOptionButton(S.of(context).back, screenWidth, themeProvider,
-            onPressed: () => setState(() => selectedPreset = null)),
+        _buildOptionButton(S.of(context).back, screenWidth, themeProvider, onPressed: () => setState(() => selectedPreset = null)),
       ],
     );
   }
 
-  Widget _buildOptionButton(String label, double screenWidth, ThemeProvider themeProvider,
-      {VoidCallback? onPressed}) {
+  Widget _buildOptionButton(String label, double screenWidth, ThemeProvider themeProvider, {VoidCallback? onPressed}) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 5),
       child: ElevatedButton(
@@ -178,8 +179,7 @@ class _PresetsPageState extends State<PresetsPage> {
     );
   }
 
-  Widget _buildSaveButton(
-      double screenWidth, double screenHeight, ThemeProvider themeProvider) {
+  Widget _buildSaveButton(double screenWidth, double screenHeight, ThemeProvider themeProvider) {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: screenHeight * 0.02),
       child: ElevatedButton(
@@ -202,6 +202,7 @@ class _PresetsPageState extends State<PresetsPage> {
     );
   }
 
+  // Saves the preset settings into Hive storage
   void _savePreset(String presetName) {
     final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
     final notificationProvider = Provider.of<NotificationProvider>(context, listen: false);
@@ -217,6 +218,7 @@ class _PresetsPageState extends State<PresetsPage> {
     });
   }
 
+  // Loads selected preset settings into temporary storage
   void _loadPresetIntoTempStorage(String presetName) {
     final presetData = _settingsBox.get(presetName, defaultValue: {});
     if (presetData.isNotEmpty) {
@@ -225,35 +227,36 @@ class _PresetsPageState extends State<PresetsPage> {
   }
 
   void _applyPresetSettings() async {
-  final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
-  final notificationProvider = Provider.of<NotificationProvider>(context, listen: false);
-  final presetData = _settingsBox.get(selectedPreset, defaultValue: {});
+    final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
+    final notificationProvider = Provider.of<NotificationProvider>(context, listen: false);
+    final presetData = _settingsBox.get(selectedPreset, defaultValue: {});
 
-  if (presetData.isNotEmpty) {
-    themeProvider.setThemeMode(
-      presetData['themeMode'] == 'ThemeMode.dark' ? ThemeMode.dark : ThemeMode.light,
-    );
-    themeProvider.setAccentColor(Color(presetData['accentColor']));
+    if (presetData.isNotEmpty) {
+      themeProvider.setThemeMode(
+        presetData['themeMode'] == 'ThemeMode.dark'
+            ? ThemeMode.dark
+            : ThemeMode.light,
+      );
+      themeProvider.setAccentColor(Color(presetData['accentColor']));
 
-    // Notifications
-    notificationProvider.setNotifications(presetData['notificationsEnabled'] ?? false);
+      // Notifications
+      notificationProvider.setNotifications(presetData['notificationsEnabled'] ?? false);
 
-    // Haptic
-    notificationProvider.setHaptic(presetData['hapticEnabled'] ?? false);
-    notificationProvider.setHapticIntensity(presetData['hapticIntensity'] ?? 0.0);
-    await _sendPresetData('Haptic', presetData['hapticEnabled'] ? presetData['hapticIntensity'] : 0.0);
+      // Haptic
+      notificationProvider.setHaptic(presetData['hapticEnabled'] ?? false);
+      notificationProvider.setHapticIntensity(presetData['hapticIntensity'] ?? 0.0);
+      await _sendPresetData('Haptic', presetData['hapticEnabled'] ? presetData['hapticIntensity'] : 0.0);
 
-    // Buzzer
-    notificationProvider.setBuzzer(presetData['buzzerEnabled'] ?? false);
-    notificationProvider.setBuzzerIntensity(presetData['buzzerIntensity'] ?? 0.0);
-    await _sendPresetData('Buzzer', presetData['buzzerEnabled'] ? presetData['buzzerIntensity'] : 0.0);
+      // Buzzer
+      notificationProvider.setBuzzer(presetData['buzzerEnabled'] ?? false);
+      notificationProvider.setBuzzerIntensity(presetData['buzzerIntensity'] ?? 0.0);
+      await _sendPresetData('Buzzer', presetData['buzzerEnabled'] ? presetData['buzzerIntensity'] : 0.0);
 
-    // Light
-    notificationProvider.setLightIntensity(presetData['lightIntensity'] ?? S.of(context).low);
-    await _sendPresetData('Light', presetData['lightIntensity'] == S.of(context).low ? 30 : presetData['lightIntensity'] == S.of(context).medium ? 60 : 100);
+      // Light
+      notificationProvider.setLightIntensity(presetData['lightIntensity'] ?? S.of(context).low);
+      await _sendPresetData('Light', presetData['lightIntensity'] == S.of(context).low ? 30 : presetData['lightIntensity'] == S.of(context).medium ? 60 : 100);
+    }
   }
-}
-
 
   void _savePresets() {
     _settingsBox.put('presets', presets);
@@ -336,7 +339,7 @@ class _PresetsPageState extends State<PresetsPage> {
       String dataString = "$type\$$intensityValue\$";
 
       final response = await http.post(url, body: {
-        'data' : dataString,
+        'data': dataString,
       });
       if (response.statusCode == 200) {
         print("Data send succesfully");

@@ -51,7 +51,7 @@ class _MyAppState extends State<MyApp> {
         GlobalCupertinoLocalizations.delegate,
       ],
       debugShowCheckedModeBanner: false,
-      home: WelcomePage(      ),
+      home: WelcomePage(),
     );
   }
 }

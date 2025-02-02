@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart'; // Import provider
-import 'theme_provider.dart'; // Import ThemeProvider (luc1 needs to be changed, was required for Rae's project)
+import 'package:provider/provider.dart';
+import 'theme_provider.dart';
 
 class CustomButton extends StatelessWidget {
   final String label;

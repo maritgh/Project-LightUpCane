@@ -19,7 +19,7 @@ class SupportPage extends StatelessWidget {
     String languageCode = currentLocale.languageCode;
     String countryCode = currentLocale.countryCode ?? '';
 
-    // Combine language code and country code (e.g., en-US)
+    // Combine language code and country code
     String ttsLanguage = '$languageCode${countryCode.isNotEmpty ? '-$countryCode' : ''}';
 
     // Set the language for TTS
@@ -95,7 +95,7 @@ class SupportPage extends StatelessWidget {
               ),
               SizedBox(height: buttonSpacing), // Space between header and buttons
 
-              // Support Options (APP, PRESETS, SETTINGS, STATUS)
+              // Support Options
               _buildSupportOption(context, S.of(context).app, Icons.volume_up, screenWidth, themeProvider),
               SizedBox(height: buttonSpacing), // Space between buttons
               _buildSupportOption(context, S.of(context).presets, Icons.volume_up, screenWidth, themeProvider),
@@ -109,7 +109,7 @@ class SupportPage extends StatelessWidget {
 
               // Contact Option at the bottom
               _buildContactOption(S.of(context).contact, Icons.phone, screenWidth, themeProvider),
-              SizedBox(height: buttonSpacing), // Spacing before the return button
+              SizedBox(height: buttonSpacing),
             ],
           ),
         ),
@@ -118,7 +118,7 @@ class SupportPage extends StatelessWidget {
     );
   }
 
-  // Method to build each support option row (App, Presets, etc.)
+  // Method to build each support option row
   Widget _buildSupportOption(BuildContext context, String label, IconData icon, double screenWidth, ThemeProvider themeProvider) {
     String iconText = S.of(context).support;
     return Semantics(
